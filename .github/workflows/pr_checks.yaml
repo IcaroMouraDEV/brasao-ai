@@ -18,14 +18,55 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'app/**'
-      - 'tests/**'
-      - 'deployment/**'
-      - 'uv.lock'
+  workflow_dispatch:
+
+permissions:
+  contents: 'read'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  lint-and-unit:
+    name: Offline Lint, Type-Check, Unit Tests & Dry-Run Benchmark
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.0.0
+
+      - name: Install dependencies (with lint extra)
+        run: uv sync --locked --extra lint
+
+      - name: Lint with ruff
+        run: uv run ruff check .
+
+      - name: Check formatting with ruff
+        run: uv run ruff format --check .
+
+      - name: Type-check with ty
+        run: uv run ty check
+
+      - name: Run offline unit tests
+        run: uv run pytest tests/unit
+
+      - name: Run offline benchmark dry-run
+        run: uv run python -m evals.runner --dry-run
+
+  integration:
+    name: Integration Tests (GCP)
+    needs: lint-and-unit
+    if: ${{ vars.CICD_PROJECT_ID != '' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -33,7 +74,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
@@ -42,7 +83,6 @@ jobs:
           service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
           create_credentials_file: true
           project_id: ${{ vars.CICD_PROJECT_ID }}
-
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
@@ -54,9 +94,6 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --locked
-
-      - name: Run unit tests
-        run: uv run pytest tests/unit
 
       - name: Run integration tests
         # Integration tests run the agent in-process; pytest doesn't load .env.
