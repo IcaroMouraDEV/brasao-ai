@@ -39,16 +39,19 @@ with a clean context window.
    - `Args`:
      ```json
      {
-       "issues": [2, 3, 4],
+       "issues": [2, 3, 4, 5, 6, 7, 8],
        "base_branch": "main",
+       "chain_branches": true,
        "auto_push": true,
        "stop_on_block": true
      }
      ```
    - `issues` (required): Ordered list of GitHub issue numbers to execute sequentially.
-   - `base_branch` (optional, default `"main"`): Base branch for new feature branches and PRs.
+   - `base_branch` (optional, default `"main"`): Starting base branch for the first issue.
+   - `chain_branches` (optional, default `true`): Stacked PR mode — each completed issue's branch becomes the base branch for the next issue so dependent issues (`#7`, `#8`) build cleanly on top of earlier PRs (`#2`–`#6`) without touching `main`.
    - `auto_push` (optional, default `true`): Whether each worker pushes its branch and opens a PR via `gh pr create`.
-   - `stop_on_block` (optional, default `true`): Stop the remaining queue if an issue returns `"blocked"` or `"failed"` (recommended when later issues depend on earlier ones).
+   - `stop_on_block` (optional, default `true`): Stop the remaining queue if an issue returns `"blocked"` or `"failed"`.
+   - `model` (optional): Override worker model tier (`"inherit"`, `"flash"`, `"flash_lite"`, `"pro"`).
 4. **Review Results:**
    When `run_workflow` completes, present a concise table of `(issue_number, status, branch, pr_url, summary)` and surface any blockers requiring human input.
 

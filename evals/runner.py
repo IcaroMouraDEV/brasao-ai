@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -115,15 +116,55 @@ def _simulate_dry_run_response(
     return response, input_tokens, output_tokens, simulated_latency
 
 
+def _is_rate_limit_error(exc: Exception) -> bool:
+    """Return True when an exception indicates an HTTP 429 / quota rate-limit response."""
+    text = f"{type(exc).__name__}: {exc}".lower()
+    return any(
+        token in text for token in ("429", "resource_exhausted", "rate limit", "quota")
+    )
+
+
+async def _invoke_with_rate_limit_retry(
+    settings: Settings,
+    profile: ModelProfile,
+    prompt: str,
+    case_id: str,
+    max_retries: int = 4,
+    base_backoff_s: float = 15.0,
+) -> tuple[str, int, int, float]:
+    """Invoke the live ADK agent with exponential backoff for Gemini Free Tier 429 limits."""
+    attempt = 0
+    while True:
+        try:
+            return await _invoke_live_adk_agent(settings, profile, prompt, case_id)
+        except Exception as exc:
+            if (
+                profile != "remote"
+                or not _is_rate_limit_error(exc)
+                or attempt >= max_retries
+            ):
+                raise
+            delay = base_backoff_s * (2**attempt)
+            attempt += 1
+            await asyncio.sleep(delay)
+
+
 async def run_benchmark(
     profiles: list[ModelProfile],
     dataset_path: Path = DEFAULT_DATASET_PATH,
     reports_dir: Path = DEFAULT_REPORTS_DIR,
     dry_run: bool = False,
     settings: Settings | None = None,
+    remote_request_delay_s: float | None = None,
+    max_rate_limit_retries: int = 4,
 ) -> tuple[ComparisonReport, Path, Path]:
     """Run the comparative benchmark and write JSON and Markdown report artifacts."""
     resolved_settings = settings or load_settings()
+    delay_s = (
+        remote_request_delay_s
+        if remote_request_delay_s is not None
+        else float(os.getenv("REMOTE_REQUEST_DELAY_S", "0.0"))
+    )
     cases = load_benchmark_dataset(dataset_path)
     all_results: list[CaseEvaluationResult] = []
     summaries = []
@@ -133,7 +174,10 @@ async def run_benchmark(
         offline_capable = resolved_settings.is_offline_capable(profile)
         profile_results: list[CaseEvaluationResult] = []
 
-        for case in cases:
+        for idx, case in enumerate(cases):
+            if not dry_run and profile == "remote" and delay_s > 0 and idx > 0:
+                await asyncio.sleep(delay_s)
+
             error_msg: str | None = None
             try:
                 if dry_run:
@@ -146,8 +190,12 @@ async def run_benchmark(
                         in_tok,
                         out_tok,
                         latency_ms,
-                    ) = await _invoke_live_adk_agent(
-                        resolved_settings, profile, case.prompt, case.id
+                    ) = await _invoke_with_rate_limit_retry(
+                        resolved_settings,
+                        profile,
+                        case.prompt,
+                        case.id,
+                        max_retries=max_rate_limit_retries,
                     )
             except Exception as exc:
                 response_text = ""
@@ -233,6 +281,18 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Simulate model outputs offline to verify the benchmark harness end-to-end.",
     )
+    parser.add_argument(
+        "--remote-delay",
+        type=float,
+        default=None,
+        help="Seconds to pause between remote Gemini requests (e.g., 6.0 for Google AI Studio Free Tier).",
+    )
+    parser.add_argument(
+        "--max-rate-limit-retries",
+        type=int,
+        default=4,
+        help="Max exponential-backoff retries on HTTP 429 / RESOURCE_EXHAUSTED responses.",
+    )
     return parser.parse_args(argv)
 
 
@@ -245,6 +305,8 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             dataset_path=args.dataset,
             reports_dir=args.reports_dir,
             dry_run=args.dry_run,
+            remote_request_delay_s=args.remote_delay,
+            max_rate_limit_retries=args.max_rate_limit_retries,
         )
     )
     print(f"Benchmark completed ({len(report.results)} evaluations).")

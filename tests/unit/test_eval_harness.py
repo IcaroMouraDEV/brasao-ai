@@ -53,7 +53,21 @@ def test_accuracy_scoring_penalizes_hallucinations() -> None:
 
 def test_local_model_has_zero_marginal_api_cost() -> None:
     assert estimate_query_cost_usd("local", "ollama_chat/gemma3:4b", 1000, 500) == 0.0
-    assert estimate_query_cost_usd("remote", "gemini-3.8-flash", 1000, 500) > 0.0
+    flash_cost = estimate_query_cost_usd(
+        "remote", "gemini-3.8-flash", 1_000_000, 1_000_000
+    )
+    hydrogen_cost = estimate_query_cost_usd(
+        "remote", "gemini-4-hydrogen", 1_000_000, 1_000_000
+    )
+    assert flash_cost == pytest.approx(4.50)
+    assert hydrogen_cost == pytest.approx(9.00)
+
+
+def test_rate_limit_error_detector_matches_gemini_free_tier_429() -> None:
+    from evals.runner import _is_rate_limit_error
+
+    assert _is_rate_limit_error(RuntimeError("429 RESOURCE_EXHAUSTED: quota exceeded"))
+    assert not _is_rate_limit_error(ValueError("Invalid prompt schema"))
 
 
 @pytest.mark.asyncio
