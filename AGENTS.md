@@ -60,4 +60,4 @@ uv tool install google-agents-cli
 - `tests/` — `unit/` (offline), `integration/`, `eval/` (`agents-cli eval`), and `load_test/`.
 - `evals/` — Local vs. Remote side-by-side benchmark harness (accuracy, SDG 4 pedagogy, latency, tokens/s, cost, offline viability).
 - `docs/` — Architecture ([docs/architecture.md](docs/architecture.md)), SDG 4 pedagogy ([docs/sdg4-pedagogy.md](docs/sdg4-pedagogy.md)), and evaluation plan ([docs/evaluation-plan.md](docs/evaluation-plan.md)).
-- `.agents/` — Project-specific rules and procedural skills.
+- `.agents/` — Project-specific rules and procedural skills (`run-model-benchmark`, `add-historical-topic`, `issue-autopilot`).

@@ -224,3 +224,6 @@ credentials*.json
 evals/reports/*.json
 evals/reports/*.md
 !evals/reports/README.md
+
+# Local security-gate reports
+security-reports/
