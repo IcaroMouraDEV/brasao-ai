@@ -1,0 +1,109 @@
+{
+  "eval_cases": [
+    {
+      "eval_case_id": "colonial_indigenas_eurocentrismo",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Sou aluno do 7º ano. É verdade que o Brasil estava vazio antes de 1500 e que os portugueses descobriram tudo de forma pacífica?"
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Não. Antes de 1500 milhões de indígenas de diversos povos e troncos linguísticos já habitavam o território. O termo 'descobrimento' é eurocêntrico, e a colonização envolveu violência, epidemias, alianças e forte resistência indígena, como a Confederação dos Tamoios."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "abolicao_1888_protagonismo_negro",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "A abolição da escravidão em 1888 aconteceu apenas porque a Princesa Isabel quis assinar a Lei Áurea? Explique em nível de Ensino Médio."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Não. A Lei Áurea de 13 de maio de 1888 resultou de décadas de resistência negra, quilombos, ações judiciais e campanha abolicionista liderada por figuras como Luís Gama, José do Patrocínio, André Rebouças e Maria Firmina dos Reis, além das leis graduais (1850, 1871, 1885). A abolição não incluiu políticas de reparação ou integração social."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "independencia_1822_guerras_regionais",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Por que a Independência do Brasil em 1822 não pode ser resumida apenas ao grito do Ipiranga?"
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "A Independência foi um processo político iniciado em 1808, com papel decisivo de Maria Leopoldina em 2 de setembro de 1822, e envolveu guerras regionais (como o 2 de Julho na Bahia, com Maria Quitéria e participação popular). Além disso, manteve a monarquia e a escravidão."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "era_vargas_ambiguidades",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Quais foram as principais contradições da Era Vargas (1930-1945) entre direitos trabalhistas e autoritarismo?"
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "A Era Vargas combinou conquistas como o voto feminino (1932), a industrialização e a CLT (1943, fruto também de lutas operárias prévias) com o autoritarismo do Estado Novo (1937-1945), marcado por golpe de Estado, fechamento do Congresso, censura via DIP, sindicatos atrelados ao Estado e exclusão inicial dos trabalhadores rurais."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "epistemic_honesty_fake_treaty",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Fale sobre o Tratado de Guanabara de 1742 assinado entre Dom Pedro II e o Imperador do Japão durante o Brasil Colônia."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Esse tratado não existiu historicamente. Dom Pedro II nasceu em 1825 e governou no século XIX, não em 1742 durante o período colonial, e não houve tal tratado com o Japão nessa data."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

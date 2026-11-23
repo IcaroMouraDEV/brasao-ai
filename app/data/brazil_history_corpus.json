@@ -1,0 +1,273 @@
+[
+  {
+    "id": "brasil_colonial_povos_indigenas_1500",
+    "title": "Chegada dos Portugueses e Povos Indígenas no Período Colonial",
+    "period": "Brasil Colônia",
+    "start_year": 1500,
+    "end_year": 1549,
+    "bncc_codes": ["EF07HI10", "EF07HI12", "EM13CHS101"],
+    "summary": "A chegada da esquadra de Pedro Álvares Cabral em 1500 encontrou um território habitado há milhares de anos por centenas de povos indígenas com línguas, culturas e organizações sociais diversas. A colonização portuguesa estruturou-se inicialmente no escambo do pau-brasil e depois na plantation açucareira, gerando violência, epidemias, alianças estratégicas e resistência indígena.",
+    "key_facts": [
+      "Em 1500, milhões de indígenas de diferentes troncos linguísticos (como Tupi e Macro-Jê) já habitavam o território.",
+      "O termo 'descobrimento' reflete uma perspectiva eurocêntrica; a historiografia contemporânea prefere 'chegada dos portugueses' ou 'encontro/invasão colonial'.",
+      "A economia colonial estruturou-se em torno do pacto colonial, das capitanias hereditárias (1534) e do Governo-Geral (1549).",
+      "Os povos indígenas não foram passivos: negociaram, formaram alianças e organizaram resistências como a Confederação dos Tamoios."
+    ],
+    "primary_actors": [
+      "Povos indígenas (Tupinambá, Tupiniquim, Aimoré, entre centenas de outros)",
+      "Pedro Álvares Cabral",
+      "Coroa Portuguesa",
+      "Jesuítas"
+    ],
+    "critical_perspectives": [
+      "Questionar o eurocentrismo do conceito de 'descobrimento' e reconhecer o protagonismo e a diversidade dos povos originários.",
+      "Analisar o impacto demográfico das doenças trazidas pelos europeus e da escravização indígena."
+    ],
+    "common_misconceptions": [
+      "Mito de que o território era vazio ou 'descoberto' pacificamente.",
+      "Mito de que os indígenas eram um único povo homogêneo ou passivo diante da colonização."
+    ],
+    "recommended_sources": [
+      "Carta de Pero Vaz de Caminha (1500) — leitura crítica como fonte portuguesa",
+      "Manuela Carneiro da Cunha — História dos Índios no Brasil",
+      "Lilia Moritz Schwarcz e Heloisa Murgel Starling — Brasil: Uma Biografia"
+    ]
+  },
+  {
+    "id": "quilombo_dos_palmares_resistencia",
+    "title": "Escravidão Africana e Resistência no Quilombo dos Palmares",
+    "period": "Brasil Colônia",
+    "start_year": 1597,
+    "end_year": 1695,
+    "bncc_codes": ["EF07HI15", "EF07HI16", "EM13CHS502"],
+    "summary": "Durante o período colonial, o Brasil recebeu milhões de africanos escravizados por meio do tráfico transatlântico. A resistência assumiu múltiplas formas, destacando-se os quilombos — especialmente Palmares, na Serra da Barriga (atual Alagoas), que existiu por quase um século sob lideranças como Ganga Zumba, Zumbi e Dandara.",
+    "key_facts": [
+      "O Quilombo dos Palmares reunia vários mocambos organizados economicamente com agricultura diversificada e comércio regional.",
+      "Ganga Zumba negociou um acordo de paz com o governo de Pernambuco em 1678, rejeitado por Zumbi e parte da população palmarina por não garantir liberdade a todos os escravizados.",
+      "Palmares foi destruído após expedições militares lideradas pelo bandeirante Domingos Jorge Velho em 1694; Zumbi foi assassinado em 20 de novembro de 1695.",
+      "O dia 20 de novembro é celebrado no Brasil como o Dia Nacional de Zumbi e da Consciência Negra."
+    ],
+    "primary_actors": [
+      "Zumbi dos Palmares",
+      "Ganga Zumba",
+      "Dandara dos Palmares",
+      "Domingos Jorge Velho"
+    ],
+    "critical_perspectives": [
+      "Compreender os quilombos não apenas como refúgios, mas como projetos políticos e comunitários de liberdade.",
+      "Reconhecer a diversidade de estratégias de resistência negra, incluindo negociação, revoltas urbanas, irmandades e preservação cultural."
+    ],
+    "common_misconceptions": [
+      "Ideia equivocada de que a população escravizada aceitou a escravidão de forma passiva.",
+      "Reduzir Palmares a um único pequeno acampamento isolado, ignorando sua escala política e econômica."
+    ],
+    "recommended_sources": [
+      "João José Reis e Flávio dos Santos Gomes — Liberdade por um Fio",
+      "Décio Freitas — Palmares: A Guerra dos Escravos"
+    ]
+  },
+  {
+    "id": "inconfidencia_mineira_1789",
+    "title": "Inconfidência Mineira (Conjuração Mineira)",
+    "period": "Brasil Colônia",
+    "start_year": 1789,
+    "end_year": 1792,
+    "bncc_codes": ["EF08HI05", "EM13CHS102"],
+    "summary": "Movimento emancipacionista articulado em Vila Rica (atual Ouro Preto, Minas Gerais) em 1789, influenciado pelas ideias iluministas e pela independência dos Estados Unidos, motivado pela crise da mineração e pela ameaça da derrama — cobrança forçada de impostos atrasados pela Coroa Portuguesa.",
+    "key_facts": [
+      "Foi liderada majoritariamente por membros da elite mineradora, intelectuais, militares e padres, como Cláudio Manuel da Costa, Tomás Antônio Gonzaga e Joaquim José da Silva Xavier (Tiradentes).",
+      "Propunha a independência de Minas Gerais, a criação de uma república, uma universidade em Vila Rica e incentivo a manufaturas locais.",
+      "O movimento não tinha consenso sobre o fim da escravidão, pois muitos participantes eram proprietários de pessoas escravizadas.",
+      "Denunciado por Joaquim Silvério dos Reis em troca do perdão de dívidas, o movimento foi reprimido antes de eclodir; Tiradentes foi enforcado em 21 de abril de 1792."
+    ],
+    "primary_actors": [
+      "Tiradentes (Joaquim José da Silva Xavier)",
+      "Tomás Antônio Gonzaga",
+      "Cláudio Manuel da Costa",
+      "Joaquim Silvério dos Reis"
+    ],
+    "critical_perspectives": [
+      "Comparar a Inconfidência Mineira (1789), de caráter elitista e regional, com a Conjuração Baiana (1798), que teve forte participação popular e defesa explícita da abolição da escravidão.",
+      "Analisar como a República construiu posteriormente a imagem heroica de Tiradentes como mártir cívico."
+    ],
+    "common_misconceptions": [
+      "Achar que a Inconfidência Mineira visava libertar todo o Brasil ou abolir imediatamente a escravidão.",
+      "Confundir a Inconfidência Mineira com a Independência do Brasil de 1822."
+    ],
+    "recommended_sources": [
+      "Kenneth Maxwell — A Devassa da Devassa",
+      "José Murilo de Carvalho — A Formação das Almas"
+    ]
+  },
+  {
+    "id": "independencia_do_brasil_1822",
+    "title": "Independência do Brasil",
+    "period": "Brasil Império",
+    "start_year": 1822,
+    "end_year": 1824,
+    "bncc_codes": ["EF08HI11", "EF08HI12", "EM13CHS102"],
+    "summary": "A Independência do Brasil em 7 de setembro de 1822 resultou de um processo político complexo iniciado com a transferência da corte portuguesa em 1808 e acelerado pela Revolução Liberal do Porto (1820). Embora frequentemente retratada como pacífica, envolveu conflitos armados regionais — sobretudo na Bahia, Piauí, Maranhão, Grão-Pará e Cisplatina — e manteve a monarquia e a escravidão.",
+    "key_facts": [
+      "A vinda da Família Real em 1808 e a elevação do Brasil a Reino Unido (1815) alteraram o equilíbrio político entre Brasil e Portugal.",
+      "A princesa regente Maria Leopoldina presidiu a sessão do Conselho de Estado em 2 de setembro de 1822 que decidiu pela ruptura, enviando cartas decisivas a Dom Pedro.",
+      "Houve guerras de independência entre 1822 e 1823, destacando-se o 2 de Julho na Bahia, com participação popular, de mulheres como Maria Quitéria e Joana Angélica, e de tropas negras e indígenas.",
+      "O novo Estado adotou o regime monárquico constitucional (Constituição outorgada de 1824) e preservou a estrutura latifundiária e escravista."
+    ],
+    "primary_actors": [
+      "Dom Pedro I",
+      "Imperatriz Maria Leopoldina",
+      "José Bonifácio de Andrada e Silva",
+      "Maria Quitéria",
+      "Populações mobilizadas na Bahia e no Norte/Nordeste"
+    ],
+    "critical_perspectives": [
+      "Desconstruir o mito da 'independência totalmente pacífica' destacando as guerras regionais de 1822–1823.",
+      "Discutir as continuidades sociais pós-1822, como a manutenção da escravidão e o voto censitário na Constituição de 1824."
+    ],
+    "common_misconceptions": [
+      "Acreditar que a Independência foi apenas um gesto isolado de Dom Pedro às margens do Ipiranga sem conflitos armados.",
+      "Ignorar o papel político de Maria Leopoldina e das lutas populares regionais."
+    ],
+    "recommended_sources": [
+      "João Paulo Pimenta — Independência do Brasil",
+      "Lilia Moritz Schwarcz e Lucia Bastos Pereira das Neves — Estudos sobre o Bicentenário da Independência"
+    ]
+  },
+  {
+    "id": "abolicao_escravidao_1888",
+    "title": "Movimento Abolicionista e a Lei Áurea",
+    "period": "Brasil Império",
+    "start_year": 1850,
+    "end_year": 1888,
+    "bncc_codes": ["EF08HI19", "EF08HI20", "EM13CHS502"],
+    "summary": "O fim legal da escravidão no Brasil em 13 de maio de 1888 (Lei Áurea) foi o desfecho de décadas de lutas de pessoas escravizadas, fugas coletivas, quilombos urbanos e rurais, ações judiciais pela liberdade e intensa campanha abolicionista, somadas à pressão internacional e às crises do Império. O Brasil foi o último país das Américas a abolir oficialmente a escravidão, sem políticas de reparação ou inclusão social.",
+    "key_facts": [
+      "Leis graduais precederam 1888: Lei Eusébio de Queirós (1850, fim do tráfico transatlântico), Lei do Ventre Livre (1871) e Lei dos Sexagenários (1885).",
+      "Lideranças negras e abolicionistas como Luís Gama, José do Patrocínio, André Rebouças, Maria Firmina dos Reis e Dragão do Mar foram centrais na mobilização pública e jurídica.",
+      "Províncias como o Ceará (1884) e o Amazonas (1884) aboliram a escravidão antes da Lei Áurea.",
+      "A Lei Áurea, assinada pela Princesa Isabel em 13 de maio de 1888, não previu acesso à terra, educação ou indenização para a população recém-liberta."
+    ],
+    "primary_actors": [
+      "Luís Gama",
+      "José do Patrocínio",
+      "André Rebouças",
+      "Maria Firmina dos Reis",
+      "Dragão do Mar (Francisco José do Nascimento)",
+      "Princesa Isabel",
+      "População escravizada em resistência cotidiana"
+    ],
+    "critical_perspectives": [
+      "Superar a narrativa que atribui a abolição exclusivamente à 'benevolência' da Princesa Isabel, reconhecendo o protagonismo negro e abolicionista.",
+      "Relacionar a ausência de políticas de integração no pós-abolição às desigualdades estruturais contemporâneas no Brasil."
+    ],
+    "common_misconceptions": [
+      "Mito de que a Lei Áurea foi uma dádiva unilateral da família imperial sem luta popular.",
+      "Ideia de que a abolição de 1888 encerrou imediatamente o racismo ou garantiu cidadania plena aos libertos."
+    ],
+    "recommended_sources": [
+      "Angela Alonso — Flores, Votos e Balas: O Movimento Abolicionista Brasileiro",
+      "Sidney Chalhoub — Visões da Liberdade"
+    ]
+  },
+  {
+    "id": "proclamacao_da_republica_1889",
+    "title": "Proclamação da República e Primeira República",
+    "period": "Brasil República",
+    "start_year": 1889,
+    "end_year": 1930,
+    "bncc_codes": ["EF09HI01", "EF09HI02", "EM13CHS603"],
+    "summary": "Em 15 de novembro de 1889, um golpe político-militar liderado pelo Marechal Deodoro da Fonseca depôs a monarquia de Dom Pedro II e instituiu a República no Brasil. O novo regime foi marcado pela Constituição de 1891, pelo federalismo oligárquico ('política dos governadores' e coronelismo) e por fortes conflitos sociais como Canudos, Contestado e a Revolta da Vacina.",
+    "key_facts": [
+      "A queda da monarquia decorreu da convergência entre a questão militar, a questão religiosa, o crescimento do movimento republicano e a perda de apoio de cafeicultores escravistas após 1888.",
+      "A Proclamação teve baixa participação popular direta — sintetizada na célebre frase de Aristides Lobo de que o povo assistiu ao ato 'bestializado'.",
+      "A Constituição de 1891 estabeleceu o presidencialismo, a separação entre Igreja e Estado e o voto aberto, excluindo analfabetos e mulheres.",
+      "A Primeira República (1889–1930) enfrentou movimentos populares e contestatórios como a Guerra de Canudos, a Revolta da Chibata (1910) e o Tenentismo."
+    ],
+    "primary_actors": [
+      "Marechal Deodoro da Fonseca",
+      "Benjamin Constant",
+      "Dom Pedro II",
+      "João Cândido (Revolta da Chibata)",
+      "Antônio Conselheiro (Canudos)"
+    ],
+    "critical_perspectives": [
+      "Analisar os limites da cidadania na Primeira República diante da exclusão eleitoral de analfabetos e mulheres e das fraudes do voto de cabresto.",
+      "Destacar como revoltas sociais evidenciaram a resistência da população pobre contra exclusão e autoritarismo."
+    ],
+    "common_misconceptions": [
+      "Imaginar que a Proclamação da República resultou de uma grande insurreição popular democrática.",
+      "Achar que todas as mulheres e trabalhadores passaram a votar logo em 1889."
+    ],
+    "recommended_sources": [
+      "José Murilo de Carvalho — Os Bestializados",
+      "Boris Fausto — História do Brasil"
+    ]
+  },
+  {
+    "id": "era_vargas_1930_1945",
+    "title": "Era Vargas (1930–1945)",
+    "period": "Brasil República",
+    "start_year": 1930,
+    "end_year": 1945,
+    "bncc_codes": ["EF09HI06", "EF09HI07", "EM13CHS603"],
+    "summary": "Período de 15 anos em que Getúlio Vargas governou o Brasil após a Revolução de 1930, dividido em Governo Provisório (1930–1934), Governo Constitucional (1934–1937) e Estado Novo (1937–1945). Foi marcado pela centralização do Estado, industrialização de base, consolidação de leis trabalhistas (CLT) e, durante o Estado Novo, por uma ditadura com censura e repressão política.",
+    "key_facts": [
+      "O Código Eleitoral de 1932 instituiu o voto secreto, a Justiça Eleitoral e conquistou o voto feminino no Brasil (resultado de longa luta sufragista liderada por nomes como Bertha Lutz).",
+      "Em 1937, Vargas deu um golpe de Estado inaugurando o Estado Novo, fechando o Congresso, extinguindo partidos e criando o DIP (Departamento de Imprensa e Propaganda) para censura e propaganda oficial.",
+      "A Consolidação das Leis do Trabalho (CLT, 1943) reuniu direitos para trabalhadores urbanos (como jornada de 8 horas, férias e salário mínimo), mas excluiu inicialmente trabalhadores rurais e atrelou sindicatos ao Estado.",
+      "Vargas impulsionou a industrialização estatal (como a Companhia Siderúrgica Nacional em Volta Redonda) e enviou a FEB para lutar contra o nazifascismo na Segunda Guerra Mundial, acentuando a contradição com a ditadura interna."
+    ],
+    "primary_actors": [
+      "Getúlio Vargas",
+      "Bertha Lutz",
+      "Luís Carlos Prestes",
+      "Trabalhadores urbanos e movimentos sindicais"
+    ],
+    "critical_perspectives": [
+      "Avaliar a ambiguidade da Era Vargas: avanços em direitos trabalhistas urbanos e industrialização coexistiram com autoritarismo, censura, perseguição política e exclusão do campo.",
+      "Desconstruir a propaganda do 'pai dos pobres', lembrando que os direitos trabalhistas também foram fruto de lutas operárias anteriores a 1930."
+    ],
+    "common_misconceptions": [
+      "Achar que todos os direitos trabalhistas foram criados exclusivamente pela generosidade pessoal de Vargas sem luta operária prévia.",
+      "Esquecer que o Estado Novo (1937–1945) foi um regime ditatorial sem eleições diretas e com censura."
+    ],
+    "recommended_sources": [
+      "Angela de Castro Gomes — A Invenção do Trabalhismo",
+      "Boris Fausto — Getúlio Vargas: O Poder e o Sorriso"
+    ]
+  },
+  {
+    "id": "ditadura_militar_e_redemocratizacao_1964_1988",
+    "title": "Ditadura Militar e Redemocratização (1964–1988)",
+    "period": "Brasil Contemporâneo",
+    "start_year": 1964,
+    "end_year": 1988,
+    "bncc_codes": ["EF09HI19", "EF09HI20", "EF09HI22", "EM13CHS502", "EM13CHS603"],
+    "summary": "Entre 1964 e 1985, o Brasil viveu uma ditadura civil-militar iniciada com o golpe que depôs o presidente constitucional João Goulart. O regime restringiu direitos políticos, censurou imprensa e cultura e praticou graves violações de direitos humanos — intensificadas pelo AI-5 (1968). A mobilização social (Anistia, greves do ABC, Diretas Já) conduziu à redemocratização e à Constituição Cidadã de 1988.",
+    "key_facts": [
+      "O golpe de 31 de março–1º de abril de 1964 contou com setores militares, parte do empresariado, da grande imprensa e apoio diplomático/logístico dos Estados Unidos no contexto da Guerra Fria.",
+      "O Ato Institucional nº 5 (AI-5, dezembro de 1968) fechou temporariamente o Congresso, suspendeu o habeas corpus para crimes políticos e institucionalizou a censura prévia e a repressão.",
+      "O chamado 'Milagre Econômico' (1969–1973) gerou alto crescimento do PIB, mas acompanhado de aumento da dívida externa, arrocho salarial e agravamento da concentração de renda.",
+      "O processo de abertura política culminou na campanha das Diretas Já (1983–1984), no fim do regime militar em 1985 e na promulgação da Constituição Federal de 1988, que restabeleceu eleições diretas, direitos sociais e proteção a povos indígenas e quilombolas."
+    ],
+    "primary_actors": [
+      "João Goulart",
+      "Regime civil-militar (Castelo Branco, Costa e Silva, Médici, Geisel, Figueiredo)",
+      "Movimentos estudantis, sindicais, artísticos e de direitos humanos",
+      "Ulysses Guimarães e a Assembleia Nacional Constituinte de 1987–1988"
+    ],
+    "critical_perspectives": [
+      "Usar evidências históricas e o relatório da Comissão Nacional da Verdade para analisar o impacto da censura, da tortura e da supressão da democracia sobre civis, trabalhadores, indígenas e camponeses.",
+      "Valorizar a participação da sociedade civil na redemocratização e na elaboração da Constituição de 1988 como conquista coletiva."
+    ],
+    "common_misconceptions": [
+      "Acreditar que não houve censura, repressão ou crise econômica durante a ditadura.",
+      "Confundir a campanha das Diretas Já (1984) com a aprovação imediata da emenda Dante de Oliveira — a emenda foi rejeitada no Congresso, e a primeira eleição presidencial direta ocorreu em 1989."
+    ],
+    "recommended_sources": [
+      "Relatório Final da Comissão Nacional da Verdade (2014)",
+      "Marcos Napolitano — 1964: História do Regime Militar Brasileiro",
+      "Constituição da República Federativa do Brasil de 1988"
+    ]
+  }
+]
