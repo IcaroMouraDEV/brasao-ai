@@ -1,0 +1,98 @@
+[
+  {
+    "source_id": "bncc:ef06hi_povos_originarios",
+    "document": "BNCC — História (Ensino Fundamental II: EF06HI04, EF06HI08, EF07HI03)",
+    "source_type": "bncc",
+    "title": "BNCC: Povos Originários, Arqueologia e Diversidade Indígena na América",
+    "period": "Brasil Pré-Colonial",
+    "topic_ids": ["povos_originarios_pre_coloniais"],
+    "bncc_codes": ["EF06HI04", "EF06HI08", "EF07HI03"],
+    "text": "Na Base Nacional Comum Curricular (BNCC), as habilidades EF06HI04, EF06HI08 e EF07HI03 orientam o estudo das hipóteses sobre o povoamento da América, da arqueologia brasileira (como Serra da Capivara, Lagoa Santa e sambaquis) e da pluralidade cultural, linguística e ecológica dos povos indígenas antes de 1500. O ensino deve superar visões eurocêntricas, reconhecendo os troncos linguísticos Tupi, Macro-Jê, Aruak e Karib, o manejo florestal amazônico e a permanência contemporânea dos povos originários conforme a Lei 11.645/2008."
+  },
+  {
+    "source_id": "bncc:ef07hi_colonizacao_escravidao",
+    "document": "BNCC — História (Ensino Fundamental II: EF07HI10, EF07HI11, EF07HI12, EF07HI15, EF07HI16)",
+    "source_type": "bncc",
+    "title": "BNCC: Colonização Portuguesa, Plantation, Escravidão e Resistência Quilombola",
+    "period": "Brasil Colônia",
+    "topic_ids": [
+      "brasil_colonial_povos_indigenas_1500",
+      "ciclo_do_acucar_sociedade_colonial",
+      "bandeirantes_e_expansao_territorial",
+      "quilombo_dos_palmares_resistencia",
+      "ciclo_do_ouro_mineracao_colonial"
+    ],
+    "bncc_codes": ["EF07HI10", "EF07HI11", "EF07HI12", "EF07HI15", "EF07HI16"],
+    "text": "As habilidades EF07HI10 a EF07HI16 da BNCC tratam da organização da América portuguesa, da formação do sistema de plantation açucareira, da interiorização territorial (bandeiras, pecuária, missões e mineração) e do conceito moderno de escravidão no tráfico transatlântico. Destaca-se a análise crítica da violência colonial contra povos indígenas e africanos, bem como as múltiplas formas de resistência, negociação cultural e autonomia construídas em quilombos como o Quilombo dos Palmares, liderado por Ganga Zumba, Zumbi e Dandara."
+  },
+  {
+    "source_id": "bncc:ef08hi_independencia_imperio",
+    "document": "BNCC — História (Ensino Fundamental II: EF08HI05, EF08HI11, EF08HI12, EF08HI15, EF08HI16, EF08HI19, EF08HI20)",
+    "source_type": "bncc",
+    "title": "BNCC: Conjurações, Independência, Brasil Império e Processo Abolicionista",
+    "period": "Brasil Império",
+    "topic_ids": [
+      "inconfidencia_mineira_1789",
+      "conjuracao_baiana_1798",
+      "revolucao_pernambucana_1817",
+      "independencia_do_brasil_1822",
+      "primeiro_reinado_1822_1831",
+      "periodo_regencial_e_revoltas_1831_1840",
+      "segundo_reinado_politica_economia_1840_1889",
+      "abolicao_escravidao_1888",
+      "guerra_do_paraguai_1864_1870"
+    ],
+    "bncc_codes": [
+      "EF08HI05",
+      "EF08HI11",
+      "EF08HI12",
+      "EF08HI15",
+      "EF08HI16",
+      "EF08HI19",
+      "EF08HI20"
+    ],
+    "text": "No 8º ano do Ensino Fundamental, a BNCC (EF08HI05 a EF08HI20) propõe comparar os movimentos emancipacionistas (Inconfidência Mineira, Conjuração Baiana e Revolução Pernambucana), analisar o processo de Independência do Brasil em 1822 sem reduzi-lo a um ato individual, examinar a centralização monárquica (Constituição de 1824 e Poder Moderador), compreender as revoltas regenciais (Cabanagem, Malês, Sabinada, Balaiada e Farroupilha) e problematizar o longo processo abolicionista e o impacto da ausência de políticas de reparação no pós-abolição."
+  },
+  {
+    "source_id": "bncc:ef09hi_republica_democracia",
+    "document": "BNCC — História (Ensino Fundamental II: EF09HI01, EF09HI02, EF09HI06, EF09HI17, EF09HI19, EF09HI22, EF09HI23, EF09HI26)",
+    "source_type": "bncc",
+    "title": "BNCC: República, Trabalhismo, Ditadura Militar e Constituição Cidadã",
+    "period": "Brasil República",
+    "topic_ids": [
+      "proclamacao_da_republica_1889",
+      "semana_de_arte_moderna_1922",
+      "tenentismo_e_crise_primeira_republica_1922_1930",
+      "era_vargas_1930_1945",
+      "republica_populista_1946_1964",
+      "ditadura_militar_e_redemocratizacao_1964_1988",
+      "nova_republica_constituicao_1988_plano_real"
+    ],
+    "bncc_codes": [
+      "EF09HI01",
+      "EF09HI02",
+      "EF09HI06",
+      "EF09HI17",
+      "EF09HI19",
+      "EF09HI22",
+      "EF09HI23",
+      "EF09HI26"
+    ],
+    "text": "As habilidades do 9º ano da BNCC (EF09HI01 a EF09HI26) investigam a Proclamação da República, os limites da cidadania na Primeira República, o trabalhismo e o autoritarismo da Era Vargas, o período democrático de 1946–1964, o golpe civil-militar de 1964, as violações de direitos humanos durante a Ditadura Militar, a campanha das Diretas Já e o significado histórico da Constituição de 1988 na garantia de direitos civis, políticos, sociais, indígenas e quilombolas."
+  },
+  {
+    "source_id": "bncc:em13chs_cidadania_fontes",
+    "document": "BNCC — Ciências Humanas e Sociais Aplicadas (Ensino Médio: EM13CHS101, EM13CHS102, EM13CHS401, EM13CHS502, EM13CHS603)",
+    "source_type": "bncc",
+    "title": "BNCC Ensino Médio: Fontes Históricas, Desigualdades, Trabalho e Estado Democrático",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "abolicao_escravidao_1888",
+      "ditadura_militar_e_redemocratizacao_1964_1988",
+      "era_vargas_1930_1945"
+    ],
+    "bncc_codes": ["EM13CHS101", "EM13CHS102", "EM13CHS401", "EM13CHS502", "EM13CHS603"],
+    "text": "No Ensino Médio, a BNCC de Ciências Humanas e Sociais Aplicadas (EM13CHS101, EM13CHS102, EM13CHS401, EM13CHS502 e EM13CHS603) exige leitura crítica de fontes primárias, desconstrução de discursos eurocêntricos ou preconceituosos, análise das transformações no mundo do trabalho, enfrentamento de desigualdades raciais e socioeconômicas e compreensão da formação do Estado democrático de direito no Brasil em alinhamento aos direitos humanos e à ODS 4."
+  }
+]

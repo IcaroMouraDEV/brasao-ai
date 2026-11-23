@@ -13,6 +13,8 @@ ModelProfile = Literal["local", "remote"]
 DEFAULT_GEMINI_MODEL = "gemini-3.8-flash"
 DEFAULT_OLLAMA_MODEL = "gemma3:4b"
 DEFAULT_OLLAMA_API_BASE = "http://localhost:11434"
+DEFAULT_OLLAMA_EMBED_MODEL = "nomic-embed-text"
+DEFAULT_RAG_INDEX_PATH = "app/data/rag_index.sqlite3"
 
 
 class Settings(BaseModel):
@@ -33,6 +35,14 @@ class Settings(BaseModel):
     ollama_api_base: str = Field(
         default=DEFAULT_OLLAMA_API_BASE,
         description="Base URL of the local or containerized Ollama server.",
+    )
+    ollama_embed_model: str = Field(
+        default=DEFAULT_OLLAMA_EMBED_MODEL,
+        description="Local Ollama embedding model shared by hybrid RAG across both profiles.",
+    )
+    rag_index_path: str = Field(
+        default=DEFAULT_RAG_INDEX_PATH,
+        description="Path to the generated offline SQLite hybrid RAG index.",
     )
     temperature: float = Field(
         default=0.2,
@@ -75,6 +85,10 @@ def load_settings(profile_override: ModelProfile | None = None) -> Settings:
         gemini_model=os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip(),
         ollama_model=os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL).strip(),
         ollama_api_base=os.getenv("OLLAMA_API_BASE", DEFAULT_OLLAMA_API_BASE).strip(),
+        ollama_embed_model=os.getenv(
+            "OLLAMA_EMBED_MODEL", DEFAULT_OLLAMA_EMBED_MODEL
+        ).strip(),
+        rag_index_path=os.getenv("RAG_INDEX_PATH", DEFAULT_RAG_INDEX_PATH).strip(),
         temperature=float(os.getenv("MODEL_TEMPERATURE", "0.2")),
         eval_judge_model=os.getenv("EVAL_JUDGE_MODEL", DEFAULT_GEMINI_MODEL).strip(),
     )
