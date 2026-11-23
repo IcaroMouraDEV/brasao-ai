@@ -88,13 +88,34 @@ def _score_entry(entry: dict[str, Any], tokens: list[str]) -> int:
     )
 
     score = 0
+    matched_tokens = 0
+    title_matches = 0
     for token in tokens:
+        matched = False
         if token in title:
             score += 5
+            title_matches += 1
+            matched = True
         if token in period:
             score += 3
+            matched = True
         if token in body:
             score += 2
+            matched = True
+        if matched:
+            matched_tokens += 1
+
+    # Avoid single-token false positives on longer queries (e.g., fictional events
+    # sharing one generic word such as "tratado" with an unrelated real entry).
+    if len(tokens) >= 4:
+        min_required = (
+            max(2, len(tokens) // 3)
+            if title_matches > 0
+            else max(2, (len(tokens) + 1) // 2)
+        )
+        if matched_tokens < min_required:
+            return 0
+
     return score
 
 

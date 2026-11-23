@@ -1,5 +1,39 @@
 [
   {
+    "id": "povos_originarios_pre_coloniais",
+    "title": "Povos Originários Pré-Coloniais e Troncos Linguísticos no Brasil",
+    "period": "Brasil Pré-Colonial",
+    "start_year": -10000,
+    "end_year": 1500,
+    "bncc_codes": ["EF06HI04", "EF06HI08", "EF07HI03", "EM13CHS101"],
+    "summary": "Milhares de anos antes da chegada dos europeus em 1500, o território hoje chamado Brasil abrigava populações indígenas numerosas e culturalmente diversas, com sítios arqueológicos antigos como a Serra da Capivara (PI), os sambaquis litorâneos e sociedades complexas na Amazônia, como a cultura Marajoara. Esses povos organizavam-se em grandes troncos e famílias linguísticas — destacando-se Tupi, Macro-Jê, Aruak e Karib — com distintos modos de vida, agricultura, manejo florestal e cosmologias.",
+    "key_facts": [
+      "Pesquisas arqueológicas na Serra da Capivara (Piauí), em Lagoa Santa (Minas Gerais, onde foi encontrado o fóssil 'Luzia') e na Amazônia comprovam presença humana milenar no território brasileiro.",
+      "Os povos sambaquieiros construíram grandes montículos de conchas no litoral sul e sudeste há milhares de anos, enquanto na Ilha de Marajó e na bacia amazônica floresceram sociedades ceramistas complexas que manejam a floresta (como a terra preta de índio).",
+      "Os povos originários pertenciam a diferentes troncos e famílias linguísticas, principalmente Tupi (com presença ampla no litoral e interior), Macro-Jê (cerrado e planalto central), Aruak e Karib (Amazônia), além de línguas isoladas.",
+      "A domesticação de plantas como mandioca, milho, guaraná, amendoim e caju e o conhecimento ecológico indígena moldaram profundamente a alimentação e a cultura brasileira."
+    ],
+    "primary_actors": [
+      "Povos do tronco Tupi (Tupinambá, Guarani, Potiguara, entre outros)",
+      "Povos do tronco Macro-Jê (Xavante, Kaingang, Kayapó, entre outros)",
+      "Povos das famílias Aruak e Karib na Amazônia",
+      "Povos construtores de sambaquis e sociedades ceramistas marajoaras e tapajônicas"
+    ],
+    "critical_perspectives": [
+      "Superar a visão evolutiva ou colonialista que retrata os povos originários como 'primitivos' ou 'sem história' antes de 1500, reconhecendo sua sofisticação ecológica, tecnológica e política.",
+      "Valorizar a diversidade étnica e linguística indígena — ainda hoje expressa em mais de 300 povos e centenas de línguas no Brasil — em consonância com a Lei 11.645/2008."
+    ],
+    "common_misconceptions": [
+      "Acreditar que todos os povos indígenas falavam a mesma língua ou viviam da mesma maneira antes de 1500.",
+      "Supor que a Amazônia era uma floresta intocada e desabitada antes da colonização europeia, ignorando o manejo florestal milenar dos povos originários."
+    ],
+    "recommended_sources": [
+      "Eduardo Góes Neves — Arqueologia da Amazônia",
+      "Manuela Carneiro da Cunha — História dos Índios no Brasil",
+      "Ailton Krenak — Ideias para Adiar o Fim do Mundo"
+    ]
+  },
+  {
     "id": "brasil_colonial_povos_indigenas_1500",
     "title": "Chegada dos Portugueses e Povos Indígenas no Período Colonial",
     "period": "Brasil Colônia",
@@ -31,6 +65,74 @@
       "Carta de Pero Vaz de Caminha (1500) — leitura crítica como fonte portuguesa",
       "Manuela Carneiro da Cunha — História dos Índios no Brasil",
       "Lilia Moritz Schwarcz e Heloisa Murgel Starling — Brasil: Uma Biografia"
+    ]
+  },
+  {
+    "id": "ciclo_do_acucar_sociedade_colonial",
+    "title": "Ciclo do Açúcar, Plantation e Sociedade Açucareira Colonial",
+    "period": "Brasil Colônia",
+    "start_year": 1530,
+    "end_year": 1654,
+    "bncc_codes": ["EF07HI10", "EF07HI11", "EF07HI15", "EM13CHS204"],
+    "summary": "A partir da década de 1530, a produção de açúcar nos engenhos — concentrada sobretudo em Pernambuco e na Bahia — tornou-se o eixo econômico da colonização portuguesa. Organizada no sistema de plantation (latifúndio, monocultura exportadora e trabalho escravizado), a sociedade açucareira consolidou profundas hierarquias sociais, impulsionou o tráfico transatlântico de africanos e motivou disputas interimperiais como as invasões holandesas no Nordeste (1630–1654).",
+    "key_facts": [
+      "O sistema de plantation açucareira combinava grandes propriedades (latifúndios), monocultura voltada ao mercado externo (pacto colonial) e exploração intensiva de trabalho escravizado — inicialmente indígena e crescentemente africano.",
+      "O engenho funcionava como unidade econômica, política e social estruturada em torno da casa-grande (senhores de engenho), da senzala (população escravizada), da capela e das áreas de moagem e cultivo, mas também abrigava trabalhadores livres pobres e lavradores de cana.",
+      "A Companhia das Índias Ocidentais (Holanda) ocupou Pernambuco entre 1630 e 1654; durante o governo de Maurício de Nassau (1637–1644), houve investimentos urbanos em Recife e relativa tolerância religiosa, sem porém abolir a escravidão.",
+      "Após a expulsão dos holandeses na Insurreição Pernambucana (1645–1654), a concorrência do açúcar produzido nas Antilhas contribuiu para a crise relativa do açúcar brasileiro no final do século XVII."
+    ],
+    "primary_actors": [
+      "População africana e indígena escravizada nos engenhos",
+      "Senhores de engenho e lavradores de cana",
+      "Maurício de Nassau e a Companhia das Índias Ocidentais (WIC)",
+      "Lideranças da Insurreição Pernambucana (incluindo o terço de homens negros de Henrique Dias e indígenas liderados por Filipe Camarão)"
+    ],
+    "critical_perspectives": [
+      "Superar a imagem idílica ou harmoniosa da convivência entre casa-grande e senzala, evidenciando a violência cotidiana da escravidão e as múltiplas formas de resistência e negociação dos escravizados.",
+      "Reconhecer que a sociedade açucareira não se resumia apenas a senhores e escravizados, incluindo mulheres, trabalhadores livres, comerciantes e povos indígenas em fronteiras móveis."
+    ],
+    "common_misconceptions": [
+      "Achar que a escravidão indígena terminou imediatamente quando começou o tráfico africano — ambas coexistiram por séculos em diversas regiões.",
+      "Imaginar que o Brasil Holandês foi um regime igualitário ou antiescravista; os holandeses mantiveram e expandiram o tráfico de africanos escravizados."
+    ],
+    "recommended_sources": [
+      "Stuart B. Schwartz — Segredos Internos: Engenhos e Escravos na Sociedade Colonial",
+      "Evaldo Cabral de Mello — Olinda Restaurada",
+      "Laura de Mello e Souza — O Diabo e a Terra de Santa Cruz"
+    ]
+  },
+  {
+    "id": "bandeirantes_e_expansao_territorial",
+    "title": "Bandeirantes, Expansão Territorial e Visão Crítica da Colonização do Interior",
+    "period": "Brasil Colônia",
+    "start_year": 1580,
+    "end_year": 1750,
+    "bncc_codes": ["EF07HI11", "EF07HI12", "EM13CHS102"],
+    "summary": "As bandeiras foram expedições privadas organizadas principalmente a partir da capitania de São Vicente (atual São Paulo) nos séculos XVII e XVIII com objetivos de apresamento e escravização de povos indígenas, destruição de quilombos (sertanismo de contrato) e busca por metais preciosos. Embora tenham contribuído para ultrapassar a linha do Tratado de Tordesilhas e redesenhar fronteiras reconhecidas no Tratado de Madri (1750), sua atuação foi marcada por extrema violência contra indígenas e populações negras.",
+    "key_facts": [
+      "As principais modalidades de bandeiras incluíram o apresamento (captura de indígenas para escravização, frequentemente atacando missões jesuíticas), o sertanismo de contrato (repressão paga a quilombos e indígenas rebelados, como a expedição de Domingos Jorge Velho contra Palmares) e a prospecção mineral.",
+      "Diferente das 'entradas' (expedições oficiais financiadas pela Coroa), as bandeiras eram empreendimentos particulares compostos por colonos pobres, mamelucos (descendentes de europeus e indígenas) e indígenas aliados ou forçados.",
+      "A interiorização promovida por bandeiras, pecuária, missões religiosas e drogas do sertão expandiu o território luso-brasileiro muito além de Tordesilhas, consagrado diplomaticamente pelo princípio do uti possidetis no Tratado de Madri (1750).",
+      "A imagem heroica do 'bandeirante desbravador' foi construída retrospectivamente nos séculos XIX e XX por elites paulistas (como no Monumento às Bandeiras) para exaltar uma identidade regional, apagando violências contra indígenas e quilombolas."
+    ],
+    "primary_actors": [
+      "Povos indígenas atacados (como Guarani das missões jesuíticas e povos do sertão)",
+      "Quilombolas perseguidos pelo sertanismo de contrato",
+      "Bandeirantes como Antônio Raposo Tavares, Fernão Dias Pais, Bartolomeu Bueno da Silva (Anhanguera) e Domingos Jorge Velho",
+      "Jesuítas das reduções sul-americanas e diplomatas da Coroa Portuguesa (Alexandre de Gusmão)"
+    ],
+    "critical_perspectives": [
+      "Analisar criticamente monumentos, nomes de rodovias e narrativas escolares que celebram bandeirantes sem mencionar a escravização indígena e a destruição de quilombos.",
+      "Entender o papel da memória histórica como disputa política no presente, distinguindo o impacto geopolítico da expansão territorial de uma glorificação acrítica dos agentes da violência."
+    ],
+    "common_misconceptions": [
+      "Acreditar que os bandeirantes eram nobres portugueses ricos equipados com botas e armaduras europeias — a maioria caminhava descalça, falava língua geral (derivada do tupi) e dependia de conhecimentos indígenas.",
+      "Reduzir os bandeirantes a 'heróis civilizadores' que desbravaram terras vazias, ignorando o genocídio e o apresamento de povos originários."
+    ],
+    "recommended_sources": [
+      "John Manuel Monteiro — Negros da Terra: Índios e Bandeirantes nas Origens de São Paulo",
+      "Lilia Moritz Schwarcz e Heloisa Murgel Starling — Brasil: Uma Biografia",
+      "Marilena Chauí — Brasil: Mito Fundador e Sociedade Autoritária"
     ]
   },
   {
@@ -67,6 +169,41 @@
     ]
   },
   {
+    "id": "ciclo_do_ouro_mineracao_colonial",
+    "title": "Ciclo do Ouro, Sociedade Mineradora e Cultura Barroca",
+    "period": "Brasil Colônia",
+    "start_year": 1693,
+    "end_year": 1789,
+    "bncc_codes": ["EF07HI11", "EF07HI14", "EF08HI05", "EM13CHS401"],
+    "summary": "A descoberta de jazidas de ouro e diamantes no interior da América Portuguesa — especialmente em Minas Gerais, Goiás e Mato Grosso — a partir do final do século XVII deslocou o eixo econômico e político da colônia do Nordeste para o Centro-Sul. A mineração promoveu intensa urbanização, comércio interno articulado entre regiões, rígida fiscalização portuguesa (quinto, casas de fundição e derrama) e rica produção cultural barroca, sustentada pelo trabalho extenuante de pessoas escravizadas.",
+    "key_facts": [
+      "A corrida do ouro desencadeou conflitos como a Guerra dos Emboabas (1707–1709), entre paulistas e forasteiros, levando a Coroa a criar a Capitania de São Paulo e Minas de Ouro e depois Minas Gerais (1720) e a transferir a capital colonial de Salvador para o Rio de Janeiro em 1763.",
+      "A Coroa Portuguesa impôs forte controle fiscal por meio da Intendência das Minas, das Casas de Fundição, do imposto do quinto (20% do ouro) e da derrama (cobrança compulsória para atingir a cota anual de 100 arrobas), gerando revoltas como a Revolta de Vila Rica (1720, liderada por Filipe dos Santos).",
+      "A sociedade mineradora era mais urbana e diversificada que a açucareira — com artesãos, comerciantes, artistas, profissionais liberais e maior presença de negros libertos e mulheres chefiando negócios (como as quitandeiras e Chica da Silva) — mas continuava profundamente desigual e escravista.",
+      "O Barroco Mineiro expressou o protagonismo de artistas mestiços e negros livres e libertos, como Antônio Francisco Lisboa (Aleijadinho) e Manoel da Costa Ataíde, em igrejas e irmandades religiosas."
+    ],
+    "primary_actors": [
+      "Trabalhadores africanos escravizados nas lavras e faisqueiras (incluindo especialistas em mineração vindos da África Ocidental)",
+      "Mulheres negras libertas e forras (como quitandeiras e Chica da Silva)",
+      "Aleijadinho (Antônio Francisco Lisboa) e Mestre Ataíde",
+      "Coroa Portuguesa (Marquês de Pombal e Intendência das Minas)",
+      "Filipe dos Santos (Revolta de Vila Rica)"
+    ],
+    "critical_perspectives": [
+      "Reconhecer que os conhecimentos técnicos de mineração e metalurgia trazidos por africanos da Costa da Mina foram decisivos para a exploração aurífera em Minas Gerais.",
+      "Questionar o mito de que a sociedade mineradora permitia ascensão social fácil: embora houvesse maior mobilidade relativa e compra de alforrias que nos engenhos, a expectativa de vida nas minas era curtíssima e a pobreza urbana era generalizada."
+    ],
+    "common_misconceptions": [
+      "Achar que o ouro de Minas Gerais enriqueceu igualmente toda a população local ou garantiu industrialização imediata de Portugal — grande parte dos recursos fluiu para a Inglaterra via Tratado de Methuen (1703).",
+      "Supor que não houve escravidão intensa na mineração apenas porque a sociedade era mais urbana."
+    ],
+    "recommended_sources": [
+      "Laura de Mello e Souza — Desclassificados do Ouro: A Pobreza Mineira no Século XVIII",
+      "Júnia Ferreira Furtado — Chica da Silva e o Contratador dos Diamantes",
+      "Caio Prado Jr. — Formação do Brasil Contemporâneo"
+    ]
+  },
+  {
     "id": "inconfidencia_mineira_1789",
     "title": "Inconfidência Mineira (Conjuração Mineira)",
     "period": "Brasil Colônia",
@@ -97,6 +234,76 @@
     "recommended_sources": [
       "Kenneth Maxwell — A Devassa da Devassa",
       "José Murilo de Carvalho — A Formação das Almas"
+    ]
+  },
+  {
+    "id": "conjuracao_baiana_1798",
+    "title": "Conjuração Baiana (Revolta dos Alfaiates)",
+    "period": "Brasil Colônia",
+    "start_year": 1798,
+    "end_year": 1799,
+    "bncc_codes": ["EF08HI05", "EF08HI14", "EM13CHS502"],
+    "summary": "Articulada em Salvador em 1798, a Conjuração Baiana — também conhecida como Revolta dos Alfaiates ou dos Búzios — foi o movimento emancipacionista de maior participação popular, negra e mestiça do período colonial. Inspirada pela Revolução Francesa e pela Revolução Haitiana, defendia a proclamação de uma república na Bahia, a igualdade social e racial, o livre comércio e a abolição da escravidão.",
+    "key_facts": [
+      "Diferente da Inconfidência Mineira, a Conjuração Baiana mobilizou artesãos, alfaiates, soldados, escravizados, libertos e trabalhadores pobres urbanos, sofrendo com a carestia de alimentos e altos impostos em Salvador.",
+      "Em agosto de 1798, panfletos manuscritos afixados em muros de Salvador convocavam o 'povo bahiense' à liberdade, à república democrática e à igualdade entre brancos, pardos e pretos.",
+      "O movimento sofreu dura repressão das autoridades coloniais: enquanto envolvidos das elites receberam penas brandas ou absolvição, quatro líderes populares negros e pardos — João de Deus, Lucas Dantas, Manuel Faustino e Luís Gonzaga das Virgens — foram enforcados e esquartejados em 8 de novembro de 1799.",
+      "A influência da Revolução do Haiti (1791–1804) acentuou o temor das elites escravistas quanto a levantes abolicionistas e explica a brutalidade seletiva da punição."
+    ],
+    "primary_actors": [
+      "João de Deus do Nascimento (alfaiate)",
+      "Lucas Dantas de Amorim Torres (soldado)",
+      "Manuel Faustino dos Santos Lira (alfaiate)",
+      "Luís Gonzaga das Virgens (soldado)",
+      "Cipriano Barata e intelectuais da loja maçônica Cavaleiros da Luz"
+    ],
+    "critical_perspectives": [
+      "Contrastar a memória oficial que celebra Tiradentes (feriado nacional) com o apagamento histórico dos mártires negros e populares da Conjuração Baiana.",
+      "Evidenciar que ideais iluministas e revolucionários foram apropriados e radicalizados por trabalhadores negros e mestiços na América Portuguesa para exigir abolição e cidadania."
+    ],
+    "common_misconceptions": [
+      "Confundir a Conjuração Baiana (1798, popular e abolicionista) com a Inconfidência Mineira (1789, elitista e sem consenso abolicionista).",
+      "Pensar que os participantes populares eram apenas manipulados por intelectuais da elite — eles tinham pautas próprias contra o racismo, a fome e a escravidão."
+    ],
+    "recommended_sources": [
+      "Luís Henrique Dias Tavares — História da Sedição Intentada na Bahia em 1798",
+      "István Jancsó — Na Bahia, Contra o Império",
+      "Kátia Mattoso — Presença Francesa no Movimento Democrático Baiano de 1798"
+    ]
+  },
+  {
+    "id": "revolucao_pernambucana_1817",
+    "title": "Revolução Pernambucana de 1817 (Revolta dos Padres)",
+    "period": "Brasil Colônia",
+    "start_year": 1817,
+    "end_year": 1817,
+    "bncc_codes": ["EF08HI05", "EF08HI11", "EM13CHS603"],
+    "summary": "Eclodida em Recife em 6 de março de 1817, durante o período joanino (quando o Brasil já era Reino Unido a Portugal), a Revolução Pernambucana foi o único movimento emancipacionista anterior a 1822 que efetivamente tomou o poder e instalou um governo republicano provisório. Motivada pela crise do açúcar e do algodão, pela seca e pelos altos impostos cobrados para sustentar a Corte no Rio de Janeiro, espalhou-se pela Paraíba, Rio Grande do Norte e Ceará antes de ser esmagada pelas tropas de Dom João VI.",
+    "key_facts": [
+      "O governo provisório republicano durou cerca de 75 dias, redigiu uma Lei Orgânica prevendo divisão de poderes, garantiu liberdade de imprensa e tolerância religiosa e adotou uma bandeira própria (origem da atual bandeira de Pernambuco).",
+      "Teve ampla participação de setores urbanos, comerciantes, militares, proprietários rurais e numerosos clérigos liberais — motivo pelo qual também ficou conhecida como 'Revolta dos Padres', destacando-se Padre João Ribeiro, Padre Miguelinho e Frei Caneca.",
+      "O movimento contou com participação feminina e popular, como Bárbara de Alencar no Ceará (presa pela Coroa), mas recuou quanto à abolição imediata da escravidão para não perder o apoio dos senhores de engenho.",
+      "A repressão joanina foi severa, com bloqueio naval, execuções de líderes e desmembramento de Alagoas do território pernambucano como punição política."
+    ],
+    "primary_actors": [
+      "Domingos José Martins",
+      "Padre João Ribeiro e Padre Miguelinho",
+      "Frei Caneca (Joaquim do Amor Divino)",
+      "Bárbara de Alencar",
+      "Dom João VI e tropas reais"
+    ],
+    "critical_perspectives": [
+      "Analisar as tensões regionais dentro do Brasil joanino: a elevação do Rio de Janeiro a sede do império gerou forte descontentamento fiscal e político no Nordeste.",
+      "Discutir os limites sociais do liberalismo oitocentista, que defendia autonomia política e liberdade de expressão sem romper imediatamente com a ordem escravista."
+    ],
+    "common_misconceptions": [
+      "Achar que a Revolução Pernambucana ficou apenas no plano das ideias como a Inconfidência Mineira — ela chegou a constituir um governo republicano real por mais de dois meses.",
+      "Supor que o movimento aboliu a escravidão em Pernambuco; o governo provisório declarou respeito à propriedade escrava para preservar a adesão dos proprietários."
+    ],
+    "recommended_sources": [
+      "Evaldo Cabral de Mello — A Outra Independência",
+      "Carlos Guilherme Mota — Nordeste 1817: Estruturas e Argumentos",
+      "Denis Antonio de Mendonça Bernardes — O Patriotismo Constitucional: Pernambuco, 1820–1822"
     ]
   },
   {
@@ -131,6 +338,111 @@
     "recommended_sources": [
       "João Paulo Pimenta — Independência do Brasil",
       "Lilia Moritz Schwarcz e Lucia Bastos Pereira das Neves — Estudos sobre o Bicentenário da Independência"
+    ]
+  },
+  {
+    "id": "primeiro_reinado_1822_1831",
+    "title": "Primeiro Reinado: Constituição de 1824, Confederação do Equador e Abdicação",
+    "period": "Brasil Império",
+    "start_year": 1822,
+    "end_year": 1831,
+    "bncc_codes": ["EF08HI15", "EF08HI16", "EM13CHS603"],
+    "summary": "O Primeiro Reinado (1822–1831), sob o governo de Dom Pedro I, foi marcado pela difícil consolidação do Estado nacional brasileiro e por fortes tensões entre o autoritarismo centralizador do monarca e projetos liberais ou federalistas das províncias. O fechamento da Assembleia Constituinte em 1823, a Constituição outorgada de 1824 com o Poder Moderador, a repressão à Confederação do Equador, a derrota na Guerra da Cisplatina e a crise econômica culminaram na abdicação de 7 de abril de 1831.",
+    "key_facts": [
+      "Após dissolver a Assembleia Constituinte de 1823 ('Noite da Agonia'), Dom Pedro I outorgou a Constituição de 1824, que instituiu quatro poderes — Executivo, Legislativo, Judiciário e o Poder Moderador (exclusivo do monarca) — além do voto censitário (por renda) e do padroado (união entre Igreja e Estado).",
+      "Em reação ao autoritarismo imperial, eclodiu no Nordeste a Confederação do Equador (1824), movimento republicano e federalista centrado em Pernambuco e liderado por figuras como Frei Caneca e Cipriano Barata, duramente reprimido com a execução de Frei Caneca.",
+      "A Guerra da Cisplatina (1825–1828) terminou com a independência do Uruguai, agravando o endividamento externo e a crise financeira que levou à falência do primeiro Banco do Brasil em 1829.",
+      "O envolvimento de Dom Pedro I na sucessão portuguesa, o assassinato do jornalista Líbero Badaró (1830) e os conflitos de rua da Noite das Garrafadas (março de 1831) isolaram o governante, que abdicou em favor de seu filho de cinco anos, o futuro Dom Pedro II."
+    ],
+    "primary_actors": [
+      "Dom Pedro I",
+      "Frei Caneca e lideranças da Confederação do Equador",
+      "José Bonifácio de Andrada e Silva",
+      "Líbero Badaró e a imprensa liberal oposicionista",
+      "População urbana do Rio de Janeiro nas manifestações de 1831"
+    ],
+    "critical_perspectives": [
+      "Analisar como a cidadania na Constituição de 1824 era restritiva, excluindo pessoas escravizadas, mulheres e homens livres pobres do pleno exercício político por meio do voto censitário e indireto.",
+      "Compreender a Confederação do Equador como expressão de projetos alternativos de nação (republicanos e descentralizados) frente ao centralismo do Rio de Janeiro."
+    ],
+    "common_misconceptions": [
+      "Achar que a Constituição de 1824 foi democraticamente votada por uma assembleia eleita — ela foi outorgada (imposta) por Dom Pedro I após o fechamento da Constituinte.",
+      "Pensar que a abdicação de 1831 encerrou a monarquia; ela abriu o Período Regencial para garantir a continuidade dinástica até a maioridade de Dom Pedro II."
+    ],
+    "recommended_sources": [
+      "Isabel Lustosa — D. Pedro I",
+      "Boris Fausto — História do Brasil",
+      "Miriam Dolhnikoff — O Pacto Imperial"
+    ]
+  },
+  {
+    "id": "periodo_regencial_e_revoltas_1831_1840",
+    "title": "Período Regencial e Revoltas Provinciais (Cabanagem, Malês, Sabinada, Balaiada e Farroupilha)",
+    "period": "Brasil Império",
+    "start_year": 1831,
+    "end_year": 1840,
+    "bncc_codes": ["EF08HI15", "EF08HI16", "EF08HI19", "EM13CHS502"],
+    "summary": "Entre a abdicação de Dom Pedro I (1831) e o Golpe da Maioridade (1840), o Brasil foi governado por regentes em nome do jovem herdeiro Dom Pedro II. Esse período funcionou como um intenso laboratório político de descentralização e disputas partidárias, sacudido por grandes revoltas provinciais e populares — Cabanagem, Revolta dos Malês, Sabinada, Balaiada e Revolução Farroupilha — que expuseram exclusão social, racismo, tensões regionais e questionamentos à ordem escravista.",
+    "key_facts": [
+      "O Período Regencial criou a Guarda Nacional (1831, fortalecendo os 'coronéis' locais) e aprovou o Ato Adicional de 1834 (ampliando autonomia provincial e criando a Regência Una), seguido pelo 'Regresso' conservador que recentralizou o poder.",
+      "A Cabanagem (Grão-Pará, 1835–1840) foi o único levante popular do período em que camadas pobres — indígenas, caboclos, negros e ribeirinhos — assumiram o governo provincial, sendo reprimida com cerca de 30 mil mortos.",
+      "A Revolta dos Malês (Salvador, janeiro de 1835) foi organizada por africanos escravizados e libertos muçulmanos (muitos alfabetizados em árabe) contra a escravidão e a intolerância religiosa; a Balaiada (Maranhão, 1838–1841) reuniu sertanejos pobres (Manuel Balaio, Raimundo Gomes) e milhares de quilombolas liderados por Cosme Bento; e a Sabinada (Bahia, 1837–1838) mobilizou camadas médias urbanas por uma república temporária.",
+      "A Revolução Farroupilha ou Guerra dos Farrapos (Rio Grande do Sul e Santa Catarina, 1835–1845), liderada por estancieiros gaúchos contra impostos sobre o charque, teve os Lanceiros Negros como força decisiva, traídos no Massacre de Porongos (1844) antes da Paz de Ponche Verde. Para conter as revoltas, políticos liberais anteciparam a maioridade de Dom Pedro II em 1840."
+    ],
+    "primary_actors": [
+      "Cabanos do Grão-Pará (indígenas, caboclos, negros e lideranças como Eduardo Angelim)",
+      "Africanos muçulmanos da Revolta dos Malês (como Pacífico Licutan e Manuel Calafate)",
+      "Cosme Bento (líder quilombola), Manuel Balaio e Raimundo Gomes na Balaiada",
+      "Lanceiros Negros e líderes farroupilhas (Bento Gonçalves, Giuseppe e Anita Garibaldi)",
+      "Regentes (Diogo Antônio Feijó, Araújo Lima) e o Duque de Caxias (Luís Alves de Lima e Silva)"
+    ],
+    "critical_perspectives": [
+      "Distinguir a composição social e as pautas das revoltas regenciais: enquanto a Farroupilha teve liderança de elites estancieiras (que traíram os Lanceiros Negros), Cabanagem, Balaiada e Revolta dos Malês expressaram forte protagonismo popular, indígena, quilombola e africano.",
+      "Desconstruir a ideia de que a preservação da unidade territorial brasileira foi 'natural' ou pacífica — ela resultou de intensa repressão militar centralizadora sobre as províncias."
+    ],
+    "common_misconceptions": [
+      "Tratar todas as revoltas regenciais como iguais ou apenas separatistas — a Sabinada propunha separação provisória até a maioridade, e a Revolta dos Malês lutava prioritariamente contra a escravidão e pela liberdade religiosa.",
+      "Imaginar que os africanos escravizados na Revolta dos Malês eram iletrados — muitos escreviam em árabe e organizaram redes urbanas sofisticadas em Salvador."
+    ],
+    "recommended_sources": [
+      "João José Reis — Rebelião Escrava no Brasil: A História do Levante dos Malês em 1835",
+      "Magda Ricci — Cabanagem, Cidadania e Identidade Revolucionária",
+      "Matthias Röhrig Assunção — De Caboclos a Bem-te-vis: Formação do Campesinato numa Sociedade Escravista (Maranhão)"
+    ]
+  },
+  {
+    "id": "segundo_reinado_politica_economia_1840_1889",
+    "title": "Segundo Reinado: Política Imperial, Lei de Terras e Modernização Desigual",
+    "period": "Brasil Império",
+    "start_year": 1840,
+    "end_year": 1889,
+    "bncc_codes": ["EF08HI15", "EF08HI17", "EF08HI18", "EM13CHS401"],
+    "summary": "O Segundo Reinado (1840–1889), sob o governo de Dom Pedro II, representou o auge e a crise final do Império do Brasil. Politicamente, estabilizou-se por meio do 'parlamentarismo às avessas', no qual o monarca usava o Poder Moderador para arbitrar a alternância entre os partidos Conservador ('saquaremas') e Liberal ('luzias'). Economicamente, combinou a hegemonia da cafeicultura, a Lei de Terras (1850) e um surto modernizador (Era Mauá) com a persistência do latifúndio e da escravidão.",
+    "key_facts": [
+      "No 'parlamentarismo às avessas' (formalizado em 1847), o Chefe de Estado nomeava o Presidente do Conselho de Ministros e podia dissolver a Câmara dos Deputados, garantindo controle centralizado sobre eleições frequentemente marcadas por fraudes.",
+      "A Revolução Praieira (Pernambuco, 1848–1850) foi a última grande insurreição liberal-radical do Império, exigindo voto universal, liberdade de imprensa e fim dos monopólios comerciais.",
+      "Em 1850, no mesmo ano do fim oficial do tráfico transatlântico de escravizados (Lei Eusébio de Queirós), foi aprovada a Lei de Terras, determinando que terras devolutas só poderiam ser adquiridas mediante compra — barrando o acesso à terra por trabalhadores pobres, ex-escravizados e imigrantes.",
+      "A Tarifa Alves Branco (1844) elevou impostos de importação e favoreceu investimentos pioneiros em ferrovias, iluminação a gás, navegação a vapor e bancos — a chamada Era Mauá (Irineu Evangelista de Sousa) — sem superar a dependência agroexportadora."
+    ],
+    "primary_actors": [
+      "Dom Pedro II",
+      "Partidos Conservador e Liberal",
+      "Irineu Evangelista de Sousa (Barão e Visconde de Mauá)",
+      "Revoltosos da Revolução Praieira em Pernambuco",
+      "Grandes cafeicultores e trabalhadores escravizados e livres"
+    ],
+    "critical_perspectives": [
+      "Relacionar a Lei de Terras de 1850 à estrutura agrária altamente concentrada do Brasil contemporâneo, compreendendo como a legislação preparou a transição do trabalho escravo ao livre preservando o latifúndio.",
+      "Avaliar criticamente a imagem de 'estabilidade' do Segundo Reinado, lembrando que ela se apoiava na exclusão eleitoral da maioria da população (agravada pela Lei Saraiva de 1881, que proibiu o voto de analfabetos) e na manutenção da escravidão até 1888."
+    ],
+    "common_misconceptions": [
+      "Achar que o parlamentarismo brasileiro do século XIX funcionava exatamente como o britânico — no Brasil, o Poder Moderador mantinha forte protagonismo político do monarca.",
+      "Acreditar que a Era Mauá transformou o Brasil em país industrializado no século XIX; a economia permaneceu primário-exportadora."
+    ],
+    "recommended_sources": [
+      "Lilia Moritz Schwarcz — As Barbas do Imperador",
+      "José Murilo de Carvalho — A Construção da Ordem e Teatro de Sombras",
+      "Emília Viotti da Costa — Da Monarquia à República"
     ]
   },
   {
@@ -170,6 +482,75 @@
     ]
   },
   {
+    "id": "guerra_do_paraguai_1864_1870",
+    "title": "Guerra do Paraguai (Guerra da Tríplice Aliança)",
+    "period": "Brasil Império",
+    "start_year": 1864,
+    "end_year": 1870,
+    "bncc_codes": ["EF08HI17", "EF08HI18", "EM13CHS204"],
+    "summary": "Maior conflito armado interestatal da América do Sul, a Guerra do Paraguai (1864–1870) opôs a Tríplice Aliança (Brasil, Argentina e Uruguai) ao Paraguai governado por Francisco Solano López. Enraizada em disputas geopolíticas pela livre navegação dos rios da Bacia do Prata, fronteiras e intervenções no Uruguai, a guerra devastou a população e a economia paraguaias e transformou profundamente o Brasil ao fortalecer o Exército e acelerar a crise da escravidão e da monarquia.",
+    "key_facts": [
+      "A guerra decorreu de tensões regionais de longa data na Bacia do Prata (intervenção brasileira no Uruguai, disputas fronteiriças e projetos expansionistas/autonomistas de Solano López), desencadeada após a captura do navio brasileiro Marquês de Olinda e a invasão paraguaia de Mato Grosso e de Corrientes (Argentina).",
+      "No Brasil, a mobilização recrutou os 'Voluntários da Pátria', incluindo grande contingente de homens negros livres e pessoas escravizadas alforriadas para lutar na frente de batalha, além de mulheres que atuaram na enfermagem e no apoio logístico, como Ana Néri e Jovita Feitosa.",
+      "O conflito causou destruição demográfica catastrófica no Paraguai (com perda de grande parte da população masculina adulta e episódios trágicos como a Batalha de Acosta Ñu) e elevou drasticamente a dívida externa brasileira com bancos britânicos.",
+      "Ao regressarem da guerra, oficiais do Exército brasileiro passaram a reivindicar maior participação política e a recusar o papel de capitães-do-mato contra escravizados fugidos, fortalecendo o movimento abolicionista e o republicanismo."
+    ],
+    "primary_actors": [
+      "Francisco Solano López (Paraguai)",
+      "Tríplice Aliança (Dom Pedro II, Duque de Caxias, Conde d'Eu, Bartolomé Mitre, Venancio Flores)",
+      "Soldados negros libertos e Voluntários da Pátria",
+      "Ana Néri e mulheres mobilizadas na retaguarda e na enfermagem",
+      "População civil paraguaia e comunidades de fronteira"
+    ],
+    "critical_perspectives": [
+      "Superar tanto a narrativa patriótica tradicional quanto a tese simplista dos anos 1970 de que a guerra foi apenas uma conspiração da Inglaterra contra um Paraguai industrializado: a historiografia atual destaca as rivalidades regionais sul-americanas e a responsabilidade compartilhada dos Estados envolvidos.",
+      "Analisar as memórias divergentes do conflito no Brasil e no Paraguai, refletindo sobre custos humanos, racismo no recrutamento militar e os impactos duradouros para a integração sul-americana."
+    ],
+    "common_misconceptions": [
+      "Acreditar que o Paraguai era uma potência industrial que ameaçava a Inglaterra e que a guerra foi causada exclusivamente por ordens britânicas.",
+      "Pensar que todos os 'Voluntários da Pátria' se alistaram de forma livre e espontânea — houve intenso recrutamento forçado de homens pobres e envio de pessoas escravizadas em substituição a proprietários."
+    ],
+    "recommended_sources": [
+      "Francisco Doratioto — Maldita Guerra: Nova História da Guerra do Paraguai",
+      "Wilma Peres Costa — A Espada de Dâmocles: O Exército, a Guerra do Paraguai e a Crise do Império",
+      "Hendrik Kraay e Thomas Whigham (orgs.) — I Die with My Country: Perspectives on the Paraguayan War"
+    ]
+  },
+  {
+    "id": "ciclo_do_cafe_e_imigracao_1850_1930",
+    "title": "Ciclo do Café, Imigração e Transição do Trabalho no Brasil",
+    "period": "Brasil Império e República",
+    "start_year": 1850,
+    "end_year": 1930,
+    "bncc_codes": ["EF08HI20", "EF09HI02", "EF09HI05", "EM13CHS402"],
+    "summary": "O café foi o principal produto de exportação brasileiro entre meados do século XIX e a crise de 1929, deslocando-se do Vale do Paraíba (baseado no trabalho escravizado) para o Oeste Paulista (com ferrovias, bancos e crescente adoção do trabalho assalariado e do colonato). A transição da mão de obra foi marcada pela política estatal de imigração europeia e asiática, articulada à Lei de Terras (1850) e a teorias raciais de 'branqueamento' que marginalizaram a população negra no mercado de trabalho livre.",
+    "key_facts": [
+      "A expansão cafeeira financiou a construção de ferrovias, portos (como Santos), energia elétrica e a capitalização inicial da indústria paulista e carioca, mas manteve a economia vulnerável às crises internacionais (como o Convênio de Taubaté de 1906 e a Crise de 1929).",
+      "Após fracassos iniciais do sistema de parceria (como a Revolta de Ibicaba em 1856–1857), os cafeicultores paulistas e o Estado adotaram o sistema de colonato e a imigração subsidiada, atraindo milhões de italianos, espanhóis, portugueses, alemães, sírio-libaneses e, a partir de 1908 (navio Kasato Maru), imigrantes japoneses.",
+      "A preferência oficial por imigrantes europeus não decorreu apenas de escassez demográfica, mas também de um projeto deliberado de 'branqueamento' da população defendido por elites influenciadas pelo racismo científico, preterindo trabalhadores negros brasileiros no pós-abolição.",
+      "Nas cidades industrializadas e fazendas, trabalhadores brasileiros e imigrantes enfrentaram jornadas exaustivas e baixos salários, organizando sindicatos, imprensa operária e grandes mobilizações como a Greve Geral de 1917 em São Paulo."
+    ],
+    "primary_actors": [
+      "Trabalhadores negros escravizados no Vale do Paraíba e libertos marginalizados no pós-abolição",
+      "Imigrantes europeus, japoneses e sírio-libaneses (colonos e operários urbanos)",
+      "Oligarquia cafeeira paulista e barões do café do Vale do Paraíba",
+      "Movimento operário e lideranças anarquistas e socialistas (como Maria Lacerda de Moura e Edgard Leuenroth)"
+    ],
+    "critical_perspectives": [
+      "Desnaturalizar a narrativa de que os imigrantes substituíram os trabalhadores escravizados por 'falta de mão de obra' ou 'inaptidão' dos negros, mostrando a interseção entre Lei de Terras, políticas racistas de branqueamento e interesses patronais.",
+      "Valorizar a pluralidade cultural trazida pelos fluxos migratórios sem apagar as duras condições de exploração vividas por colonos e operários imigrantes."
+    ],
+    "common_misconceptions": [
+      "Acreditar que o café sempre utilizou trabalho livre desde o início — a cafeicultura do Vale do Paraíba e mesmo a fase inicial do Oeste Paulista dependeram maciçamente da escravidão.",
+      "Imaginar que os imigrantes receberam terras gratuitas nas fazendas de café paulistas; a maioria trabalhou sob contratos rigorosos de colonato e enfrentou endividamento."
+    ],
+    "recommended_sources": [
+      "Petrônio Domingues — Uma História não Contada: Negro, Racismo e Branqueamento em São Paulo no Pós-Abolição",
+      "Boris Fausto — Trabalho Urbano e Conflito Social",
+      "Emília Viotti da Costa — Da Senzala à Colônia"
+    ]
+  },
+  {
     "id": "proclamacao_da_republica_1889",
     "title": "Proclamação da República e Primeira República",
     "period": "Brasil República",
@@ -201,6 +582,75 @@
     "recommended_sources": [
       "José Murilo de Carvalho — Os Bestializados",
       "Boris Fausto — História do Brasil"
+    ]
+  },
+  {
+    "id": "semana_de_arte_moderna_1922",
+    "title": "Semana de Arte Moderna de 1922 e os Modernismos Brasileiros",
+    "period": "Brasil República",
+    "start_year": 1922,
+    "end_year": 1928,
+    "bncc_codes": ["EF09HI05", "EF09HI08", "EM13CHS104"],
+    "summary": "Realizada no Theatro Municipal de São Paulo em fevereiro de 1922, no contexto do centenário da Independência, a Semana de Arte Moderna reuniu artistas plásticos, escritores e músicos em torno da ruptura com o academicismo europeu e da busca por linguagens estéticas brasileiras. O movimento desdobrou-se em propostas como o Manifesto Pau-Brasil (1924) e o Manifesto Antropofágico (1928), coexistindo com outras expressões modernistas e populares em diversas regiões do país.",
+    "key_facts": [
+      "Entre 13 e 17 de fevereiro de 1922, o evento apresentou exposições, recitais e conferências de nomes como Mário de Andrade, Oswald de Andrade, Anita Malfatti, Di Cavalcanti, Heitor Villa-Lobos, Victor Brecheret e Menotti Del Picchia, sendo recebido com vaias e intenso debate por setores conservadores.",
+      "Tarsila do Amaral (embora estivesse em Paris durante a Semana) tornou-se ícone central da primeira fase modernista com obras como 'A Negra' (1923) e 'Abaporu' (1928), que inspirou o Manifesto Antropofágico de Oswald de Andrade — a proposta de 'devorar' criticamente influências estrangeiras para criar arte originalmente brasileira.",
+      "O financiamento da Semana contou paradoxalmente com apoio de mecenas ligados à elite cafeeira paulista (como Paulo Prado), revelando tensões entre vanguarda estética e poder econômico.",
+      "A historiografia contemporânea evita reduzir o modernismo brasileiro apenas a São Paulo, destacando projetos simultâneos como o Movimento Regionalista do Recife (1926), o modernismo mineiro e a modernidade popular do samba e das culturas afro-brasileiras e indígenas."
+    ],
+    "primary_actors": [
+      "Mário de Andrade e Oswald de Andrade",
+      "Anita Malfatti e Tarsila do Amaral",
+      "Heitor Villa-Lobos e Di Cavalcanti",
+      "Artistas e intelectuais de modernismos regionais (como Cícero Dias, Gilberto Freyre e Carlos Drummond de Andrade)",
+      "Músicos e artistas populares negros invisibilizados nos salões elitistas (como Pixinguinha e Lima Barreto)"
+    ],
+    "critical_perspectives": [
+      "Questionar o eixo exclusivamente paulista da memória oficial de 1922, incorporando as contribuições de mulheres modernistas, do Nordeste, de Minas Gerais e das culturas negras e indígenas.",
+      "Discutir o conceito de antropofagia cultural como crítica ao colonialismo estético, comparando-o com as tensões raciais e de classe presentes na própria vanguarda de 1922."
+    ],
+    "common_misconceptions": [
+      "Achar que Tarsila do Amaral participou presencialmente dos dias da Semana no Theatro Municipal — ela estava em Paris em fevereiro de 1922 e integrou o Grupo dos Cinco ao retornar.",
+      "Supor que a Semana de 1922 foi aceita imediatamente pela crítica ou que não existiam expressões culturais modernas no Brasil fora de São Paulo."
+    ],
+    "recommended_sources": [
+      "Lilia Moritz Schwarcz — O Sol do Brasil e estudos sobre o Centenário da Semana de 22",
+      "Aracy Amaral — Artes Plásticas na Semana de 22",
+      "Nicolau Sevcenko — Orfeu Extático na Metrópole"
+    ]
+  },
+  {
+    "id": "tenentismo_e_crise_primeira_republica_1922_1930",
+    "title": "Tenentismo e a Crise da Primeira República",
+    "period": "Brasil República",
+    "start_year": 1922,
+    "end_year": 1930,
+    "bncc_codes": ["EF09HI02", "EF09HI06", "EM13CHS603"],
+    "summary": "O Tenentismo foi um movimento político-militar protagonizado por jovens oficiais do Exército (tenentes e capitães) na década de 1920, insatisfeitos com o domínio das oligarquias agrárias da Primeira República ('política do café com leite'), o coronelismo e as fraudes eleitorais. Através de levantes armados como os 18 do Forte de Copacabana (1922), a Revolta Paulista (1924) e a marcha da Coluna Prestes (1925–1927), os tenentes ajudaram a desgastar o regime oligárquico e influenciaram a Revolução de 1930.",
+    "key_facts": [
+      "Os tenentes defendiam o voto secreto, a moralização da administração pública, o fortalecimento da educação pública e a centralização do Estado nacional contra o poder dos coronéis estaduais.",
+      "Principais episódios tenentistas incluem a Revolta dos 18 do Forte de Copacabana (Rio de Janeiro, 1922), a Revolta Paulista de 1924 (que ocupou São Paulo por semanas sob liderança de Isidoro Dias Lopes) e a Coluna Miguel Costa–Prestes (1925–1927), que percorreu cerca de 25 mil quilômetros pelo interior do Brasil denunciando a miséria e o coronelismo.",
+      "Apesar de seu discurso reformista, o movimento tinha caráter elitista e tutelar, desconfiando da participação autônoma das massas populares e buscando soluções pela intervenção militar.",
+      "Parte expressiva dos tenentes (como Juarez Távora e João Alberto) apoiou a Aliança Liberal e a Revolução de 1930, ocupando cargos de interventores no início da Era Vargas, enquanto Luís Carlos Prestes rompeu com o grupo e aderiu ao comunismo."
+    ],
+    "primary_actors": [
+      "Luís Carlos Prestes e Miguel Costa",
+      "Siqueira Campos e Eduardo Gomes (18 do Forte)",
+      "Juarez Távora e Isidoro Dias Lopes",
+      "Oligarquias estaduais da Primeira República e Aliança Liberal"
+    ],
+    "critical_perspectives": [
+      "Avaliar a ambiguidade política do Tenentismo: ao mesmo tempo em que combateu as fraudes eleitorais e o coronelismo oligárquico, reforçou a cultura política de tutela militar sobre a República brasileira.",
+      "Relacionar a marcha da Coluna Prestes pelo interior do país à descoberta, por parte dos jovens oficiais urbanos, da extrema desigualdade social e do abandono do campo."
+    ],
+    "common_misconceptions": [
+      "Confundir o Tenentismo dos anos 1920 com um movimento socialista homogêneo — apenas mais tarde Luís Carlos Prestes aderiu ao marxismo, enquanto outros tenentes caminharam para o trabalhismo ou para o conservadorismo autoritário.",
+      "Achar que a Coluna Prestes tomou o poder no Rio de Janeiro; ela nunca derrubou o governo federal, exilando-se na Bolívia e no Paraguai em 1927, mas desgastou profundamente a Primeira República."
+    ],
+    "recommended_sources": [
+      "Anita Leocadia Prestes — A Coluna Prestes",
+      "Maria Cecília Spina Forjaz — Tenentismo e Forças Armadas na Revolução de 30",
+      "Boris Fausto — A Revolução de 1930: Historiografia e História"
     ]
   },
   {
@@ -237,6 +687,40 @@
     ]
   },
   {
+    "id": "republica_populista_1946_1964",
+    "title": "República Populista (1946–1964): Experiência Democrática, JK, Brasília e Reformas de Base",
+    "period": "Brasil República",
+    "start_year": 1946,
+    "end_year": 1964,
+    "bncc_codes": ["EF09HI17", "EF09HI18", "EF09HI19", "EM13CHS603"],
+    "summary": "Entre a queda do Estado Novo e o golpe de 1964, o Brasil viveu sua primeira experiência democrática de massas (também chamada de Quarta República ou República Populista), regida pela Constituição de 1946. O período combinou pluripartidarismo, intensa urbanização, debates nacional-desenvolvimentistas (criação da Petrobras em 1953), o Plano de Metas e a construção de Brasília no governo Juscelino Kubitschek (1956–1961) e a polarização em torno das Reformas de Base propostas por João Goulart (1961–1964).",
+    "key_facts": [
+      "A Constituição de 1946 restabeleceu eleições diretas, liberdades civis e pluripartidarismo (PSD, PTB, UDN), embora analfabetos permanecessem excluídos do voto e o Partido Comunista Brasileiro (PCB) tenha sido posto na ilegalidade em 1947 durante a Guerra Fria.",
+      "No segundo governo Vargas (1951–1954), a campanha popular 'O Petróleo é Nosso' culminou na criação da Petrobras (1953), em meio a forte crise política que levou ao suicídio de Vargas em agosto de 1954.",
+      "Juscelino Kubitschek (1956–1961) implementou o Plano de Metas ('50 anos em 5'), atraindo montadoras estrangeiras, expandindo rodovias e energia e inaugurando Brasília (21 de abril de 1960), projetada por Lúcio Costa e Oscar Niemeyer e erguida pelo trabalho árduo de milhares de migrantes nordestinos e goianos ('candangos'), ao custo de inflação e endividamento.",
+      "Após a renúncia de Jânio Quadros (1961) e a Campanha da Legalidade liderada por Leonel Brizola, João Goulart (Jango) assumiu a presidência e defendeu as Reformas de Base (reforma agrária, urbana, tributária, bancária e educacional — com o programa de alfabetização de Paulo Freire), enfrentando forte oposição conservadora até ser deposto pelo golpe civil-militar de 1964."
+    ],
+    "primary_actors": [
+      "Getúlio Vargas (segundo governo)",
+      "Juscelino Kubitschek (JK), Oscar Niemeyer, Lúcio Costa e os trabalhadores candangos",
+      "Jânio Quadros, Leonel Brizola e João Goulart (Jango)",
+      "Paulo Freire, Ligas Camponesas (Francisco Julião), movimento estudantil (UNE) e sindicatos urbanos"
+    ],
+    "critical_perspectives": [
+      "Questionar o uso reducionista do rótulo 'populismo', reconhecendo que trabalhadores urbanos, camponeses (Ligas Camponesas) e estudantes não eram massas passivas manipuladas, mas sujeitos políticos ativos que pressionavam por direitos.",
+      "Analisar os contrastes do desenvolvimentismo de JK: modernização industrial e integração territorial coexistiram com desigualdade regional, êxodo rural, endividamento externo e invisibilização social dos candangos após a inauguração de Brasília."
+    ],
+    "common_misconceptions": [
+      "Achar que todos os cidadãos podiam votar na democracia de 1946–1964 — pessoas analfabetas continuavam impedidas de votar (o direito só veio na Constituição de 1988).",
+      "Confundir as Reformas de Base de João Goulart com a implantação imediata de um regime socialista soviético; tratava-se de reformas estruturais capitalistas-reformistas e democráticas em contexto de Guerra Fria."
+    ],
+    "recommended_sources": [
+      "Jorge Ferreira e Lucilia de Almeida Neves Delgado (orgs.) — O Brasil Republicano: O Tempo da Experiência Democrática",
+      "Ângela de Castro Gomes — O Populismo e as Ciências Sociais no Brasil",
+      "Lilia Moritz Schwarcz e Heloisa Murgel Starling — Brasil: Uma Biografia"
+    ]
+  },
+  {
     "id": "ditadura_militar_e_redemocratizacao_1964_1988",
     "title": "Ditadura Militar e Redemocratização (1964–1988)",
     "period": "Brasil Contemporâneo",
@@ -268,6 +752,40 @@
       "Relatório Final da Comissão Nacional da Verdade (2014)",
       "Marcos Napolitano — 1964: História do Regime Militar Brasileiro",
       "Constituição da República Federativa do Brasil de 1988"
+    ]
+  },
+  {
+    "id": "nova_republica_constituicao_1988_plano_real",
+    "title": "Nova República, Constituição Cidadã de 1988 e Plano Real",
+    "period": "Brasil Contemporâneo",
+    "start_year": 1985,
+    "end_year": 2002,
+    "bncc_codes": ["EF09HI22", "EF09HI23", "EF09HI26", "EM13CHS502", "EM13CHS603"],
+    "summary": "Iniciada em 1985 com o retorno dos civis à presidência, a Nova República marcou a reconstrução da democracia brasileira em meio a grave crise hiperinflacionária. Seu marco institucional foi a Constituição Federal de 1988 ('Constituição Cidadã'), que ampliou direitos civis, políticos e sociais; na economia, após planos econômicos fracassados e o impeachment de Fernando Collor (1992), o Plano Real (1994) controlou a hiperinflação e inaugurou uma nova etapa econômica durante os governos de Itamar Franco e Fernando Henrique Cardoso.",
+    "key_facts": [
+      "Após a morte do presidente eleito indiretamente Tancredo Neves, José Sarney assumiu em 1985, enfrentando a chamada 'década perdida' e sucessivos planos contra a hiperinflação (como o Plano Cruzado de 1986).",
+      "Promulgada em 5 de outubro de 1988 sob presidência de Ulysses Guimarães e forte pressão de movimentos populares (indígenas, negros, mulheres, sindicalistas e sanitaristas), a Constituição de 1988 garantiu o sufrágio universal (incluindo analfabetos e voto facultativo aos 16–17 anos), criou o Sistema Único de Saúde (SUS), equiparou direitos de trabalhadores urbanos e rurais, criminalizou o racismo e reconheceu o direito originário às terras indígenas e quilombolas.",
+      "Em 1989 ocorreu a primeira eleição presidencial direta pós-ditadura, vencida por Fernando Collor de Mello; seu governo adotou abertura econômica e o confisco da poupança (Plano Collor), sofrendo impeachment em 1992 após denúncias de corrupção e mobilizações estudantis ('Caras-Pintadas').",
+      "No governo Itamar Franco, a equipe econômica liderada por Fernando Henrique Cardoso implementou o Plano Real (1994), usando a Unidade Real de Valor (URV) para desindexar preços e lançar a nova moeda (o Real), controlando a hiperinflação; eleito presidente (1995–2002), FHC conduziu privatizações, a Lei de Responsabilidade Fiscal e programas iniciais de transferência de renda, mas persistiram desafios como desemprego e desigualdade estrutural."
+    ],
+    "primary_actors": [
+      "Ulysses Guimarães e a Assembleia Nacional Constituinte (incluindo a bancada do Batom, lideranças indígenas como Ailton Krenak e o movimento negro)",
+      "José Sarney e Tancredo Neves",
+      "Fernando Collor de Mello e o movimento dos Caras-Pintadas",
+      "Itamar Franco e Fernando Henrique Cardoso (equipe do Plano Real)"
+    ],
+    "critical_perspectives": [
+      "Compreender a Constituição de 1988 como conquista ativa da sociedade civil brasileira — incluindo emendas populares e a luta de povos indígenas e movimentos negros — e refletir sobre o desafio contínuo de efetivar os direitos garantidos em lei.",
+      "Analisar os efeitos ambivalentes da estabilização econômica dos anos 1990: o Plano Real reduziu drasticamente a perda do poder de compra dos mais pobres causada pela hiperinflação, mas políticas neoliberais e juros elevados geraram debates sobre desindustrialização, emprego e desigualdade."
+    ],
+    "common_misconceptions": [
+      "Achar que a eleição direta para presidente já aconteceu em 1985 — Tancredo Neves e José Sarney foram eleitos indiretamente pelo Colégio Eleitoral, e o voto direto retornou em 1989.",
+      "Pensar que o Plano Real foi criado no governo Collor ou que resolveu automaticamente a desigualdade de renda no Brasil; ele foi implementado em 1994 no governo Itamar Franco e teve como foco central o controle da hiperinflação."
+    ],
+    "recommended_sources": [
+      "Constituição da República Federativa do Brasil de 1988",
+      "Boris Fausto — História do Brasil",
+      "Marcos Nobre — Imobilismo em Movimento: Da Abertura Democrática ao Governo Dilma"
     ]
   }
 ]
