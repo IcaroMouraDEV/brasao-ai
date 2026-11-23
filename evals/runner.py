@@ -39,17 +39,65 @@ def load_benchmark_dataset(dataset_path: Path) -> list[BenchmarkCase]:
     return [BenchmarkCase.model_validate(item) for item in raw]
 
 
+def _extract_workflow_output(
+    events: list[Any],
+    terminal_author: str | None = None,
+) -> tuple[str, int, int]:
+    """Extract the final student-facing response and cumulative token counts from ADK events.
+
+    In multi-node workflows (`TopicRouter -> HistoricalResearcher -> PedagogicalAdapter ->
+    FactVerifier`), intermediate nodes emit events containing routing summaries, evidence
+    dossiers, or unverified drafts. When `terminal_author` is present among the emitted
+    text events, only that node's text is returned; otherwise the last text-emitting author
+    is used so single-node agents remain compatible.
+    """
+    text_by_author: dict[str, list[str]] = {}
+    author_order: list[str] = []
+    input_tokens = 0
+    output_tokens = 0
+
+    for event in events:
+        is_partial = bool(getattr(event, "partial", False))
+        usage = getattr(event, "usage_metadata", None)
+        if usage is not None and not is_partial:
+            input_tokens += int(getattr(usage, "prompt_token_count", 0) or 0)
+            output_tokens += int(getattr(usage, "candidates_token_count", 0) or 0)
+
+        if is_partial:
+            continue
+
+        event_content = getattr(event, "content", None)
+        if event_content and getattr(event_content, "parts", None):
+            author = str(getattr(event, "author", "") or "__default__")
+            for part in event_content.parts:
+                text = getattr(part, "text", None)
+                if text:
+                    if author not in text_by_author:
+                        text_by_author[author] = []
+                        author_order.append(author)
+                    text_by_author[author].append(text)
+
+    if terminal_author and terminal_author in text_by_author:
+        selected_chunks = text_by_author[terminal_author]
+    elif author_order:
+        selected_chunks = text_by_author[author_order[-1]]
+    else:
+        selected_chunks = []
+
+    return "\n".join(selected_chunks).strip(), input_tokens, output_tokens
+
+
 async def _invoke_live_adk_agent(
     settings: Settings,
     profile: ModelProfile,
     prompt: str,
     case_id: str,
 ) -> tuple[str, int, int, float]:
-    """Execute a single prompt against the ADK 2.0 agent via `InMemoryRunner`."""
+    """Execute a single prompt against the ADK 2.0 workflow via `InMemoryRunner`."""
     from google.adk.runners import InMemoryRunner
     from google.genai import types
 
-    from app.agent import create_history_tutor_agent
+    from app.agent import TERMINAL_NODE_NAME, create_history_tutor_agent
 
     agent = create_history_tutor_agent(settings=settings, profile=profile)
     app_name = f"brasao_ai_eval_{profile}"
@@ -63,9 +111,7 @@ async def _invoke_live_adk_agent(
     )
 
     content = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-    response_chunks: list[str] = []
-    input_tokens = 0
-    output_tokens = 0
+    events: list[Any] = []
 
     started_at = time.perf_counter()
     async for event in runner.run_async(
@@ -73,24 +119,12 @@ async def _invoke_live_adk_agent(
         session_id=session.id,
         new_message=content,
     ):
-        usage = getattr(event, "usage_metadata", None)
-        if usage is not None:
-            input_tokens = max(
-                input_tokens, int(getattr(usage, "prompt_token_count", 0) or 0)
-            )
-            output_tokens = max(
-                output_tokens, int(getattr(usage, "candidates_token_count", 0) or 0)
-            )
-
-        event_content = getattr(event, "content", None)
-        if event_content and getattr(event_content, "parts", None):
-            for part in event_content.parts:
-                text = getattr(part, "text", None)
-                if text:
-                    response_chunks.append(text)
+        events.append(event)
 
     latency_ms = (time.perf_counter() - started_at) * 1000.0
-    full_response = "\n".join(response_chunks).strip()
+    full_response, input_tokens, output_tokens = _extract_workflow_output(
+        events, terminal_author=TERMINAL_NODE_NAME
+    )
     if output_tokens == 0 and full_response:
         # Fallback estimate (~1.3 tokens per word) when a local provider omits token metadata.
         output_tokens = int(len(full_response.split()) * 1.3)
