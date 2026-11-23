@@ -153,7 +153,7 @@ def _simulate_dry_run_response(
 
 
 def _is_rate_limit_error(exc: Exception) -> bool:
-    """Return True when an exception indicates an HTTP 429 / quota rate-limit response."""
+    """Return True when an exception indicates an HTTP 429/503 rate-limit or demand response."""
     return is_rate_limit_error(exc)
 
 
@@ -164,12 +164,16 @@ async def _invoke_with_rate_limit_retry(
     case_id: str,
     max_retries: int = 4,
     base_backoff_s: float = 15.0,
+    remote_case_timeout_s: float = 180.0,
 ) -> tuple[str, int, int, float]:
-    """Invoke the live ADK agent with exponential backoff for Gemini Free Tier 429 limits."""
+    """Invoke the live ADK agent with exponential backoff for Gemini 429/503/504 limits."""
     attempt = 0
     while True:
         try:
-            return await _invoke_live_adk_agent(settings, profile, prompt, case_id)
+            coro = _invoke_live_adk_agent(settings, profile, prompt, case_id)
+            if profile == "remote" and remote_case_timeout_s > 0:
+                return await asyncio.wait_for(coro, timeout=remote_case_timeout_s)
+            return await coro
         except Exception as exc:
             if (
                 profile != "remote"
@@ -179,6 +183,11 @@ async def _invoke_with_rate_limit_retry(
                 raise
             delay = base_backoff_s * (2**attempt)
             attempt += 1
+            print(
+                f"[{profile}] transient error on {case_id} ({type(exc).__name__}); "
+                f"retrying in {delay:.0f}s (attempt {attempt}/{max_retries})...",
+                flush=True,
+            )
             await asyncio.sleep(delay)
 
 
@@ -300,6 +309,19 @@ async def run_benchmark(
             )
             profile_results.append(result)
             all_results.append(result)
+            if not dry_run:
+                judge_str = (
+                    f" judge={judge_score.overall_score_5:.2f}({judge_score.status})"
+                    if judge_score is not None
+                    else ""
+                )
+                err_str = f" ERROR={error_msg}" if error_msg else ""
+                print(
+                    f"[{profile}:{model_id}] {idx + 1}/{len(cases)} {case.id} "
+                    f"acc={accuracy.accuracy_score_5:.2f} ped={pedagogy.pedagogy_avg_5:.2f}"
+                    f"{judge_str} latency={latency_ms:.0f}ms{err_str}",
+                    flush=True,
+                )
 
         summaries.append(
             aggregate_profile_summary(

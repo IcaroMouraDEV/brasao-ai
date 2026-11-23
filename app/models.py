@@ -37,4 +37,11 @@ def build_model(settings: Settings, profile: ModelProfile | None = None) -> Any:
     os.environ["OLLAMA_API_BASE"] = settings.ollama_api_base
     from google.adk.models.lite_llm import LiteLlm
 
-    return LiteLlm(model=format_ollama_litellm_model(settings.ollama_model))
+    return LiteLlm(
+        model=format_ollama_litellm_model(settings.ollama_model),
+        temperature=settings.temperature,
+        max_tokens=1024,
+        # Bypass LiteLLM's optional MCP proxy gateway check when tools are passed,
+        # preventing ModuleNotFoundError('mcp') on tool-calling Ollama nodes.
+        _skip_mcp_handler=True,
+    )

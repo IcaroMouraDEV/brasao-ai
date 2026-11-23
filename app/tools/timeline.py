@@ -7,6 +7,16 @@ from typing import Any
 from app.tools.corpus import load_corpus, normalize_text
 
 
+def _coerce_optional_int(value: int | str | float | None) -> int | None:
+    """Coerce optional stringified year arguments emitted by smaller local LLMs."""
+    if value is None or value == "":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def lookup_timeline(
     start_year: int | None = None,
     end_year: int | None = None,
@@ -23,7 +33,13 @@ def lookup_timeline(
     Returns:
         A JSON-serializable dict with `status` and chronologically sorted `events`.
     """
-    if start_year is not None and end_year is not None and start_year > end_year:
+    resolved_start = _coerce_optional_int(start_year)
+    resolved_end = _coerce_optional_int(end_year)
+    if (
+        resolved_start is not None
+        and resolved_end is not None
+        and resolved_start > resolved_end
+    ):
         return {
             "status": "error",
             "message": "start_year must be less than or equal to end_year.",
@@ -37,9 +53,9 @@ def lookup_timeline(
         entry_start = int(entry["start_year"])
         entry_end = int(entry["end_year"])
 
-        if start_year is not None and entry_end < start_year:
+        if resolved_start is not None and entry_end < resolved_start:
             continue
-        if end_year is not None and entry_start > end_year:
+        if resolved_end is not None and entry_start > resolved_end:
             continue
         if normalized_period and normalized_period not in normalize_text(
             entry["period"]

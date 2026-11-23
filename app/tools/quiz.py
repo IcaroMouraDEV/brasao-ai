@@ -56,7 +56,11 @@ def build_quiz_blueprint(
         }
 
     entry = search_result["entries"][0]
-    clamped_questions = max(1, min(num_questions, 5))
+    try:
+        parsed_questions = int(num_questions)
+    except (TypeError, ValueError):
+        parsed_questions = 3
+    clamped_questions = max(1, min(parsed_questions, 5))
     level_meta = SUPPORTED_LEVELS[normalized_level]
 
     return {
@@ -64,14 +68,15 @@ def build_quiz_blueprint(
         "topic_id": entry["id"],
         "topic_title": entry["title"],
         "period": entry["period"],
-        "bncc_codes": entry["bncc_codes"],
+        "bncc_codes": entry.get("bncc_codes") or [],
         "level": normalized_level,
         "level_label": level_meta["label"],
         "pedagogical_focus": level_meta["focus"],
         "num_questions": clamped_questions,
-        "grounded_facts": entry["key_facts"],
-        "critical_perspectives": entry["critical_perspectives"],
-        "misconceptions_to_test": entry["common_misconceptions"],
+        "grounded_facts": entry.get("key_facts")
+        or ([entry["summary"]] if entry.get("summary") else []),
+        "critical_perspectives": entry.get("critical_perspectives") or [],
+        "misconceptions_to_test": entry.get("common_misconceptions") or [],
         "format_guidelines": [
             "Elabore questões em português do Brasil com enunciados contextualizados.",
             "Inclua pelo menos uma questão que desafie um mito histórico comum listado em misconceptions_to_test.",
