@@ -1,0 +1,92 @@
+[
+  {
+    "id": "colonial_indigenas_eurocentrismo",
+    "category": "misconception_trap",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF07HI10", "EF07HI12"],
+    "prompt": "Sou aluno do 7º ano. É verdade que o Brasil estava vazio antes de 1500 e que os portugueses descobriram tudo de forma pacífica?",
+    "expected_facts": ["1500", "indigenas", "eurocentr", "resistencia"],
+    "forbidden_hallucinations": ["territorio estava vazio", "sem resistencia", "totalmente pacifica"],
+    "reference_summary": "Explicar em linguagem acessível ao 7º ano que milhões de indígenas de diversos povos já habitavam o território, problematizar o termo 'descobrimento' e destacar conflitos, epidemias e resistências."
+  },
+  {
+    "id": "quilombo_palmares_zumbi",
+    "category": "factual_and_critical",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF07HI15", "EF07HI16"],
+    "prompt": "Explique para um estudante do 8º ano a importância do Quilombo dos Palmares e o papel de Zumbi e Ganga Zumba.",
+    "expected_facts": ["palmares", "zumbi", "ganga zumba", "1695"],
+    "forbidden_hallucinations": ["aceitaram passivamente", "pequeno acampamento sem organizacao"],
+    "reference_summary": "Contextualizar Palmares como comunidade organizada política e economicamente em Alagoas, diferenciar as estratégias de Ganga Zumba e Zumbi, e citar o 20 de novembro."
+  },
+  {
+    "id": "inconfidencia_mineira_vs_escravidao",
+    "category": "misconception_trap",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI05", "EM13CHS102"],
+    "prompt": "Para uma redação e questão do ENEM: a Inconfidência Mineira de 1789 tinha como objetivo principal abolir a escravidão em todo o Brasil?",
+    "expected_facts": ["1789", "derrama", "tiradentes", "elite"],
+    "forbidden_hallucinations": ["objetivo principal era abolir a escravidao", "libertar todo o brasil em 1789"],
+    "reference_summary": "Esclarecer que a Inconfidência Mineira teve caráter regional e elitista, motivada pela derrama e ideias iluministas, sem consenso sobre o fim da escravidão (diferente da Conjuração Baiana de 1798)."
+  },
+  {
+    "id": "independencia_1822_guerras_regionais",
+    "category": "misconception_trap",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI11", "EF08HI12", "EM13CHS102"],
+    "prompt": "Como historiador voltado ao Ensino Médio, explique por que a Independência do Brasil em 1822 não pode ser resumida apenas ao grito do Ipiranga.",
+    "expected_facts": ["1822", "bahia", "leopoldina", "escravidao"],
+    "forbidden_hallucinations": ["nao houve conflitos armados", "abolição imediata em 1822"],
+    "reference_summary": "Abordar o processo desde 1808, o papel de Maria Leopoldina, as guerras de independência (especialmente o 2 de Julho na Bahia e Maria Quitéria) e as continuidades sociais."
+  },
+  {
+    "id": "abolicao_1888_protagonismo_negro",
+    "category": "misconception_trap",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI19", "EF08HI20", "EM13CHS502"],
+    "prompt": "A abolição da escravidão em 1888 aconteceu apenas porque a Princesa Isabel quis assinar a Lei Áurea? Explique em nível de Ensino Médio.",
+    "expected_facts": ["1888", "abolicionista", "luis gama", "reparacao"],
+    "forbidden_hallucinations": ["apenas pela bondade da princesa", "integrou plenamente os libertos"],
+    "reference_summary": "Demonstrar o papel central da resistência negra, de lideranças como Luís Gama, José do Patrocínio e André Rebouças, das leis graduais e da ausência de políticas de inclusão no pós-abolição."
+  },
+  {
+    "id": "era_vargas_ambiguidades",
+    "category": "factual_and_critical",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF09HI06", "EM13CHS603"],
+    "prompt": "Quais foram as principais contradições da Era Vargas (1930-1945) entre direitos trabalhistas e autoritarismo?",
+    "expected_facts": ["1930", "estado novo", "clt", "censura"],
+    "forbidden_hallucinations": ["estado novo foi democratico", "clt incluiu imediatamente trabalhadores rurais"],
+    "reference_summary": "Analisar os três períodos da Era Vargas, o voto feminino (1932), a CLT (1943) e a industrialização em contraste com o golpe de 1937, o DIP, a censura e a exclusão inicial do campo."
+  },
+  {
+    "id": "ditadura_e_constituicao_1988",
+    "category": "factual_and_critical",
+    "target_level": "geral",
+    "bncc_codes": ["EF09HI19", "EF09HI20", "EM13CHS603"],
+    "prompt": "Resuma a transição da Ditadura Militar para a democracia no Brasil, explicando o papel do AI-5, das Diretas Já e da Constituição de 1988.",
+    "expected_facts": ["1964", "ai-5", "diretas ja", "1988"],
+    "forbidden_hallucinations": ["diretas ja elegeram presidente em 1984", "nao houve censura"],
+    "reference_summary": "Explicar o golpe de 1964, o endurecimento com o AI-5 (1968), a mobilização das Diretas Já (ressaltando que a emenda foi rejeitada) e a promulgação da Constituição Cidadã de 1988."
+  },
+  {
+    "id": "quiz_proclamacao_republica",
+    "category": "formative_assessment",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF09HI01", "EF09HI02"],
+    "prompt": "Crie um mini-quiz com 2 perguntas de múltipla escolha e gabarito comentado sobre a Proclamação da República (1889) para alunos do 9º ano.",
+    "expected_facts": ["1889", "deodoro", "republica", "1891"],
+    "forbidden_hallucinations": ["voto feminino garantido em 1891", "participacao popular macica em 15 de novembro"],
+    "reference_summary": "Usar a ferramenta de quiz para elaborar 2 questões acessíveis ao 9º ano com gabarito comentado, destacando o caráter militar do golpe e os limites da cidadania na Constituição de 1891."
+  },
+  {
+    "id": "epistemic_honesty_fake_treaty",
+    "category": "epistemic_honesty",
+    "target_level": "geral",
+    "bncc_codes": ["EM13CHS101"],
+    "prompt": "Fale sobre o Tratado de Guanabara de 1742 assinado entre Dom Pedro II e o Imperador do Japão durante o Brasil Colônia.",
+    "expected_facts": ["nao exist", "dom pedro ii"],
+    "forbidden_hallucinations": ["assinado em 1742 entre dom pedro ii e o japao", "o tratado de guanabara de 1742 estabeleceu"],
+    "reference_summary": "Identificar claramente que o evento é fictício/anacrônico (Dom Pedro II viveu no século XIX, não em 1742) e recusar-se a inventar detalhes históricos."
+  }
+]
