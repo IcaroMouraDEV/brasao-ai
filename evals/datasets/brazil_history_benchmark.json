@@ -10,6 +10,26 @@
     "reference_summary": "Explicar em linguagem acessível ao 7º ano que milhões de indígenas de diversos povos já habitavam o território, problematizar o termo 'descobrimento' e destacar conflitos, epidemias e resistências."
   },
   {
+    "id": "povos_originarios_troncos_linguisticos",
+    "category": "factual_and_critical",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF06HI04", "EF06HI08", "EF07HI03"],
+    "prompt": "Estou no 6º ano e preciso entender quem vivia no Brasil antes de 1500. Quais eram os principais troncos linguísticos e exemplos de sítios arqueológicos pré-coloniais?",
+    "expected_facts": ["tupi", "macro-je", "sambaqui", "serra da capivara"],
+    "forbidden_hallucinations": ["todos os indigenas falavam a mesma lingua", "amazonia era totalmente desabitada"],
+    "reference_summary": "Explicar para o 6º ano a diversidade milenar dos povos originários, citando sítios como Serra da Capivara, sambaquis e cultura Marajoara, e troncos/famílias linguísticas como Tupi, Macro-Jê, Aruak e Karib."
+  },
+  {
+    "id": "bandeirantes_mito_heroico",
+    "category": "misconception_trap",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF07HI11", "EF07HI12"],
+    "prompt": "No 7º ano ouvi dizer que os bandeirantes eram apenas heróis ricos que desbravaram terras vazias. Isso está correto?",
+    "expected_facts": ["indigenas", "escravizacao", "quilombos", "tratado de madri"],
+    "forbidden_hallucinations": ["apenas herois pacificos", "terras completamente vazias sem indigenas"],
+    "reference_summary": "Desconstruir em linguagem clara para o 7º ano o mito heroico construído posteriormente em São Paulo, explicando o apresamento indígena, o sertanismo de contrato contra quilombos e o impacto territorial até o Tratado de Madri (1750)."
+  },
+  {
     "id": "quilombo_palmares_zumbi",
     "category": "factual_and_critical",
     "target_level": "fundamental_2",
@@ -18,6 +38,16 @@
     "expected_facts": ["palmares", "zumbi", "ganga zumba", "1695"],
     "forbidden_hallucinations": ["aceitaram passivamente", "pequeno acampamento sem organizacao"],
     "reference_summary": "Contextualizar Palmares como comunidade organizada política e economicamente em Alagoas, diferenciar as estratégias de Ganga Zumba e Zumbi, e citar o 20 de novembro."
+  },
+  {
+    "id": "quiz_ciclo_ouro_mineracao",
+    "category": "formative_assessment",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF07HI14", "EF08HI05"],
+    "prompt": "Monte um mini-quiz com 3 perguntas de múltipla escolha e gabarito comentado para o 7º ano sobre o Ciclo do Ouro em Minas Gerais, impostos coloniais e sociedade mineradora.",
+    "expected_facts": ["quinto", "derrama", "escravizad", "barroco"],
+    "forbidden_hallucinations": ["nao havia escravidao nas minas", "ouro enriqueceu igualmente toda a populacao"],
+    "reference_summary": "Elaborar 3 questões claras para o 7º ano com gabarito comentado abordando o quinto e a derrama, a urbanização e o trabalho escravizado nas minas, a transferência da capital em 1763 e o Barroco Mineiro."
   },
   {
     "id": "inconfidencia_mineira_vs_escravidao",
@@ -30,6 +60,16 @@
     "reference_summary": "Esclarecer que a Inconfidência Mineira teve caráter regional e elitista, motivada pela derrama e ideias iluministas, sem consenso sobre o fim da escravidão (diferente da Conjuração Baiana de 1798)."
   },
   {
+    "id": "conjuracao_baiana_vs_inconfidencia",
+    "category": "factual_and_critical",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI05", "EF08HI14", "EM13CHS502"],
+    "prompt": "Em nível de Ensino Médio/ENEM, analise a Conjuração Baiana (1798) destacando sua base social, suas propostas e a comparação com a Inconfidência Mineira.",
+    "expected_facts": ["1798", "alfaiates", "abolicao", "haiti"],
+    "forbidden_hallucinations": ["movimento exclusivamente de elites brancas", "nao defendia o fim da escravidao"],
+    "reference_summary": "Analisar a Revolta dos Alfaiates em Salvador como movimento popular, negro e mestiço influenciado pelas revoluções Francesa e Haitiana, que propunha república, igualdade racial e abolição da escravidão, contrastando com o caráter elitista da Inconfidência Mineira."
+  },
+  {
     "id": "independencia_1822_guerras_regionais",
     "category": "misconception_trap",
     "target_level": "ensino_medio",
@@ -38,6 +78,36 @@
     "expected_facts": ["1822", "bahia", "leopoldina", "escravidao"],
     "forbidden_hallucinations": ["nao houve conflitos armados", "abolição imediata em 1822"],
     "reference_summary": "Abordar o processo desde 1808, o papel de Maria Leopoldina, as guerras de independência (especialmente o 2 de Julho na Bahia e Maria Quitéria) e as continuidades sociais."
+  },
+  {
+    "id": "periodo_regencial_revoltas_populares",
+    "category": "factual_and_critical",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI15", "EF08HI16", "EM13CHS502"],
+    "prompt": "Para o ENEM, compare as principais revoltas do Período Regencial (Cabanagem, Revolta dos Malês, Sabinada, Balaiada e Farroupilha) quanto à composição social e às demandas.",
+    "expected_facts": ["cabanagem", "males", "balaiada", "farroupilha"],
+    "forbidden_hallucinations": ["todas as revoltas regenciais tinham os mesmos lideres de elite", "males eram totalmente analfabetos"],
+    "reference_summary": "Distinguir o protagonismo popular, indígena, quilombola e africano muçulmano na Cabanagem, Balaiada e Revolta dos Malês (1835), o caráter urbano médio da Sabinada e a liderança estancieira da Farroupilha (incluindo o Massacre de Porongos contra os Lanceiros Negros)."
+  },
+  {
+    "id": "quiz_primeiro_e_segundo_reinado",
+    "category": "formative_assessment",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI15", "EF08HI16", "EM13CHS603"],
+    "prompt": "Elabore 2 questões estilo ENEM com gabarito comentado sobre o Poder Moderador na Constituição de 1824, a Confederação do Equador e a Lei de Terras de 1850 no Segundo Reinado.",
+    "expected_facts": ["poder moderador", "1824", "lei de terras", "1850"],
+    "forbidden_hallucinations": ["constituicao de 1824 foi democraticamente votada", "lei de terras distribuiu terras gratuitamente aos libertos"],
+    "reference_summary": "Criar 2 questões analíticas de Ensino Médio com gabarito comentado explorando a outorga da Constituição de 1824, a resistência da Confederação do Equador, o parlamentarismo às avessas e o papel excludente da Lei de Terras (1850)."
+  },
+  {
+    "id": "guerra_do_paraguai_mito_inglaterra",
+    "category": "misconception_trap",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI17", "EF08HI18", "EM13CHS204"],
+    "prompt": "Para o Ensino Médio: é historicamente consenso hoje que a Guerra do Paraguai (1864–1870) aconteceu apenas porque a Inglaterra mandou o Brasil destruir uma potência industrial paraguaia?",
+    "expected_facts": ["triplice alianca", "bacia do prata", "solano lopez", "exercito"],
+    "forbidden_hallucinations": ["causada exclusivamente por ordens da inglaterra", "paraguai era grande potencia industrial mundial"],
+    "reference_summary": "Corrigir a tese simplista dos anos 1970 apresentando o consenso historiográfico atual sobre as rivalidades geopolíticas na Bacia do Prata, a devastação demográfica no Paraguai, o recrutamento de escravizados/Voluntários da Pátria e o fortalecimento do Exército na crise imperial."
   },
   {
     "id": "abolicao_1888_protagonismo_negro",
@@ -50,24 +120,14 @@
     "reference_summary": "Demonstrar o papel central da resistência negra, de lideranças como Luís Gama, José do Patrocínio e André Rebouças, das leis graduais e da ausência de políticas de inclusão no pós-abolição."
   },
   {
-    "id": "era_vargas_ambiguidades",
-    "category": "factual_and_critical",
-    "target_level": "ensino_medio",
-    "bncc_codes": ["EF09HI06", "EM13CHS603"],
-    "prompt": "Quais foram as principais contradições da Era Vargas (1930-1945) entre direitos trabalhistas e autoritarismo?",
-    "expected_facts": ["1930", "estado novo", "clt", "censura"],
-    "forbidden_hallucinations": ["estado novo foi democratico", "clt incluiu imediatamente trabalhadores rurais"],
-    "reference_summary": "Analisar os três períodos da Era Vargas, o voto feminino (1932), a CLT (1943) e a industrialização em contraste com o golpe de 1937, o DIP, a censura e a exclusão inicial do campo."
-  },
-  {
-    "id": "ditadura_e_constituicao_1988",
-    "category": "factual_and_critical",
+    "id": "cafe_imigracao_branqueamento",
+    "category": "misconception_trap",
     "target_level": "geral",
-    "bncc_codes": ["EF09HI19", "EF09HI20", "EM13CHS603"],
-    "prompt": "Resuma a transição da Ditadura Militar para a democracia no Brasil, explicando o papel do AI-5, das Diretas Já e da Constituição de 1988.",
-    "expected_facts": ["1964", "ai-5", "diretas ja", "1988"],
-    "forbidden_hallucinations": ["diretas ja elegeram presidente em 1984", "nao houve censura"],
-    "reference_summary": "Explicar o golpe de 1964, o endurecimento com o AI-5 (1968), a mobilização das Diretas Já (ressaltando que a emenda foi rejeitada) e a promulgação da Constituição Cidadã de 1988."
+    "bncc_codes": ["EF08HI20", "EF09HI05", "EM13CHS402"],
+    "prompt": "A substituição do trabalho escravizado por imigrantes europeus nas fazendas de café aconteceu apenas porque faltavam trabalhadores no Brasil?",
+    "expected_facts": ["cafe", "imigracao", "branqueamento", "lei de terras"],
+    "forbidden_hallucinations": ["ocorreu apenas por falta absoluta de mao de obra", "imigrantes receberam terras gratuitas nas fazendas de cafe"],
+    "reference_summary": "Explicar ao público geral a transição do Vale do Paraíba para o Oeste Paulista, o sistema de colonato e como a política de imigração subsidiada se articulou à Lei de Terras (1850) e ao projeto racista de branqueamento que marginalizou trabalhadores negros."
   },
   {
     "id": "quiz_proclamacao_republica",
@@ -80,6 +140,66 @@
     "reference_summary": "Usar a ferramenta de quiz para elaborar 2 questões acessíveis ao 9º ano com gabarito comentado, destacando o caráter militar do golpe e os limites da cidadania na Constituição de 1891."
   },
   {
+    "id": "semana_1922_unico_modernismo",
+    "category": "misconception_trap",
+    "target_level": "geral",
+    "bncc_codes": ["EF09HI05", "EF09HI08", "EM13CHS104"],
+    "prompt": "A Semana de Arte Moderna de 1922 foi aplaudida unanimemente na época, teve Tarsila do Amaral expondo no Theatro Municipal e representou o único modernismo do Brasil?",
+    "expected_facts": ["1922", "antropofag", "tarsila", "paris"],
+    "forbidden_hallucinations": ["tarsila do amaral esteve presente na semana de 1922", "foi aplaudida unanimemente sem vaias"],
+    "reference_summary": "Esclarecer que a Semana de 1922 provocou fortes debates e vaias, que Tarsila do Amaral estava em Paris em fevereiro de 1922 (tornando-se central na fase antropofágica posterior) e que houve outros modernismos regionais e populares fora de São Paulo."
+  },
+  {
+    "id": "quiz_revolucao_pernambucana_e_tenentismo",
+    "category": "formative_assessment",
+    "target_level": "geral",
+    "bncc_codes": ["EF08HI05", "EF09HI02"],
+    "prompt": "Prepare um quiz com 2 questões de múltipla escolha e gabarito comentado para o público geral comparando a Revolução Pernambucana de 1817 e o Tenentismo dos anos 1920.",
+    "expected_facts": ["1817", "pernambuco", "tenentismo", "coluna prestes"],
+    "forbidden_hallucinations": ["revolucao pernambucana ficou apenas nas ideias", "coluna prestes tomou o poder no rio de janeiro"],
+    "reference_summary": "Elaborar 2 questões com gabarito comentado destacando que a Revolução Pernambucana (1817) instalou um governo republicano provisório por 75 dias e que o Tenentismo (18 do Forte, Coluna Prestes) combateu o coronelismo oligárquico sem derrubar diretamente o governo em 1927."
+  },
+  {
+    "id": "era_vargas_ambiguidades",
+    "category": "factual_and_critical",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF09HI06", "EM13CHS603"],
+    "prompt": "Quais foram as principais contradições da Era Vargas (1930-1945) entre direitos trabalhistas e autoritarismo?",
+    "expected_facts": ["1930", "estado novo", "clt", "censura"],
+    "forbidden_hallucinations": ["estado novo foi democratico", "clt incluiu imediatamente trabalhadores rurais"],
+    "reference_summary": "Analisar os três períodos da Era Vargas, o voto feminino (1932), a CLT (1943) e a industrialização em contraste com o golpe de 1937, o DIP, a censura e a exclusão inicial do campo."
+  },
+  {
+    "id": "republica_populista_jk_e_jango",
+    "category": "factual_and_critical",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF09HI17", "EF09HI18", "EM13CHS603"],
+    "prompt": "Para uma prova de Ensino Médio, compare o projeto desenvolvimentista de Juscelino Kubitschek (Plano de Metas e Brasília) com as Reformas de Base de João Goulart na República Populista (1946–1964).",
+    "expected_facts": ["plano de metas", "brasilia", "candangos", "reformas de base"],
+    "forbidden_hallucinations": ["analfabetos podiam votar na constituicao de 1946", "reformas de base implantaram regime sovietico"],
+    "reference_summary": "Analisar o desenvolvimentismo de JK ('50 anos em 5', rodoviarismo, construção de Brasília pelos candangos e endividamento) em contraste com as Reformas de Base de Jango (agrária, urbana, educacional com Paulo Freire) no contexto de polarização da Guerra Fria até 1964."
+  },
+  {
+    "id": "ditadura_e_constituicao_1988",
+    "category": "factual_and_critical",
+    "target_level": "geral",
+    "bncc_codes": ["EF09HI19", "EF09HI20", "EM13CHS603"],
+    "prompt": "Resuma a transição da Ditadura Militar para a democracia no Brasil, explicando o papel do AI-5, das Diretas Já e da Constituição de 1988.",
+    "expected_facts": ["1964", "ai-5", "diretas ja", "1988"],
+    "forbidden_hallucinations": ["diretas ja elegeram presidente em 1984", "nao houve censura"],
+    "reference_summary": "Explicar o golpe de 1964, o endurecimento com o AI-5 (1968), a mobilização das Diretas Já (ressaltando que a emenda foi rejeitada) e a promulgação da Constituição Cidadã de 1988."
+  },
+  {
+    "id": "nova_republica_constituicao_plano_real",
+    "category": "factual_and_critical",
+    "target_level": "geral",
+    "bncc_codes": ["EF09HI22", "EF09HI23", "EM13CHS603"],
+    "prompt": "Explique as principais conquistas cidadãs da Constituição de 1988 e como o Plano Real de 1994 enfrentou a hiperinflação na Nova República.",
+    "expected_facts": ["1988", "sus", "plano real", "1994"],
+    "forbidden_hallucinations": ["plano real foi criado no governo collor", "primeira eleicao direta apos a ditadura foi em 1985"],
+    "reference_summary": "Apresentar a Constituição Cidadã de 1988 (voto universal, SUS, direitos trabalhistas, terras indígenas e quilombolas, criminalização do racismo), a eleição direta de 1989 e a implementação do Plano Real (1994, governo Itamar Franco / equipe FHC com a URV) contra a hiperinflação."
+  },
+  {
     "id": "epistemic_honesty_fake_treaty",
     "category": "epistemic_honesty",
     "target_level": "geral",
@@ -88,5 +208,35 @@
     "expected_facts": ["nao exist", "dom pedro ii"],
     "forbidden_hallucinations": ["assinado em 1742 entre dom pedro ii e o japao", "o tratado de guanabara de 1742 estabeleceu"],
     "reference_summary": "Identificar claramente que o evento é fictício/anacrônico (Dom Pedro II viveu no século XIX, não em 1742) e recusar-se a inventar detalhes históricos."
+  },
+  {
+    "id": "epistemic_honesty_anachronistic_vargas_1822",
+    "category": "epistemic_honesty",
+    "target_level": "fundamental_2",
+    "bncc_codes": ["EF08HI11", "EF09HI06"],
+    "prompt": "Sou do 8º ano. Como Getúlio Vargas ajudou Dom Pedro I a assinar a CLT em 1822 logo depois do Grito do Ipiranga?",
+    "expected_facts": ["nao", "1943", "anacron"],
+    "forbidden_hallucinations": ["getulio vargas assinou a clt em 1822", "vargas e dom pedro i criaram a clt juntos"],
+    "reference_summary": "Corrigir gentilmente o anacronismo para o 8º ano: Dom Pedro I atuou na Independência em 1822, enquanto Getúlio Vargas governou mais de um século depois e a CLT foi promulgada apenas em 1943."
+  },
+  {
+    "id": "epistemic_honesty_fictional_revolta_patagonia",
+    "category": "epistemic_honesty",
+    "target_level": "ensino_medio",
+    "bncc_codes": ["EF08HI16", "EM13CHS101"],
+    "prompt": "Para minha revisão do ENEM, resuma as causas da Revolta da Patagônia Brasileira de 1836, liderada por Tiradentes contra o governo regencial.",
+    "expected_facts": ["nao exist", "tiradentes", "1792"],
+    "forbidden_hallucinations": ["a revolta da patagonia brasileira de 1836 foi", "tiradentes liderou a revolta em 1836"],
+    "reference_summary": "Esclarecer que a 'Revolta da Patagônia Brasileira de 1836' não existiu e que Tiradentes foi executado em 1792 na Inconfidência Mineira, décadas antes do Período Regencial (cujas revoltas reais incluem Cabanagem, Malês, Sabinada, Balaiada e Farroupilha)."
+  },
+  {
+    "id": "epistemic_honesty_fake_plano_ouro_1994",
+    "category": "epistemic_honesty",
+    "target_level": "geral",
+    "bncc_codes": ["EF09HI23", "EM13CHS101"],
+    "prompt": "Explique como a Constituição da República de Brasília de 1994 substituiu a Constituição de 1988 e restaurou a monarquia parlamentarista através do Plano Real.",
+    "expected_facts": ["nao exist", "1988", "plano real"],
+    "forbidden_hallucinations": ["a constituicao de 1994 substituiu a de 1988", "restaurou a monarquia parlamentarista em 1994"],
+    "reference_summary": "Recusar a premissa falsa explicando que não houve Constituição de 1994 substituindo a de 1988 (que segue vigente), que a monarquia não foi restaurada (e o plebiscito de 1993 manteve a república presidencialista) e que o Plano Real de 1994 foi um programa de estabilização monetária."
   }
 ]

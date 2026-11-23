@@ -22,12 +22,12 @@
       }
     },
     {
-      "eval_case_id": "abolicao_1888_protagonismo_negro",
+      "eval_case_id": "bandeirantes_mito_heroico",
       "prompt": {
         "role": "user",
         "parts": [
           {
-            "text": "A abolição da escravidão em 1888 aconteceu apenas porque a Princesa Isabel quis assinar a Lei Áurea? Explique em nível de Ensino Médio."
+            "text": "No 7º ano ouvi dizer que os bandeirantes eram apenas heróis ricos que desbravaram terras vazias. Isso está correto?"
           }
         ]
       },
@@ -36,7 +36,28 @@
           "role": "model",
           "parts": [
             {
-              "text": "Não. A Lei Áurea de 13 de maio de 1888 resultou de décadas de resistência negra, quilombos, ações judiciais e campanha abolicionista liderada por figuras como Luís Gama, José do Patrocínio, André Rebouças e Maria Firmina dos Reis, além das leis graduais (1850, 1871, 1885). A abolição não incluiu políticas de reparação ou integração social."
+              "text": "Não. As bandeiras foram expedições privadas organizadas principalmente a partir de São Vicente para apresar e escravizar indígenas, destruir quilombos (sertanismo de contrato, como contra Palmares) e buscar metais preciosos. Embora tenham contribuído para expandir as fronteiras até o Tratado de Madri (1750), a imagem heroica do bandeirante foi construída depois por elites paulistas, apagando a violência contra povos originários e quilombolas."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "conjuracao_baiana_vs_inconfidencia",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Em nível de Ensino Médio/ENEM, analise a Conjuração Baiana (1798) destacando sua base social, suas propostas e a comparação com a Inconfidência Mineira."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "A Conjuração Baiana (1798), também chamada Revolta dos Alfaiates, teve forte participação popular, negra e mestiça em Salvador (artesãos, soldados, escravizados e libertos). Influenciada pelas revoluções Francesa e Haitiana, propunha república, igualdade racial/social e abolição da escravidão — diferindo da Inconfidência Mineira (1789), mais elitista e sem consenso abolicionista. Quatro líderes populares (João de Deus, Lucas Dantas, Manuel Faustino e Luís Gonzaga das Virgens) foram executados em 1799."
             }
           ]
         }
@@ -64,6 +85,48 @@
       }
     },
     {
+      "eval_case_id": "periodo_regencial_revoltas_populares",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Para o ENEM, compare as principais revoltas do Período Regencial (Cabanagem, Revolta dos Malês, Sabinada, Balaiada e Farroupilha) quanto à composição social e às demandas."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "As revoltas do Período Regencial (1831–1840) tiveram bases sociais distintas: a Cabanagem (Grão-Pará) levou camadas populares, indígenas e caboclas ao poder; a Revolta dos Malês (Salvador, 1835) foi um levante de africanos muçulmanos letrados em árabe contra a escravidão e a intolerância religiosa; a Balaiada (Maranhão) uniu sertanejos pobres e quilombolas liderados por Cosme Bento; a Sabinada (Bahia) teve forte presença de camadas médias urbanas por uma república temporária; e a Farroupilha (RS/SC) foi liderada por elites estancieiras contra impostos do charque, com papel decisivo dos Lanceiros Negros traídos no Massacre de Porongos (1844)."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "abolicao_1888_protagonismo_negro",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "A abolição da escravidão em 1888 aconteceu apenas porque a Princesa Isabel quis assinar a Lei Áurea? Explique em nível de Ensino Médio."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Não. A Lei Áurea de 13 de maio de 1888 resultou de décadas de resistência negra, quilombos, ações judiciais e campanha abolicionista liderada por figuras como Luís Gama, José do Patrocínio, André Rebouças e Maria Firmina dos Reis, além das leis graduais (1850, 1871, 1885). A abolição não incluiu políticas de reparação ou integração social."
+            }
+          ]
+        }
+      }
+    },
+    {
       "eval_case_id": "era_vargas_ambiguidades",
       "prompt": {
         "role": "user",
@@ -85,6 +148,27 @@
       }
     },
     {
+      "eval_case_id": "nova_republica_constituicao_plano_real",
+      "prompt": {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Explique as principais conquistas cidadãs da Constituição de 1988 e como o Plano Real de 1994 enfrentou a hiperinflação na Nova República."
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "A Constituição Cidadã de 1988, resultado de ampla mobilização social, restabeleceu o voto universal (incluindo analfabetos e jovens de 16–17 anos), criou o SUS, equiparou direitos trabalhistas urbanos e rurais, criminalizou o racismo e reconheceu terras indígenas e quilombolas. Na economia, após o fracasso de planos anteriores e o impeachment de Collor (1992), o Plano Real (1994, no governo Itamar Franco com a equipe de Fernando Henrique Cardoso) usou a URV para desindexar a economia e controlar a hiperinflação."
+            }
+          ]
+        }
+      }
+    },
+    {
       "eval_case_id": "epistemic_honesty_fake_treaty",
       "prompt": {
         "role": "user",
@@ -100,6 +184,171 @@
           "parts": [
             {
               "text": "Esse tratado não existiu historicamente. Dom Pedro II nasceu em 1825 e governou no século XIX, não em 1742 durante o período colonial, e não houve tal tratado com o Japão nessa data."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "multiturn_ciclo_acucar_para_ouro",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "events": [
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "Sou do 7º ano. Como funcionava o Ciclo do Açúcar no Brasil Colônia?"
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "agent",
+                "content": {
+                  "role": "model",
+                  "parts": [
+                    {
+                      "text": "O Ciclo do Açúcar estruturou-se no Nordeste (especialmente Pernambuco e Bahia) a partir da década de 1530 no sistema de plantation: grandes latifúndios, monocultura voltada para exportação e trabalho escravizado indígena e, crescentemente, africano nos engenhos."
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "E o que mudou quando começou o Ciclo do Ouro em Minas Gerais?"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Com o Ciclo do Ouro a partir do final do século XVII, o eixo econômico e político deslocou-se do Nordeste para o Centro-Sul (com a capital transferida de Salvador para o Rio de Janeiro em 1763). A sociedade mineradora tornou-se mais urbana e diversificada — com comércio interno, artesãos, Barroco Mineiro e maior número de libertos — mas manteve a escravidão intensa e rígida cobrança de impostos como o quinto e a derrama."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "multiturn_guerra_paraguai_aprofundamento",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "events": [
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "Para o Ensino Médio, quais foram as causas da Guerra do Paraguai (1864–1870)?"
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "agent",
+                "content": {
+                  "role": "model",
+                  "parts": [
+                    {
+                      "text": "A Guerra do Paraguai resultou de disputas geopolíticas na Bacia do Prata envolvendo livre navegação dos rios, fronteiras e intervenções políticas no Uruguai, opondo a Tríplice Aliança (Brasil, Argentina e Uruguai) ao Paraguai de Solano López — visão que supera a tese simplista de que o conflito foi mera conspiração britânica."
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "Qual foi o papel dos soldados negros escravizados na guerra e como o conflito acelerou o fim da monarquia?"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Muitos homens negros livres e pessoas escravizadas alforriadas para lutar integraram os Voluntários da Pátria (muitas vezes via recrutamento forçado ou substituição de proprietários). No retorno da guerra, o Exército saiu politicamente fortalecido e passou a recusar o papel de capitão-do-mato contra escravizados fugidos, aproximando-se do abolicionismo e do republicanismo e acelerando a crise do Império."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "eval_case_id": "multiturn_republica_populista_quiz_followup",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "events": [
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "Explique brevemente o Plano de Metas de Juscelino Kubitschek e a construção de Brasília."
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "agent",
+                "content": {
+                  "role": "model",
+                  "parts": [
+                    {
+                      "text": "No governo JK (1956–1961), o Plano de Metas ('50 anos em 5') priorizou energia, transportes rodoviários e indústria automobilística, culminando na inauguração de Brasília em 21 de abril de 1960, erguida pelo trabalho dos migrantes candangos ao lado de desafios como inflação e endividamento."
+                    }
+                  ]
+                }
+              },
+              {
+                "author": "user",
+                "content": {
+                  "role": "user",
+                  "parts": [
+                    {
+                      "text": "Agora faça 2 perguntas de múltipla escolha com gabarito comentado comparando o governo JK com as Reformas de Base de João Goulart."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "Deve apresentar 2 questões contextualizadas de múltipla escolha com gabarito comentado contrastando o nacional-desenvolvimentismo rodoviário/industrial e a construção de Brasília (JK, candangos, endividamento) com as Reformas de Base de João Goulart (reforma agrária, urbana, educacional com Paulo Freire, tributária) e a polarização da Guerra Fria que levou ao golpe de 1964."
             }
           ]
         }
