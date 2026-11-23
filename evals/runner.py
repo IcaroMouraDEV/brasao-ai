@@ -13,10 +13,12 @@ from typing import Any
 
 from app.config import ModelProfile, Settings, load_settings
 from app.prompts import PROMPT_VERSION
+from evals.judge import JudgeInvoker, grade_case_with_judge, is_rate_limit_error
 from evals.rubrics import (
     BenchmarkCase,
     CaseEvaluationResult,
     ComparisonReport,
+    JudgeScore,
     OperationalMetrics,
     aggregate_profile_summary,
     estimate_query_cost_usd,
@@ -118,10 +120,7 @@ def _simulate_dry_run_response(
 
 def _is_rate_limit_error(exc: Exception) -> bool:
     """Return True when an exception indicates an HTTP 429 / quota rate-limit response."""
-    text = f"{type(exc).__name__}: {exc}".lower()
-    return any(
-        token in text for token in ("429", "resource_exhausted", "rate limit", "quota")
-    )
+    return is_rate_limit_error(exc)
 
 
 async def _invoke_with_rate_limit_retry(
@@ -157,9 +156,17 @@ async def run_benchmark(
     settings: Settings | None = None,
     remote_request_delay_s: float | None = None,
     max_rate_limit_retries: int = 4,
+    use_judge: bool = False,
+    judge_model: str | None = None,
+    judge_invoker: JudgeInvoker | None = None,
 ) -> tuple[ComparisonReport, Path, Path]:
     """Run the comparative benchmark and write JSON and Markdown report artifacts."""
     resolved_settings = settings or load_settings()
+    resolved_judge_model = (
+        (judge_model or resolved_settings.eval_judge_model).strip()
+        if use_judge
+        else None
+    )
     delay_s = (
         remote_request_delay_s
         if remote_request_delay_s is not None
@@ -168,6 +175,12 @@ async def run_benchmark(
     cases = load_benchmark_dataset(dataset_path)
     all_results: list[CaseEvaluationResult] = []
     summaries = []
+
+    redacted_identifiers = (
+        resolved_settings.gemini_model,
+        resolved_settings.ollama_model,
+        f"ollama_chat/{resolved_settings.ollama_model}",
+    )
 
     for profile in profiles:
         model_id = resolved_settings.resolved_model_label(profile)
@@ -204,6 +217,32 @@ async def run_benchmark(
 
             tps = round(out_tok / (latency_ms / 1000.0), 2) if latency_ms > 0 else 0.0
             cost = estimate_query_cost_usd(profile, model_id, in_tok, out_tok)
+            accuracy = score_deterministic_accuracy(case, response_text)
+            pedagogy = score_heuristic_pedagogy(case, response_text)
+
+            judge_score: JudgeScore | None = None
+            judge_notes = ""
+            if use_judge and resolved_judge_model is not None:
+                if (
+                    not dry_run
+                    and judge_invoker is None
+                    and delay_s > 0
+                    and not resolved_judge_model.startswith(("ollama_chat/", "ollama/"))
+                ):
+                    await asyncio.sleep(delay_s)
+                judge_score = await grade_case_with_judge(
+                    case=case,
+                    response_text=response_text,
+                    accuracy=accuracy,
+                    pedagogy=pedagogy,
+                    judge_model=resolved_judge_model,
+                    extra_identifiers=(*redacted_identifiers, model_id),
+                    candidate_error=error_msg,
+                    dry_run=dry_run,
+                    judge_invoker=judge_invoker,
+                    max_rate_limit_retries=max_rate_limit_retries,
+                )
+                judge_notes = judge_score.rationale
 
             result = CaseEvaluationResult(
                 case_id=case.id,
@@ -211,8 +250,8 @@ async def run_benchmark(
                 profile=profile,
                 model_id=model_id,
                 response_text=response_text,
-                accuracy=score_deterministic_accuracy(case, response_text),
-                pedagogy=score_heuristic_pedagogy(case, response_text),
+                accuracy=accuracy,
+                pedagogy=pedagogy,
                 operational=OperationalMetrics(
                     latency_ms=round(latency_ms, 2),
                     input_tokens=in_tok,
@@ -221,6 +260,8 @@ async def run_benchmark(
                     estimated_cost_usd=round(cost, 6),
                     offline_capable=offline_capable,
                 ),
+                judge=judge_score,
+                judge_notes=judge_notes,
                 error=error_msg,
             )
             profile_results.append(result)
@@ -238,6 +279,8 @@ async def run_benchmark(
         prompt_version=PROMPT_VERSION,
         dataset_path=str(dataset_path),
         dry_run=dry_run,
+        use_judge=use_judge,
+        judge_model=resolved_judge_model,
         summaries=summaries,
         results=all_results,
     )
@@ -293,6 +336,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=4,
         help="Max exponential-backoff retries on HTTP 429 / RESOURCE_EXHAUSTED responses.",
     )
+    parser.add_argument(
+        "--use-judge",
+        action="store_true",
+        help="Enable blind LLM-as-a-judge grading alongside deterministic checks.",
+    )
+    parser.add_argument(
+        "--judge-model",
+        type=str,
+        default=None,
+        help="Model identifier used for LLM-as-a-judge grading (defaults to Settings.eval_judge_model).",
+    )
     return parser.parse_args(argv)
 
 
@@ -307,6 +361,8 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             dry_run=args.dry_run,
             remote_request_delay_s=args.remote_delay,
             max_rate_limit_retries=args.max_rate_limit_retries,
+            use_judge=args.use_judge,
+            judge_model=args.judge_model,
         )
     )
     print(f"Benchmark completed ({len(report.results)} evaluations).")
