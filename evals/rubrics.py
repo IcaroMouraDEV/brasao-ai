@@ -132,6 +132,7 @@ class CaseEvaluationResult(BaseModel):
     category: str
     profile: ModelProfile
     model_id: str
+    tools_enabled: bool = True
     response_text: str
     accuracy: HistoricalAccuracyScore
     pedagogy: PedagogicalQualityScore
@@ -147,6 +148,7 @@ class ProfileSummary(BaseModel):
     profile: ModelProfile
     model_id: str
     offline_capable: bool
+    tools_enabled: bool = True
     total_cases: int
     error_count: int
     avg_accuracy_5: float
@@ -171,6 +173,7 @@ class ComparisonReport(BaseModel):
     prompt_version: str
     dataset_path: str
     dry_run: bool
+    tools_enabled: bool = True
     use_judge: bool = False
     judge_model: str | None = None
     summaries: list[ProfileSummary]
@@ -302,6 +305,8 @@ def aggregate_profile_summary(
     model_id: str,
     offline_capable: bool,
     results: list[CaseEvaluationResult],
+    *,
+    tools_enabled: bool = True,
 ) -> ProfileSummary:
     """Aggregate per-case results into a single profile summary row."""
     total = len(results)
@@ -310,6 +315,7 @@ def aggregate_profile_summary(
             profile=profile,
             model_id=model_id,
             offline_capable=offline_capable,
+            tools_enabled=tools_enabled,
             total_cases=0,
             error_count=0,
             avg_accuracy_5=0.0,
@@ -349,6 +355,7 @@ def aggregate_profile_summary(
         profile=profile,
         model_id=model_id,
         offline_capable=offline_capable,
+        tools_enabled=tools_enabled,
         total_cases=total,
         error_count=sum(1 for r in results if r.error is not None),
         avg_accuracy_5=round(
@@ -396,6 +403,12 @@ def render_markdown_report(report: ComparisonReport) -> str:
         else "`disabled` (deterministic + heuristic checks only)"
     )
 
+    tools_line = (
+        "`enabled` (curated corpus / hybrid RAG, timeline, and quiz tools)"
+        if report.tools_enabled
+        else "`disabled` (pure model memory ablation — zero corpus/RAG tools)"
+    )
+
     lines = [
         "# Brasão AI — Local (Ollama) vs. Remote (Gemini) ADK 2.0 Benchmark",
         "",
@@ -403,6 +416,7 @@ def render_markdown_report(report: ComparisonReport) -> str:
         f"- **Prompt version:** `{report.prompt_version}`",
         f"- **Dataset:** `{report.dataset_path}`",
         f"- **Mode:** `{'dry-run (simulated)' if report.dry_run else 'live'}`",
+        f"- **Tools / Hybrid RAG:** {tools_line}",
         f"- **LLM-as-a-judge:** {judge_line}",
         "",
         "## Executive Summary",
@@ -412,8 +426,8 @@ def render_markdown_report(report: ComparisonReport) -> str:
     if has_judge:
         lines.extend(
             [
-                "| Profile | Model | Offline | Det. Accuracy (/5) | Fact Recall | Hallucination Cases | Det. Pedagogy (/5) | Judge Accuracy (/5) | Judge Pedagogy (/5) | Judge Overall (/5) | Judge Graded | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
-                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
+                "| Profile | Model | Tools / RAG | Offline | Det. Accuracy (/5) | Fact Recall | Hallucination Cases | Det. Pedagogy (/5) | Judge Accuracy (/5) | Judge Pedagogy (/5) | Judge Overall (/5) | Judge Graded | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
+                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
             ]
         )
         for summary in report.summaries:
@@ -422,6 +436,7 @@ def render_markdown_report(report: ComparisonReport) -> str:
                 graded_label += f" ({summary.judge_fallback_cases} fallback)"
             lines.append(
                 f"| `{summary.profile}` | `{summary.model_id}` | "
+                f"{'Yes' if summary.tools_enabled else 'No'} | "
                 f"{'Yes' if summary.offline_capable else 'No'} | "
                 f"{summary.avg_accuracy_5:.2f} | {summary.avg_fact_recall:.1%} | "
                 f"{summary.hallucination_case_count}/{summary.total_cases} | "
@@ -436,13 +451,14 @@ def render_markdown_report(report: ComparisonReport) -> str:
     else:
         lines.extend(
             [
-                "| Profile | Model | Offline | Accuracy (/5) | Fact Recall | Hallucination Cases | SDG 4 Pedagogy (/5) | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
-                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
+                "| Profile | Model | Tools / RAG | Offline | Accuracy (/5) | Fact Recall | Hallucination Cases | SDG 4 Pedagogy (/5) | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
+                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
             ]
         )
         for summary in report.summaries:
             lines.append(
                 f"| `{summary.profile}` | `{summary.model_id}` | "
+                f"{'Yes' if summary.tools_enabled else 'No'} | "
                 f"{'Yes' if summary.offline_capable else 'No'} | "
                 f"{summary.avg_accuracy_5:.2f} | {summary.avg_fact_recall:.1%} | "
                 f"{summary.hallucination_case_count}/{summary.total_cases} | "

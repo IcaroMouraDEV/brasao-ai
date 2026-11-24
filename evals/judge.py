@@ -19,7 +19,9 @@ from evals.rubrics import (
 
 JudgeInvoker = Callable[[str, str], Awaitable[JudgeVerdict | dict[str, Any] | str]]
 
-_DRY_RUN_TAG_RE = re.compile(r"\[DRY-RUN:(?:remote|local)\]\s*", re.IGNORECASE)
+_DRY_RUN_TAG_RE = re.compile(
+    r"\[DRY-RUN:(?:remote|local)(?::[a-z0-9_-]+)?\]\s*", re.IGNORECASE
+)
 _CODE_FENCE_RE = re.compile(
     r"^\s*```(?:json)?\s*(.*?)\s*```\s*$", re.IGNORECASE | re.DOTALL
 )

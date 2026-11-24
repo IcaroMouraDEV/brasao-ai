@@ -92,6 +92,8 @@ async def _invoke_live_adk_agent(
     profile: ModelProfile,
     prompt: str,
     case_id: str,
+    *,
+    enable_tools: bool = True,
 ) -> tuple[str, int, int, float]:
     """Execute a single prompt against the ADK 2.0 workflow via `InMemoryRunner`."""
     from google.adk.runners import InMemoryRunner
@@ -99,15 +101,20 @@ async def _invoke_live_adk_agent(
 
     from app.agent import TERMINAL_NODE_NAME, create_history_tutor_agent
 
-    agent = create_history_tutor_agent(settings=settings, profile=profile)
-    app_name = f"brasao_ai_eval_{profile}"
+    agent = create_history_tutor_agent(
+        settings=settings,
+        profile=profile,
+        enable_tools=enable_tools,
+    )
+    mode_tag = "rag" if enable_tools else "notools"
+    app_name = f"brasao_ai_eval_{profile}_{mode_tag}"
     user_id = "benchmark_evaluator"
 
     runner = InMemoryRunner(agent=agent, app_name=app_name)
     session = await runner.session_service.create_session(
         app_name=app_name,
         user_id=user_id,
-        session_id=f"{profile}_{case_id}",
+        session_id=f"{profile}_{mode_tag}_{case_id}",
     )
 
     content = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
@@ -135,18 +142,30 @@ async def _invoke_live_adk_agent(
 
 
 def _simulate_dry_run_response(
-    case: BenchmarkCase, profile: ModelProfile
+    case: BenchmarkCase,
+    profile: ModelProfile,
+    *,
+    enable_tools: bool = True,
 ) -> tuple[str, int, int, float]:
     """Produce a deterministic offline dry-run response to validate the benchmark pipeline."""
     facts_line = ", ".join(case.expected_facts)
+    mode_suffix = "" if enable_tools else ":no-tools"
+    context_label = (
+        "Análise histórica contextualizada"
+        if enable_tools
+        else "Análise histórica sem ferramentas (memória paramétrica)"
+    )
     response = (
-        f"[DRY-RUN:{profile}] Análise histórica contextualizada ({case.target_level}): "
+        f"[DRY-RUN:{profile}{mode_suffix}] {context_label} ({case.target_level}): "
         f"{case.reference_summary}\n"
         f"- Elementos verificados: {facts_line}.\n"
         "- Perspectiva crítica: como esse processo histórico se conecta às desigualdades e à "
         "cidadania no Brasil contemporâneo?"
     )
-    simulated_latency = 420.0 if profile == "remote" else 980.0
+    if enable_tools:
+        simulated_latency = 420.0 if profile == "remote" else 980.0
+    else:
+        simulated_latency = 280.0 if profile == "remote" else 620.0
     input_tokens = max(20, int(len(case.prompt.split()) * 1.3))
     output_tokens = max(40, int(len(response.split()) * 1.3))
     return response, input_tokens, output_tokens, simulated_latency
@@ -165,12 +184,20 @@ async def _invoke_with_rate_limit_retry(
     max_retries: int = 4,
     base_backoff_s: float = 15.0,
     remote_case_timeout_s: float = 180.0,
+    *,
+    enable_tools: bool = True,
 ) -> tuple[str, int, int, float]:
     """Invoke the live ADK agent with exponential backoff for Gemini 429/503/504 limits."""
     attempt = 0
     while True:
         try:
-            coro = _invoke_live_adk_agent(settings, profile, prompt, case_id)
+            coro = _invoke_live_adk_agent(
+                settings,
+                profile,
+                prompt,
+                case_id,
+                enable_tools=enable_tools,
+            )
             if profile == "remote" and remote_case_timeout_s > 0:
                 return await asyncio.wait_for(coro, timeout=remote_case_timeout_s)
             return await coro
@@ -191,6 +218,20 @@ async def _invoke_with_rate_limit_retry(
             await asyncio.sleep(delay)
 
 
+def _select_benchmark_cases(
+    cases: list[BenchmarkCase],
+    case_ids: list[str] | None,
+) -> list[BenchmarkCase]:
+    """Optionally filter a frozen benchmark dataset to an explicit ordered list of case IDs."""
+    if not case_ids:
+        return cases
+    by_id = {case.id: case for case in cases}
+    missing = [cid for cid in case_ids if cid not in by_id]
+    if missing:
+        raise ValueError(f"Unknown benchmark case IDs: {', '.join(missing)}")
+    return [by_id[cid] for cid in case_ids]
+
+
 async def run_benchmark(
     profiles: list[ModelProfile],
     dataset_path: Path = DEFAULT_DATASET_PATH,
@@ -202,9 +243,12 @@ async def run_benchmark(
     use_judge: bool = False,
     judge_model: str | None = None,
     judge_invoker: JudgeInvoker | None = None,
+    disable_tools: bool = False,
+    case_ids: list[str] | None = None,
 ) -> tuple[ComparisonReport, Path, Path]:
     """Run the comparative benchmark and write JSON and Markdown report artifacts."""
     resolved_settings = settings or load_settings()
+    enable_tools = not disable_tools
     resolved_judge_model = (
         (judge_model or resolved_settings.eval_judge_model).strip()
         if use_judge
@@ -215,7 +259,7 @@ async def run_benchmark(
         if remote_request_delay_s is not None
         else float(os.getenv("REMOTE_REQUEST_DELAY_S", "0.0"))
     )
-    cases = load_benchmark_dataset(dataset_path)
+    cases = _select_benchmark_cases(load_benchmark_dataset(dataset_path), case_ids)
     all_results: list[CaseEvaluationResult] = []
     summaries = []
 
@@ -238,7 +282,11 @@ async def run_benchmark(
             try:
                 if dry_run:
                     response_text, in_tok, out_tok, latency_ms = (
-                        _simulate_dry_run_response(case, profile)
+                        _simulate_dry_run_response(
+                            case,
+                            profile,
+                            enable_tools=enable_tools,
+                        )
                     )
                 else:
                     (
@@ -252,6 +300,7 @@ async def run_benchmark(
                         case.prompt,
                         case.id,
                         max_retries=max_rate_limit_retries,
+                        enable_tools=enable_tools,
                     )
             except Exception as exc:
                 response_text = ""
@@ -292,6 +341,7 @@ async def run_benchmark(
                 category=case.category,
                 profile=profile,
                 model_id=model_id,
+                tools_enabled=enable_tools,
                 response_text=response_text,
                 accuracy=accuracy,
                 pedagogy=pedagogy,
@@ -316,8 +366,9 @@ async def run_benchmark(
                     else ""
                 )
                 err_str = f" ERROR={error_msg}" if error_msg else ""
+                tools_tag = "rag" if enable_tools else "no-tools"
                 print(
-                    f"[{profile}:{model_id}] {idx + 1}/{len(cases)} {case.id} "
+                    f"[{profile}:{model_id}:{tools_tag}] {idx + 1}/{len(cases)} {case.id} "
                     f"acc={accuracy.accuracy_score_5:.2f} ped={pedagogy.pedagogy_avg_5:.2f}"
                     f"{judge_str} latency={latency_ms:.0f}ms{err_str}",
                     flush=True,
@@ -325,7 +376,11 @@ async def run_benchmark(
 
         summaries.append(
             aggregate_profile_summary(
-                profile, model_id, offline_capable, profile_results
+                profile,
+                model_id,
+                offline_capable,
+                profile_results,
+                tools_enabled=enable_tools,
             )
         )
 
@@ -335,6 +390,7 @@ async def run_benchmark(
         prompt_version=PROMPT_VERSION,
         dataset_path=str(dataset_path),
         dry_run=dry_run,
+        tools_enabled=enable_tools,
         use_judge=use_judge,
         judge_model=resolved_judge_model,
         summaries=summaries,
@@ -343,8 +399,9 @@ async def run_benchmark(
 
     reports_dir.mkdir(parents=True, exist_ok=True)
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
-    json_path = reports_dir / f"comparison_{stamp}.json"
-    md_path = reports_dir / f"comparison_{stamp}.md"
+    suffix = "" if enable_tools else "_notools"
+    json_path = reports_dir / f"comparison_{stamp}{suffix}.json"
+    md_path = reports_dir / f"comparison_{stamp}{suffix}.md"
 
     json_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
     md_path.write_text(render_markdown_report(report), encoding="utf-8")
@@ -379,6 +436,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Simulate model outputs offline to verify the benchmark harness end-to-end.",
+    )
+    parser.add_argument(
+        "--disable-tools",
+        action="store_true",
+        help="Disable curated corpus/RAG, timeline, and quiz tools (pure model memory ablation).",
+    )
+    parser.add_argument(
+        "--case-ids",
+        nargs="+",
+        default=None,
+        help="Optional subset of benchmark case IDs to execute from the frozen dataset.",
     )
     parser.add_argument(
         "--remote-delay",
@@ -419,6 +487,8 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             max_rate_limit_retries=args.max_rate_limit_retries,
             use_judge=args.use_judge,
             judge_model=args.judge_model,
+            disable_tools=args.disable_tools,
+            case_ids=args.case_ids,
         )
     )
     print(f"Benchmark completed ({len(report.results)} evaluations).")

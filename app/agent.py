@@ -24,12 +24,15 @@ ROOT_AGENT_NAME = "brasao_ai"
 def create_history_tutor_agent(
     settings: Settings | None = None,
     profile: ModelProfile | None = None,
+    *,
+    enable_tools: bool = True,
 ) -> Workflow:
     """Instantiate the ADK 2.0 `Workflow` with identical nodes, prompts, and tools across profiles."""
     return create_history_tutor_workflow(
         settings=settings,
         profile=profile,
         name=ROOT_AGENT_NAME,
+        enable_tools=enable_tools,
     )
 
 
