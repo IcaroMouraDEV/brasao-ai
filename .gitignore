@@ -227,3 +227,8 @@ evals/reports/*.md
 
 # Local security-gate reports
 security-reports/
+
+# Generated offline hybrid RAG SQLite index (rebuilt via scripts/build_rag_index.py)
+app/data/rag_index.sqlite3
+app/data/*.sqlite3
+app/data/*.sqlite3-*

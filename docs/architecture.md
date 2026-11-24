@@ -22,10 +22,11 @@ flowchart TD
     ModelFactory -->|remote| Gemini["Google Gemini (ADK Native + Vertex AI / AI Studio)"]
     ModelFactory -->|local| Ollama["Ollama via LiteLlm (ollama_chat/model)"]
 
-    Researcher --> T1["search_historical_corpus"]
+    Researcher --> T1["search_historical_corpus (Hybrid RAG: BM25 + Ollama Embeddings + RRF)"]
     Researcher --> T2["lookup_timeline"]
     Adapter --> T3["build_quiz_blueprint"]
-    T1 & T2 & T3 --> Corpus["Curated BNCC Corpus (app/data/brazil_history_corpus.json)"]
+    T1 --> RAG["Offline SQLite Hybrid Index (app/data/rag_index.sqlite3, BM25 fallback)"]
+    RAG & T2 & T3 --> Corpus["Curated BNCC Corpus + CF/88 + Primary Sources + ENEM (app/data/)"]
 
     Entry --> EvalCLI["agents-cli eval (tests/eval/)"]
     Entry --> Bench["Comparative Benchmark (evals/runner.py)"]
@@ -58,7 +59,7 @@ Every turn runs through a deterministic 4-node `google.adk.Workflow` DAG defined
 4. **Evolution Path**
    - **Phase 1 (Baseline Harness — Completed):** Grounded single ADK 2.0 `Agent` with curated BNCC tools + dual-model benchmark + GCP Terraform IaC.
    - **Phase 2 (ADK 2.0 Workflow — Implemented):** Multi-node `google.adk.Workflow` DAG (`TopicRouter` -> `HistoricalResearcher` -> `PedagogicalAdapter` -> `FactVerifier`) with strict local/remote parity.
-   - **Phase 3 (Offline Hybrid RAG):** Swap lexical retrieval in `app/tools/corpus.py` for a local vector index + Ollama embeddings while preserving the tool interface.
+   - **Phase 3 (Offline Hybrid RAG — Implemented):** `search_historical_corpus` runs hybrid retrieval (pure-Python BM25 + local Ollama `nomic-embed-text` dense cosine similarity fused via Reciprocal Rank Fusion) over a gitignored SQLite index built by `scripts/build_rag_index.py` from `app/data/brazil_history_corpus.json` and curated BNCC, Constituição de 1988, primary source, and ENEM references (`app/data/sources/`), with automatic offline BM25 fallback and verified source citations (`source_id`, `document`, `bncc_codes`). Both `local` and `remote` profiles query the exact same index with zero divergence.
 
 ## Repository Layout
 

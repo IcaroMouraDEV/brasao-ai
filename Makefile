@@ -1,6 +1,7 @@
-.PHONY: install lint format test check ollama-up ollama-pull playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
+.PHONY: install lint format test check ollama-up ollama-pull ollama-pull-embed rag-index rag-index-lexical playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
 
 OLLAMA_MODEL ?= gemma3:4b
+OLLAMA_EMBED_MODEL ?= nomic-embed-text
 AGENTS_CLI ?= uvx google-agents-cli
 
 install:
@@ -27,6 +28,15 @@ ollama-up:
 
 ollama-pull:
 	docker compose exec ollama ollama pull $(OLLAMA_MODEL)
+
+ollama-pull-embed:
+	docker compose exec ollama ollama pull $(OLLAMA_EMBED_MODEL)
+
+rag-index:
+	uv run python scripts/build_rag_index.py --embed-model $(OLLAMA_EMBED_MODEL)
+
+rag-index-lexical:
+	uv run python scripts/build_rag_index.py --no-embeddings
 
 playground-remote:
 	MODEL_PROFILE=remote $(AGENTS_CLI) playground

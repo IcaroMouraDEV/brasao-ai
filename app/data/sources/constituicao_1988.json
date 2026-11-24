@@ -1,0 +1,75 @@
+[
+  {
+    "source_id": "cf88:preambulo_art1_art3",
+    "document": "Constituição da República Federativa do Brasil de 1988 — Preâmbulo, Art. 1º e Art. 3º",
+    "source_type": "constitution",
+    "title": "Fundamentos e Objetivos da República na Constituição Cidadã de 1988",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": ["nova_republica_constituicao_1988_plano_real"],
+    "bncc_codes": ["EF09HI22", "EF09HI23", "EM13CHS603"],
+    "text": "Promulgada em 5 de outubro de 1988 após o fim da Ditadura Militar, a Constituição Federal estabelece no Art. 1º que a República Federativa do Brasil constitui-se em Estado Democrático de Direito e tem como fundamentos a soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa e o pluralismo político. No Art. 3º, define como objetivos fundamentais construir uma sociedade livre, justa e solidária, garantir o desenvolvimento nacional, erradicar a pobreza e a marginalização, reduzir as desigualdades sociais e regionais e promover o bem de todos, sem preconceitos de origem, raça, sexo, cor, idade e quaisquer outras formas de discriminação."
+  },
+  {
+    "source_id": "cf88:art5_direitos_garantias",
+    "document": "Constituição da República Federativa do Brasil de 1988 — Título II, Art. 5º",
+    "source_type": "constitution",
+    "title": "Direitos e Garantias Fundamentais e Criminalização do Racismo (CF/1988, Art. 5º)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "ditadura_militar_e_redemocratizacao_1964_1988"
+    ],
+    "bncc_codes": ["EF09HI22", "EF09HI23", "EM13CHS502", "EM13CHS603"],
+    "text": "Em resposta direta ao autoritarismo e à censura da Ditadura Militar (1964–1985), o Art. 5º da Constituição de 1988 consagra a igualdade de todos perante a lei, a livre manifestação do pensamento, a proibição da censura política, ideológica e artística, o direito ao habeas corpus, a proibição da tortura e do tratamento desumano ou degradante (inciso III) e define que a prática do racismo constitui crime inafiançável e imprescritível (inciso XLII), conquista histórica da mobilização do Movimento Negro na Assembleia Constituinte."
+  },
+  {
+    "source_id": "cf88:art205_206_educacao",
+    "document": "Constituição da República Federativa do Brasil de 1988 — Título VIII, Arts. 205 e 206",
+    "source_type": "constitution",
+    "title": "Direito Universal à Educação Pública e Pluralismo Pedagógico (CF/1988, Arts. 205–206)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": ["nova_republica_constituicao_1988_plano_real"],
+    "bncc_codes": ["EF09HI23", "EM13CHS502", "EM13CHS603"],
+    "text": "O Art. 205 da Constituição de 1988 determina que a educação é direito de todos e dever do Estado e da família, promovida visando ao pleno desenvolvimento da pessoa, seu preparo para o exercício da cidadania e sua qualificação para o trabalho. O Art. 206 fixa princípios como igualdade de condições para o acesso e permanência na escola, liberdade de aprender, ensinar, pesquisar e divulgar o pensamento, pluralismo de ideias e gratuidade do ensino público em estabelecimentos oficiais — pilares diretamente alinhados à ODS 4 da ONU (Educação de Qualidade)."
+  },
+  {
+    "source_id": "cf88:art215_216_patrimonio",
+    "document": "Constituição da República Federativa do Brasil de 1988 — Título VIII, Arts. 215 e 216",
+    "source_type": "constitution",
+    "title": "Direitos Culturais e Patrimônio Indígena, Popular e Afro-Brasileiro (CF/1988, Arts. 215–216)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "quilombo_dos_palmares_resistencia"
+    ],
+    "bncc_codes": ["EF09HI26", "EM13CHS104", "EM13CHS502"],
+    "text": "Os artigos 215 e 216 da Constituição Federal garantem o pleno exercício dos direitos culturais e determinam que o Estado protegerá as manifestações das culturas populares, indígenas e afro-brasileiras e de outros grupos participantes do processo civilizatório nacional. O Art. 216 amplia o conceito de patrimônio cultural brasileiro para bens de natureza material e imaterial e declara tombados todos os documentos e sítios detentores de reminiscências históricas dos antigos quilombos."
+  },
+  {
+    "source_id": "cf88:art231_indigenas",
+    "document": "Constituição da República Federativa do Brasil de 1988 — Título VIII, Art. 231",
+    "source_type": "constitution",
+    "title": "Direitos Originários dos Povos Indígenas sobre Terras e Culturas (CF/1988, Art. 231)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "povos_originarios_pre_coloniais"
+    ],
+    "bncc_codes": ["EF09HI23", "EF09HI26", "EM13CHS502"],
+    "text": "Rompendo com a política tutelar e assimilacionista anterior, o Art. 231 da Constituição de 1988 reconhece aos povos indígenas sua organização social, costumes, línguas, crenças e tradições, e os direitos originários sobre as terras que tradicionalmente ocupam, competindo à União demarcá-las, proteger e fazer respeitar todos os seus bens. Esse avanço resultou da intensa articulação política de lideranças indígenas — como Ailton Krenak — durante a Assembleia Nacional Constituinte de 1987–1988."
+  },
+  {
+    "source_id": "cf88:adct_art68_quilombolas",
+    "document": "Constituição da República Federativa do Brasil de 1988 — ADCT, Art. 68",
+    "source_type": "constitution",
+    "title": "Reconhecimento das Terras de Comunidades Remanescentes de Quilombos (ADCT, Art. 68)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "quilombo_dos_palmares_resistencia",
+      "abolicao_escravidao_1888"
+    ],
+    "bncc_codes": ["EF09HI26", "EM13CHS502"],
+    "text": "O Art. 68 do Ato das Disposições Constitucionais Transitórias (ADCT) da Constituição de 1988 estabelece que aos remanescentes das comunidades dos quilombos que estejam ocupando suas terras é reconhecida a propriedade definitiva, devendo o Estado emitir-lhes os títulos respectivos. O dispositivo representa um marco jurídico de reparação histórica e valorização da resistência negra no campo e na cidade."
+  }
+]

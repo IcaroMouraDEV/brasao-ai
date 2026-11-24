@@ -1,0 +1,89 @@
+[
+  {
+    "source_id": "primary:carta_caminha_1500",
+    "document": "Fonte Primária — Carta de Pero Vaz de Caminha a El-Rei Dom Manuel I (1º de maio de 1500)",
+    "source_type": "primary_source",
+    "title": "Carta de Pero Vaz de Caminha (1500): Olhar Eurocêntrico e Encontro Colonial",
+    "period": "Brasil Colônia",
+    "topic_ids": ["brasil_colonial_povos_indigenas_1500"],
+    "bncc_codes": ["EF07HI10", "EF07HI12", "EM13CHS101"],
+    "text": "Escrita em Porto Seguro em 1º de maio de 1500 pelo escrivão da armada de Pedro Álvares Cabral, a Carta de Pero Vaz de Caminha descreve a terra e os povos Tupiniquim sob o ponto de vista mercantil, cristão e eurocêntrico da Coroa Portuguesa. Ao afirmar que o melhor fruto a tirar da terra seria 'salvar esta gente' (catequese) e enfatizar a fertilidade agrícola ('em se plantando tudo dá'), o documento deve ser lido criticamente como fonte do colonizador, e não como retrato neutro ou prova de um encontro pacífico."
+  },
+  {
+    "source_id": "primary:constituicao_1824_poder_moderador",
+    "document": "Fonte Primária — Constituição Política do Império do Brasil (25 de março de 1824), Art. 98",
+    "source_type": "primary_source",
+    "title": "Constituição Outorgada de 1824 e o Poder Moderador (Art. 98)",
+    "period": "Brasil Império",
+    "topic_ids": ["primeiro_reinado_1822_1831", "segundo_reinado_politica_economia_1840_1889"],
+    "bncc_codes": ["EF08HI15", "EF08HI16", "EM13CHS603"],
+    "text": "Outorgada por Dom Pedro I em 25 de março de 1824 após o fechamento da Assembleia Constituinte de 1823, a primeira Constituição brasileira instituiu quatro poderes e definiu no Art. 98 que 'o Poder Moderador é a chave de toda a organização política, e é delegado privativamente ao Imperador'. Na prática, o Poder Moderador permitia ao monarca dissolver a Câmara dos Deputados, nomear senadores vitalícios e intervir no Executivo e no Judiciário, somando-se ao voto censitário (baseado em renda) e à manutenção da escravidão."
+  },
+  {
+    "source_id": "primary:lei_eusebio_lei_terras_1850",
+    "document": "Fonte Primária — Lei Eusébio de Queirós (Lei nº 581/1850) e Lei de Terras (Lei nº 601/1850)",
+    "source_type": "primary_source",
+    "title": "Legislação de 1850: Fim do Tráfico Transatlântico e Concentração Fundiária",
+    "period": "Brasil Império",
+    "topic_ids": [
+      "segundo_reinado_politica_economia_1840_1889",
+      "ciclo_do_cafe_e_imigracao_1850_1930",
+      "abolicao_escravidao_1888"
+    ],
+    "bncc_codes": ["EF08HI17", "EF08HI19", "EM13CHS401"],
+    "text": "Aprovadas no mesmo ano de 1850, a Lei Eusébio de Queirós (Lei nº 581/1850) proibiu definitivamente o tráfico transatlântico de africanos escravizados para o Brasil sob pressão britânica e interna, enquanto a Lei de Terras (Lei nº 601/1850) determinou que as terras devolutas só poderiam ser adquiridas mediante compra. Combinadas, essas leis redirecionaram capitais para a economia cafeeira e impediram que trabalhadores pobres, imigrantes e futuros libertos tivessem acesso gratuito à propriedade rural, consolidando a concentração fundiária brasileira."
+  },
+  {
+    "source_id": "primary:lei_aurea_1888",
+    "document": "Fonte Primária — Lei nº 3.353 de 13 de maio de 1888 (Lei Áurea)",
+    "source_type": "primary_source",
+    "title": "Texto da Lei Áurea (1888) e sua Leitura Histórica Crítica",
+    "period": "Brasil Império",
+    "topic_ids": ["abolicao_escravidao_1888"],
+    "bncc_codes": ["EF08HI19", "EF08HI20", "EM13CHS502"],
+    "text": "Com apenas dois artigos — 'Art. 1º: É declarada extinta desde a data desta lei a escravidão no Brasil. Art. 2º: Revogam-se as disposições em contrário' — a Lei nº 3.353/1888, assinada pela Princesa Isabel, formalizou o fim legal do regime escravista após o Brasil ser o último país das Américas a aboli-lo. A historiografia destaca que a lei foi conquistada por séculos de resistência negra, fugas coletivas, quilombos, ações judiciais de liberdade e campanhas abolicionistas lideradas por nomes como Luiz Gama, José do Patrocínio, André Rebouças e Maria Firmina dos Reis, mas não previu reforma agrária, indenização aos libertos nem políticas públicas de inclusão."
+  },
+  {
+    "source_id": "primary:manifesto_antropofago_1928",
+    "document": "Fonte Primária — Manifesto Antropófago (Oswald de Andrade, 1928) e Semana de 1922",
+    "source_type": "primary_source",
+    "title": "Antropofagia Cultural e Ruptura Estética no Modernismo Brasileiro",
+    "period": "Brasil República",
+    "topic_ids": ["semana_de_arte_moderna_1922"],
+    "bncc_codes": ["EF09HI05", "EF09HI08", "EM13CHS104"],
+    "text": "Desdobrando os debates estéticos inaugurados na Semana de Arte Moderna de 1922 no Theatro Municipal de São Paulo, o Manifesto Antropófago (1928), de Oswald de Andrade, propôs metaforicamente 'devorar' criticamente as influências artísticas europeias e indígenas ('Tupi, or not tupi, that is the question') para produzir uma arte brasileira original, em ruptura com o academicismo parnasiano. Ao mesmo tempo, a historiografia atual destaca que os modernismos brasileiros foram plurais e incluíram movimentos fora de São Paulo, como no Nordeste e em Minas Gerais."
+  },
+  {
+    "source_id": "primary:clt_1943_era_vargas",
+    "document": "Fonte Primária — Decreto-Lei nº 5.452 de 1º de maio de 1943 (Consolidação das Leis do Trabalho — CLT)",
+    "source_type": "primary_source",
+    "title": "Consolidação das Leis do Trabalho (CLT, 1943) e Trabalhismo na Era Vargas",
+    "period": "Brasil República",
+    "topic_ids": ["era_vargas_1930_1945"],
+    "bncc_codes": ["EF09HI06", "EF09HI07", "EM13CHS401"],
+    "text": "Promulgada durante o Estado Novo pelo Decreto-Lei nº 5.452 de 1º de maio de 1943, a Consolidação das Leis do Trabalho (CLT) reuniu e sistematizou normas de proteção ao trabalhador urbano — como jornada de oito horas, férias remuneradas, carteira profissional, salário mínimo e Justiça do Trabalho. Embora frequentemente apresentada pela propaganda do DIP como 'dádiva' de Getúlio Vargas, a CLT incorporou reivindicações históricas do movimento operário desde a Primeira República, ao mesmo tempo em que atrelou os sindicatos ao Estado e excluiu inicialmente os trabalhadores rurais e domésticos."
+  },
+  {
+    "source_id": "primary:ai5_1968_ditadura",
+    "document": "Fonte Primária — Ato Institucional nº 5 (13 de dezembro de 1968)",
+    "source_type": "primary_source",
+    "title": "Ato Institucional nº 5 (AI-5, 1968): Suspensão de Garantias e Anos de Chumbo",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": ["ditadura_militar_e_redemocratizacao_1964_1988"],
+    "bncc_codes": ["EF09HI19", "EF09HI20", "EM13CHS603"],
+    "text": "Editado em 13 de dezembro de 1968 pelo regime militar durante o governo Costa e Silva, o Ato Institucional nº 5 (AI-5) autorizou o Presidente da República a decretar o recesso do Congresso Nacional, das Assembleias Legislativas e das Câmaras Municipais, cassar mandatos eletivos, suspender direitos políticos por dez anos e suprimir a garantia do habeas corpus nos casos de crimes políticos (Art. 10). O AI-5 inaugurou o período mais repressivo da Ditadura Militar, marcado por censura prévia à imprensa e às artes, prisões arbitrárias, tortura e desaparecimentos políticos documentados pela Comissão Nacional da Verdade."
+  },
+  {
+    "source_id": "primary:discurso_ulysses_1988",
+    "document": "Fonte Primária — Discurso de Ulysses Guimarães na Promulgação da Constituição de 1988 (5 de outubro de 1988)",
+    "source_type": "primary_source",
+    "title": "Ulysses Guimarães e a Proclamação da 'Constituição Cidadã' (1988)",
+    "period": "Brasil Contemporâneo",
+    "topic_ids": [
+      "nova_republica_constituicao_1988_plano_real",
+      "ditadura_militar_e_redemocratizacao_1964_1988"
+    ],
+    "bncc_codes": ["EF09HI22", "EF09HI23", "EM13CHS603"],
+    "text": "Ao promulgar a nova Carta em 5 de outubro de 1988 como presidente da Assembleia Nacional Constituinte, o deputado Ulysses Guimarães batizou o texto de 'Constituição Cidadã' por resultar de ampla participação popular e emendas de movimentos sociais. Em trecho célebre, declarou: 'Traição é a ditadura. Temos ódio à ditadura. Ódio e nojo', reafirmando o compromisso da Nova República com as eleições diretas, o voto facultativo para jovens de 16 e 17 anos e analfabetos, a liberdade sindical e os direitos sociais."
+  }
+]

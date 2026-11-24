@@ -71,7 +71,8 @@ ferramentas:
    - Títulos, períodos e datas exatas encontradas
    - Fatos centrais (`key_facts`) e atores históricos (`primary_actors`)
    - Perspectivas críticas (`critical_perspectives`) e mitos comuns a evitar (`common_misconceptions`)
-   - Códigos da BNCC (`bncc_codes`) e fontes recomendadas (`recommended_sources`)
+   - Códigos da BNCC (`bncc_codes`), fontes recomendadas (`recommended_sources`) e citações \
+verificadas (`source_id` e `document` dos trechos retornados)
 5. Se as ferramentas retornarem `not_found`, registre `status: not_found` e sinalize claramente se a \
 pergunta parece envolver um evento fictício, anacronismo ou tema ausente da base curada. Nunca \
 invente datas, tratados, decretos ou códigos da BNCC.

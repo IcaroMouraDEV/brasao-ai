@@ -12,6 +12,14 @@ from app.tools import (
     search_historical_corpus,
 )
 from app.tools.corpus import load_corpus
+from app.tools.rag import clear_rag_index_cache
+
+
+@pytest.fixture(autouse=True)
+def _force_offline_lexical_for_tool_unit_tests(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RAG_ENABLE_DENSE", "false")
+    clear_rag_index_cache()
+
 
 REQUIRED_CORPUS_FIELDS = {
     "id",
@@ -132,6 +140,12 @@ def test_search_historical_corpus_is_accent_insensitive_across_expanded_topics(
     result = search_historical_corpus(query)
     assert result["status"] == "ok"
     assert result["entries"][0]["id"] == expected_id
+    assert result["entries"][0]["source_id"]
+    assert result["entries"][0]["document"]
+    assert len(result["chunks"]) >= 1
+    assert result["chunks"][0]["source_id"]
+    assert result["chunks"][0]["document"]
+    assert isinstance(result["chunks"][0]["bncc_codes"], list)
 
 
 def test_search_historical_corpus_returns_not_found_for_fictional_event() -> None:
