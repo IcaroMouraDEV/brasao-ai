@@ -10,7 +10,9 @@ from app.models import build_model
 from app.prompts import (
     FACT_VERIFIER_INSTRUCTION,
     HISTORICAL_RESEARCHER_INSTRUCTION,
+    HISTORICAL_RESEARCHER_NO_TOOLS_INSTRUCTION,
     PEDAGOGICAL_ADAPTER_INSTRUCTION,
+    PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION,
     TOPIC_ROUTER_INSTRUCTION,
 )
 from app.tools import (
@@ -43,6 +45,7 @@ def create_history_tutor_workflow(
     profile: ModelProfile | None = None,
     *,
     name: str = "brasao_ai",
+    enable_tools: bool = True,
 ) -> Workflow:
     """Build the ADK 2.0 multi-node `Workflow` with strict local/remote model parity.
 
@@ -51,7 +54,9 @@ def create_history_tutor_workflow(
 
     Every LLM node calls `app.models.build_model(resolved_settings, profile=active_profile)`
     so swapping `MODEL_PROFILE` (`local` vs. `remote`) swaps the entire workflow graph
-    without changing prompts, tools, or node wiring.
+    without changing prompts, tools, or node wiring. When `enable_tools=False`, curated
+    corpus/RAG, timeline, and quiz tools are omitted identically across profiles for
+    controlled pure-memory ablation experiments.
     """
     resolved_settings = settings or load_settings(profile_override=profile)
     active_profile = profile or resolved_settings.model_profile
@@ -75,12 +80,23 @@ def create_history_tutor_workflow(
         description=(
             "Queries search_historical_corpus and lookup_timeline to gather grounded "
             "Brazilian History facts, perspectives, and BNCC codes."
+            if enable_tools
+            else "Gathers Brazilian History facts and perspectives from parametric memory "
+            "(no external tools/RAG ablation mode)."
         ),
-        instruction=HISTORICAL_RESEARCHER_INSTRUCTION,
-        tools=[
-            search_historical_corpus,
-            lookup_timeline,
-        ],
+        instruction=(
+            HISTORICAL_RESEARCHER_INSTRUCTION
+            if enable_tools
+            else HISTORICAL_RESEARCHER_NO_TOOLS_INSTRUCTION
+        ),
+        tools=(
+            [
+                search_historical_corpus,
+                lookup_timeline,
+            ]
+            if enable_tools
+            else []
+        ),
         output_key=EVIDENCE_STATE_KEY,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
@@ -93,10 +109,12 @@ def create_history_tutor_workflow(
             "Drafts a pt-BR explanation, timeline synthesis, or formative quiz aligned "
             "with UN SDG 4, BNCC, and the student's target school level."
         ),
-        instruction=PEDAGOGICAL_ADAPTER_INSTRUCTION,
-        tools=[
-            build_quiz_blueprint,
-        ],
+        instruction=(
+            PEDAGOGICAL_ADAPTER_INSTRUCTION
+            if enable_tools
+            else PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
+        ),
+        tools=[build_quiz_blueprint] if enable_tools else [],
         output_key=DRAFT_STATE_KEY,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
@@ -115,13 +133,19 @@ def create_history_tutor_workflow(
         disallow_transfer_to_peers=True,
     )
 
+    workflow_description = (
+        "UN SDG 4 multi-node educational workflow specialized in the History of Brazil, "
+        "orchestrating TopicRouter -> HistoricalResearcher -> PedagogicalAdapter -> "
+        "FactVerifier over curated BNCC-aligned corpus, timeline, and quiz tools."
+        if enable_tools
+        else "UN SDG 4 multi-node educational workflow specialized in the History of Brazil, "
+        "orchestrating TopicRouter -> HistoricalResearcher -> PedagogicalAdapter -> "
+        "FactVerifier in pure-memory ablation mode (tools and hybrid RAG disabled)."
+    )
+
     return Workflow(
         name=name,
-        description=(
-            "UN SDG 4 multi-node educational workflow specialized in the History of Brazil, "
-            "orchestrating TopicRouter -> HistoricalResearcher -> PedagogicalAdapter -> "
-            "FactVerifier over curated BNCC-aligned corpus, timeline, and quiz tools."
-        ),
+        description=workflow_description,
         edges=[
             (
                 START,

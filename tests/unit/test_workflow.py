@@ -350,3 +350,46 @@ async def test_a2a_agent_card_builder_supports_workflow_root_agent() -> None:
     ).build()
     assert card.name == ROOT_AGENT_NAME
     assert len(card.skills) >= 1
+
+
+def test_workflow_disable_tools_removes_all_tools_with_strict_parity() -> None:
+    settings = Settings(gemini_model="gemini-3.8-flash", ollama_model="gemma3:4b")
+    remote_no_tools = create_history_tutor_agent(
+        settings=settings,
+        profile="remote",
+        enable_tools=False,
+    )
+    local_no_tools = create_history_tutor_agent(
+        settings=settings,
+        profile="local",
+        enable_tools=False,
+    )
+
+    assert remote_no_tools.name == local_no_tools.name == ROOT_AGENT_NAME
+    assert remote_no_tools.description == local_no_tools.description
+
+    remote_nodes = iter_workflow_agents(remote_no_tools)
+    local_nodes = iter_workflow_agents(local_no_tools)
+    assert tuple(node.name for node in remote_nodes) == WORKFLOW_NODE_ORDER
+    assert tuple(node.name for node in local_nodes) == WORKFLOW_NODE_ORDER
+
+    for remote_node, local_node in zip(remote_nodes, local_nodes, strict=True):
+        assert remote_node.name == local_node.name
+        assert remote_node.instruction == local_node.instruction
+        assert remote_node.output_key == local_node.output_key
+        assert _tool_names(remote_node) == []
+        assert _tool_names(local_node) == []
+
+    by_name = {node.name: node for node in local_nodes}
+    assert "modo de ablação sem ferramentas" in str(
+        by_name[HISTORICAL_RESEARCHER_NODE_NAME].instruction
+    )
+    assert "modo de ablação sem ferramentas" in str(
+        by_name[PEDAGOGICAL_ADAPTER_NODE_NAME].instruction
+    )
+    assert f"{{{ROUTING_STATE_KEY}?}}" in str(
+        by_name[HISTORICAL_RESEARCHER_NODE_NAME].instruction
+    )
+    assert f"{{{EVIDENCE_STATE_KEY}?}}" in str(
+        by_name[PEDAGOGICAL_ADAPTER_NODE_NAME].instruction
+    )

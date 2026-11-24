@@ -462,3 +462,73 @@ async def test_dry_run_with_use_judge_stays_fully_offline(tmp_path: Path) -> Non
         r.judge is not None and r.judge.judge_model == "ollama_chat/gemma3:4b"
         for r in custom_report.results
     )
+
+
+def test_parse_args_supports_disable_tools_and_case_ids() -> None:
+    default_args = _parse_args([])
+    assert default_args.disable_tools is False
+    assert default_args.case_ids is None
+
+    ablation_args = _parse_args(
+        [
+            "--profiles",
+            "local",
+            "--disable-tools",
+            "--case-ids",
+            "colonial_indigenas_eurocentrismo",
+            "epistemic_honesty_fake_treaty",
+        ]
+    )
+    assert ablation_args.profiles == ["local"]
+    assert ablation_args.disable_tools is True
+    assert ablation_args.case_ids == [
+        "colonial_indigenas_eurocentrismo",
+        "epistemic_honesty_fake_treaty",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_dry_run_disable_tools_ablation_and_case_id_filtering(
+    tmp_path: Path,
+) -> None:
+    selected_ids = [
+        "colonial_indigenas_eurocentrismo",
+        "epistemic_honesty_fake_treaty",
+    ]
+    report, json_path, md_path = await run_benchmark(
+        profiles=["local"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path,
+        dry_run=True,
+        use_judge=True,
+        disable_tools=True,
+        case_ids=selected_ids,
+    )
+
+    assert report.tools_enabled is False
+    assert len(report.summaries) == 1
+    assert report.summaries[0].tools_enabled is False
+    assert report.summaries[0].total_cases == 2
+    assert [r.case_id for r in report.results] == selected_ids
+    assert all(r.tools_enabled is False for r in report.results)
+    assert json_path.name.endswith("_notools.json")
+    assert md_path.name.endswith("_notools.md")
+
+    markdown = md_path.read_text(encoding="utf-8")
+    assert "Tools / Hybrid RAG:" in markdown
+    assert "pure model memory ablation" in markdown
+    assert "| `local` |" in markdown
+
+    sanitized = sanitize_response_for_blind_judging(
+        "[DRY-RUN:local:no-tools] Explicação sobre 1500."
+    )
+    assert "[DRY-RUN:local:no-tools]" not in sanitized
+
+    with pytest.raises(ValueError, match="Unknown benchmark case IDs"):
+        await run_benchmark(
+            profiles=["local"],
+            dataset_path=DEFAULT_DATASET_PATH,
+            reports_dir=tmp_path,
+            dry_run=True,
+            case_ids=["nonexistent_case_id"],
+        )
