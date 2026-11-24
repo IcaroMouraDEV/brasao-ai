@@ -69,6 +69,60 @@ class OperationalMetrics(BaseModel):
     offline_capable: bool
 
 
+class JudgeVerdict(BaseModel):
+    """Structured LLM-as-a-judge output schema (0-5 per sub-criterion + rationale)."""
+
+    fact_coverage_score_5: float = Field(
+        description="0-5 score for factual coverage of expected_facts."
+    )
+    hallucination_resistance_score_5: float = Field(
+        description="0-5 score for absence of anachronisms and forbidden_hallucinations."
+    )
+    grounding_score_5: float = Field(
+        description="0-5 score for grounding against reference_summary and epistemic honesty."
+    )
+    clarity_score_5: float = Field(
+        description="0-5 score for clarity and organization in Brazilian Portuguese (pt-BR)."
+    )
+    level_adaptation_score_5: float = Field(
+        description="0-5 score for adaptation to target_level (fundamental_2, ensino_medio, geral)."
+    )
+    critical_thinking_score_5: float = Field(
+        description="0-5 score for critical thinking and multiple historical perspectives (SDG 4.7)."
+    )
+    accuracy_rationale: str = Field(
+        description="Concise justification for the historical accuracy and hallucination scores."
+    )
+    pedagogy_rationale: str = Field(
+        description="Concise justification for the UN SDG 4 pedagogical quality scores."
+    )
+    detected_issues: list[str] = Field(
+        default_factory=list,
+        description="Specific factual errors, anachronisms, or hallucination traps detected.",
+    )
+
+
+class JudgeScore(BaseModel):
+    """Validated LLM-as-a-judge score record stored in JSON and Markdown reports."""
+
+    judge_model: str
+    status: Literal["ok", "fallback"] = "ok"
+    fact_coverage_score_5: float = Field(ge=0.0, le=5.0)
+    hallucination_resistance_score_5: float = Field(ge=0.0, le=5.0)
+    grounding_score_5: float = Field(ge=0.0, le=5.0)
+    accuracy_score_5: float = Field(ge=0.0, le=5.0)
+    clarity_score_5: float = Field(ge=0.0, le=5.0)
+    level_adaptation_score_5: float = Field(ge=0.0, le=5.0)
+    critical_thinking_score_5: float = Field(ge=0.0, le=5.0)
+    pedagogy_score_5: float = Field(ge=0.0, le=5.0)
+    overall_score_5: float = Field(ge=0.0, le=5.0)
+    accuracy_rationale: str = ""
+    pedagogy_rationale: str = ""
+    rationale: str = ""
+    detected_issues: list[str] = Field(default_factory=list)
+    error: str | None = None
+
+
 class CaseEvaluationResult(BaseModel):
     """Full evaluation record for one case under one model profile."""
 
@@ -80,6 +134,7 @@ class CaseEvaluationResult(BaseModel):
     accuracy: HistoricalAccuracyScore
     pedagogy: PedagogicalQualityScore
     operational: OperationalMetrics
+    judge: JudgeScore | None = None
     judge_notes: str = ""
     error: str | None = None
 
@@ -96,6 +151,11 @@ class ProfileSummary(BaseModel):
     avg_fact_recall: float
     hallucination_case_count: int
     avg_pedagogy_5: float
+    judge_evaluated_cases: int = 0
+    judge_fallback_cases: int = 0
+    avg_judge_accuracy_5: float | None = None
+    avg_judge_pedagogy_5: float | None = None
+    avg_judge_overall_5: float | None = None
     mean_latency_ms: float
     p95_latency_ms: float
     mean_tokens_per_second: float
@@ -109,6 +169,8 @@ class ComparisonReport(BaseModel):
     prompt_version: str
     dataset_path: str
     dry_run: bool
+    use_judge: bool = False
+    judge_model: str | None = None
     summaries: list[ProfileSummary]
     results: list[CaseEvaluationResult]
 
@@ -252,6 +314,11 @@ def aggregate_profile_summary(
             avg_fact_recall=0.0,
             hallucination_case_count=0,
             avg_pedagogy_5=0.0,
+            judge_evaluated_cases=0,
+            judge_fallback_cases=0,
+            avg_judge_accuracy_5=None,
+            avg_judge_pedagogy_5=None,
+            avg_judge_overall_5=None,
             mean_latency_ms=0.0,
             p95_latency_ms=0.0,
             mean_tokens_per_second=0.0,
@@ -260,6 +327,21 @@ def aggregate_profile_summary(
 
     latencies = [r.operational.latency_ms for r in results]
     avg_cost = sum(r.operational.estimated_cost_usd for r in results) / total
+
+    judge_ok = [
+        r.judge for r in results if r.judge is not None and r.judge.status == "ok"
+    ]
+    judge_fallback_count = sum(
+        1 for r in results if r.judge is not None and r.judge.status == "fallback"
+    )
+    avg_judge_acc: float | None = None
+    avg_judge_ped: float | None = None
+    avg_judge_overall: float | None = None
+    if judge_ok:
+        n_ok = len(judge_ok)
+        avg_judge_acc = round(sum(j.accuracy_score_5 for j in judge_ok) / n_ok, 2)
+        avg_judge_ped = round(sum(j.pedagogy_score_5 for j in judge_ok) / n_ok, 2)
+        avg_judge_overall = round(sum(j.overall_score_5 for j in judge_ok) / n_ok, 2)
 
     return ProfileSummary(
         profile=profile,
@@ -277,6 +359,11 @@ def aggregate_profile_summary(
         avg_pedagogy_5=round(
             sum(r.pedagogy.pedagogy_avg_5 for r in results) / total, 2
         ),
+        judge_evaluated_cases=len(judge_ok),
+        judge_fallback_cases=judge_fallback_count,
+        avg_judge_accuracy_5=avg_judge_acc,
+        avg_judge_pedagogy_5=avg_judge_ped,
+        avg_judge_overall_5=avg_judge_overall,
         mean_latency_ms=round(sum(latencies) / total, 2),
         p95_latency_ms=compute_p95(latencies),
         mean_tokens_per_second=round(
@@ -286,8 +373,27 @@ def aggregate_profile_summary(
     )
 
 
+def _escape_md_cell(value: str) -> str:
+    """Normalize a string for safe single-line rendering inside a Markdown table cell."""
+    return " ".join(value.replace("|", "\\|").split())
+
+
+def _fmt_optional_score(value: float | None) -> str:
+    """Format an optional 0-5 score for Markdown tables."""
+    return f"{value:.2f}" if value is not None else "N/A"
+
+
 def render_markdown_report(report: ComparisonReport) -> str:
     """Render a side-by-side Markdown comparison report."""
+    has_judge = report.use_judge or any(
+        item.judge is not None for item in report.results
+    )
+    judge_line = (
+        f"`enabled` (model: `{report.judge_model or 'unspecified'}`, blind checklist grading)"
+        if has_judge
+        else "`disabled` (deterministic + heuristic checks only)"
+    )
+
     lines = [
         "# Brasão AI — Local (Ollama) vs. Remote (Gemini) ADK 2.0 Benchmark",
         "",
@@ -295,38 +401,114 @@ def render_markdown_report(report: ComparisonReport) -> str:
         f"- **Prompt version:** `{report.prompt_version}`",
         f"- **Dataset:** `{report.dataset_path}`",
         f"- **Mode:** `{'dry-run (simulated)' if report.dry_run else 'live'}`",
+        f"- **LLM-as-a-judge:** {judge_line}",
         "",
         "## Executive Summary",
         "",
-        "| Profile | Model | Offline | Accuracy (/5) | Fact Recall | Hallucination Cases | SDG 4 Pedagogy (/5) | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
-        "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
     ]
 
-    for summary in report.summaries:
-        lines.append(
-            f"| `{summary.profile}` | `{summary.model_id}` | "
-            f"{'Yes' if summary.offline_capable else 'No'} | "
-            f"{summary.avg_accuracy_5:.2f} | {summary.avg_fact_recall:.1%} | "
-            f"{summary.hallucination_case_count}/{summary.total_cases} | "
-            f"{summary.avg_pedagogy_5:.2f} | {summary.mean_latency_ms:.1f} | "
-            f"{summary.p95_latency_ms:.1f} | {summary.mean_tokens_per_second:.1f} | "
-            f"${summary.estimated_cost_per_1k_queries_usd:.4f} | {summary.error_count} |"
+    if has_judge:
+        lines.extend(
+            [
+                "| Profile | Model | Offline | Det. Accuracy (/5) | Fact Recall | Hallucination Cases | Det. Pedagogy (/5) | Judge Accuracy (/5) | Judge Pedagogy (/5) | Judge Overall (/5) | Judge Graded | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
+                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
+            ]
         )
+        for summary in report.summaries:
+            graded_label = f"{summary.judge_evaluated_cases}/{summary.total_cases}"
+            if summary.judge_fallback_cases > 0:
+                graded_label += f" ({summary.judge_fallback_cases} fallback)"
+            lines.append(
+                f"| `{summary.profile}` | `{summary.model_id}` | "
+                f"{'Yes' if summary.offline_capable else 'No'} | "
+                f"{summary.avg_accuracy_5:.2f} | {summary.avg_fact_recall:.1%} | "
+                f"{summary.hallucination_case_count}/{summary.total_cases} | "
+                f"{summary.avg_pedagogy_5:.2f} | "
+                f"{_fmt_optional_score(summary.avg_judge_accuracy_5)} | "
+                f"{_fmt_optional_score(summary.avg_judge_pedagogy_5)} | "
+                f"{_fmt_optional_score(summary.avg_judge_overall_5)} | "
+                f"{graded_label} | {summary.mean_latency_ms:.1f} | "
+                f"{summary.p95_latency_ms:.1f} | {summary.mean_tokens_per_second:.1f} | "
+                f"${summary.estimated_cost_per_1k_queries_usd:.4f} | {summary.error_count} |"
+            )
+    else:
+        lines.extend(
+            [
+                "| Profile | Model | Offline | Accuracy (/5) | Fact Recall | Hallucination Cases | SDG 4 Pedagogy (/5) | Mean Latency (ms) | p95 Latency (ms) | Tokens/s | Est. Cost / 1k Queries (USD) | Errors |",
+                "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
+            ]
+        )
+        for summary in report.summaries:
+            lines.append(
+                f"| `{summary.profile}` | `{summary.model_id}` | "
+                f"{'Yes' if summary.offline_capable else 'No'} | "
+                f"{summary.avg_accuracy_5:.2f} | {summary.avg_fact_recall:.1%} | "
+                f"{summary.hallucination_case_count}/{summary.total_cases} | "
+                f"{summary.avg_pedagogy_5:.2f} | {summary.mean_latency_ms:.1f} | "
+                f"{summary.p95_latency_ms:.1f} | {summary.mean_tokens_per_second:.1f} | "
+                f"${summary.estimated_cost_per_1k_queries_usd:.4f} | {summary.error_count} |"
+            )
 
     lines.extend(["", "## Per-Case Breakdown", ""])
-    lines.append(
-        "| Case ID | Category | Profile | Accuracy (/5) | Fact Recall | Hallucinations | Pedagogy (/5) | Latency (ms) |"
-    )
-    lines.append("| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |")
-
-    for item in report.results:
-        hallucinations = ", ".join(item.accuracy.hallucination_flags) or "None"
+    if has_judge:
         lines.append(
-            f"| `{item.case_id}` | `{item.category}` | `{item.profile}` | "
-            f"{item.accuracy.accuracy_score_5:.2f} | {item.accuracy.fact_recall:.1%} | "
-            f"{hallucinations} | {item.pedagogy.pedagogy_avg_5:.2f} | "
-            f"{item.operational.latency_ms:.1f} |"
+            "| Case ID | Category | Profile | Det. Accuracy (/5) | Fact Recall | Hallucinations | Det. Pedagogy (/5) | Judge Accuracy (/5) | Judge Pedagogy (/5) | Judge Overall (/5) | Judge Status | Latency (ms) |"
         )
+        lines.append(
+            "| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |"
+        )
+        for item in report.results:
+            hallucinations = _escape_md_cell(
+                ", ".join(item.accuracy.hallucination_flags) or "None"
+            )
+            if item.judge is not None:
+                judge_acc = f"{item.judge.accuracy_score_5:.2f}"
+                judge_ped = f"{item.judge.pedagogy_score_5:.2f}"
+                judge_overall = f"{item.judge.overall_score_5:.2f}"
+                judge_status = f"`{item.judge.status}`"
+            else:
+                judge_acc = "N/A"
+                judge_ped = "N/A"
+                judge_overall = "N/A"
+                judge_status = "`skipped`"
+            lines.append(
+                f"| `{item.case_id}` | `{item.category}` | `{item.profile}` | "
+                f"{item.accuracy.accuracy_score_5:.2f} | {item.accuracy.fact_recall:.1%} | "
+                f"{hallucinations} | {item.pedagogy.pedagogy_avg_5:.2f} | "
+                f"{judge_acc} | {judge_ped} | {judge_overall} | {judge_status} | "
+                f"{item.operational.latency_ms:.1f} |"
+            )
+
+        lines.extend(["", "## LLM-as-a-Judge Rationales", ""])
+        lines.append(
+            "| Case ID | Profile | Status | Judge Overall (/5) | Detected Issues | Rationale |"
+        )
+        lines.append("| :--- | :--- | :---: | :---: | :--- | :--- |")
+        for item in report.results:
+            if item.judge is None:
+                continue
+            issues = _escape_md_cell(", ".join(item.judge.detected_issues) or "None")
+            rationale = _escape_md_cell(item.judge.rationale or item.judge_notes or "—")
+            lines.append(
+                f"| `{item.case_id}` | `{item.profile}` | `{item.judge.status}` | "
+                f"{item.judge.overall_score_5:.2f} | {issues} | {rationale} |"
+            )
+    else:
+        lines.append(
+            "| Case ID | Category | Profile | Accuracy (/5) | Fact Recall | Hallucinations | Pedagogy (/5) | Latency (ms) |"
+        )
+        lines.append("| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |")
+
+        for item in report.results:
+            hallucinations = _escape_md_cell(
+                ", ".join(item.accuracy.hallucination_flags) or "None"
+            )
+            lines.append(
+                f"| `{item.case_id}` | `{item.category}` | `{item.profile}` | "
+                f"{item.accuracy.accuracy_score_5:.2f} | {item.accuracy.fact_recall:.1%} | "
+                f"{hallucinations} | {item.pedagogy.pedagogy_avg_5:.2f} | "
+                f"{item.operational.latency_ms:.1f} |"
+            )
 
     lines.append("")
     return "\n".join(lines)
