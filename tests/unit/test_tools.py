@@ -196,3 +196,53 @@ def test_build_quiz_blueprint_supports_new_topics() -> None:
 def test_build_quiz_blueprint_rejects_unknown_level() -> None:
     result = build_quiz_blueprint("Era Vargas", level="pos_doutorado")
     assert result["status"] == "error"
+
+
+def test_tools_coerce_stringified_integer_arguments() -> None:
+    search_result = search_historical_corpus("Abolição 1888", max_results="2")  # type: ignore[arg-type]
+    assert search_result["status"] == "ok"
+    assert search_result["count"] <= 2
+
+    timeline_result = lookup_timeline(start_year="1800", end_year="1900")  # type: ignore[arg-type]
+    assert timeline_result["status"] == "ok"
+    assert timeline_result["count"] >= 7
+
+    quiz_result = build_quiz_blueprint(
+        "Era Vargas",
+        level="ensino_medio",
+        num_questions="2",  # type: ignore[arg-type]
+    )
+    assert quiz_result["status"] == "ok"
+    assert quiz_result["num_questions"] == 2
+
+
+def test_build_quiz_blueprint_handles_reference_chunk_without_key_facts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import app.tools.quiz as quiz_module
+
+    monkeypatch.setattr(
+        quiz_module,
+        "search_historical_corpus",
+        lambda topic, max_results=1: {
+            "status": "ok",
+            "entries": [
+                {
+                    "id": "bncc:EF07HI10",
+                    "title": "BNCC EF07HI10",
+                    "period": "Brasil Colônia",
+                    "bncc_codes": ["EF07HI10"],
+                    "summary": "Analisar aspectos sociais e culturais dos povos indígenas.",
+                }
+            ],
+        },
+    )
+    result = build_quiz_blueprint(
+        "BNCC EF07HI10", level="fundamental_2", num_questions=2
+    )
+    assert result["status"] == "ok"
+    assert result["grounded_facts"] == [
+        "Analisar aspectos sociais e culturais dos povos indígenas."
+    ]
+    assert result["critical_perspectives"] == []
+    assert result["misconceptions_to_test"] == []

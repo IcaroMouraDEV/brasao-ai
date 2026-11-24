@@ -94,6 +94,16 @@ def _build_entry_payload(
     }
 
 
+def _coerce_int(value: int | str | float | None, default: int) -> int:
+    """Coerce stringified numeric tool arguments emitted by smaller local LLMs."""
+    if value is None:
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _search_with_index(
     query: str,
     *,
@@ -103,7 +113,7 @@ def _search_with_index(
     enable_dense: bool | None = None,
 ) -> dict[str, Any]:
     """Internal helper enabling deterministic unit tests with custom indexes/embedders."""
-    cleaned_query = query.strip()
+    cleaned_query = str(query).strip()
     if not cleaned_query:
         return {
             "status": "error",
@@ -112,7 +122,7 @@ def _search_with_index(
             "chunks": [],
         }
 
-    limit = max(1, min(max_results, 5))
+    limit = max(1, min(_coerce_int(max_results, 3), 5))
     active_index = index or get_rag_index()
     tokens = tokenize_query(cleaned_query)
     if not tokens and not active_index.has_embeddings:

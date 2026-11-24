@@ -51,10 +51,33 @@ _genai_client: Any = None
 
 
 def is_rate_limit_error(exc: Exception) -> bool:
-    """Return True when an exception indicates an HTTP 429 / quota rate-limit response."""
+    """Return True when an exception indicates a retryable HTTP 429/503/504 transient error.
+
+    Daily quota exhaustion (`PerDay` / `requests per day`) is not retryable within a
+    single benchmark run and returns False so the runner fails fast instead of stalling.
+    """
+    if isinstance(exc, TimeoutError):
+        return True
     text = f"{type(exc).__name__}: {exc}".lower()
+    if any(
+        non_retryable in text
+        for non_retryable in ("requests per day", "perday", "per_day")
+    ):
+        return False
     return any(
-        token in text for token in ("429", "resource_exhausted", "rate limit", "quota")
+        token in text
+        for token in (
+            "429",
+            "503",
+            "504",
+            "resource_exhausted",
+            "unavailable",
+            "deadline_exceeded",
+            "overloaded",
+            "high demand",
+            "rate limit",
+            "quota",
+        )
     )
 
 
@@ -325,8 +348,9 @@ def _get_genai_client() -> Any:
     global _genai_client
     if _genai_client is None:
         from google import genai
+        from google.genai import types
 
-        _genai_client = genai.Client()
+        _genai_client = genai.Client(http_options=types.HttpOptions(timeout=60_000))
     return _genai_client
 
 

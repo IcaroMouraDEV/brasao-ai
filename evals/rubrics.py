@@ -14,6 +14,8 @@ from app.tools.corpus import normalize_text
 # always has $0.00 marginal API cost.
 MODEL_COST_PER_1M_TOKENS_USD: dict[str, tuple[float, float]] = {
     "gemini-3.8-flash": (0.75, 3.75),
+    "gemini-3-flash-preview": (0.50, 3.00),
+    "gemini-3.5-flash-lite": (0.10, 0.40),
     "gemini-4-hydrogen": (1.50, 7.50),
     "gemini-2.5-flash": (0.30, 2.50),
     "gemini-2.5-pro": (1.25, 10.00),

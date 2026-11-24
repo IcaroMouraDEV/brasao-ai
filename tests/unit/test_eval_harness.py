@@ -143,6 +143,16 @@ def test_rate_limit_error_detector_matches_gemini_free_tier_429() -> None:
     from evals.runner import _is_rate_limit_error
 
     assert _is_rate_limit_error(RuntimeError("429 RESOURCE_EXHAUSTED: quota exceeded"))
+    assert _is_rate_limit_error(
+        RuntimeError("503 UNAVAILABLE: model experiencing high demand")
+    )
+    assert _is_rate_limit_error(RuntimeError("504 DEADLINE_EXCEEDED"))
+    assert _is_rate_limit_error(TimeoutError())
+    assert not _is_rate_limit_error(
+        RuntimeError(
+            "429 RESOURCE_EXHAUSTED: GenerateRequestsPerDayPerProjectPerModel-FreeTier requests per day limit exceeded"
+        )
+    )
     assert not _is_rate_limit_error(ValueError("Invalid prompt schema"))
 
 

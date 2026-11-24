@@ -4,12 +4,18 @@ Evaluates Brazilian History factual accuracy, hallucination resistance, and UN S
 pedagogical quality (clarity, grade-level adaptation, and critical thinking).
 """
 
+import os
 import threading
+import time
 
+from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
 
+load_dotenv(override=False)
+
+DEFAULT_EVAL_JUDGE_MODEL = "gemini-3.8-flash"
 _local = threading.local()
 
 
@@ -56,15 +62,44 @@ def evaluate(instance):
         prompt += f"Expected Answer (ground truth): {reference}\n"
     prompt += f"Full Agent Trace: {instance.get('agent_data', '')}\n"
 
-    response = _client().models.generate_content(
-        model="gemini-3.8-flash",
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0,  # deterministic grading
-            response_mime_type="application/json",
-            response_schema=_Verdict,  # guaranteed schema-valid JSON
-        ),
+    judge_model = (
+        os.getenv("EVAL_JUDGE_MODEL", DEFAULT_EVAL_JUDGE_MODEL).strip()
+        or DEFAULT_EVAL_JUDGE_MODEL
     )
+
+    response = None
+    for attempt in range(5):
+        try:
+            response = _client().models.generate_content(
+                model=judge_model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0,  # deterministic grading
+                    response_mime_type="application/json",
+                    response_schema=_Verdict,  # guaranteed schema-valid JSON
+                ),
+            )
+            break
+        except Exception as exc:
+            err_text = f"{type(exc).__name__}: {exc}".lower()
+            is_transient = any(
+                tok in err_text
+                for tok in (
+                    "429",
+                    "503",
+                    "resource_exhausted",
+                    "unavailable",
+                    "overloaded",
+                    "high demand",
+                    "quota",
+                )
+            )
+            if not is_transient or attempt >= 4:
+                raise
+            time.sleep(10.0 * (2**attempt))
+
+    if response is None:
+        return {"score": 0, "explanation": "Judge returned no response."}
     verdict = response.parsed
     if verdict is None:  # model returned nothing usable
         return {"score": 0, "explanation": response.text or ""}
