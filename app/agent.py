@@ -1,17 +1,20 @@
-"""Google ADK 2.0 root agent and App entrypoint for the Brazilian History AI Tutor."""
+"""Google ADK 2.0 root workflow and App entrypoint for the Brazilian History AI Tutor."""
 
 from __future__ import annotations
 
-from google.adk.agents import Agent
+from google.adk import Workflow
 from google.adk.apps import App
 
-from app.config import ModelProfile, Settings, load_settings
-from app.models import build_model
-from app.prompts import HISTORY_TUTOR_INSTRUCTION
-from app.tools import (
-    build_quiz_blueprint,
-    lookup_timeline,
-    search_historical_corpus,
+from app.config import ModelProfile, Settings
+from app.workflow import (
+    FACT_VERIFIER_NODE_NAME,
+    HISTORICAL_RESEARCHER_NODE_NAME,
+    PEDAGOGICAL_ADAPTER_NODE_NAME,
+    TERMINAL_NODE_NAME,
+    TOPIC_ROUTER_NODE_NAME,
+    WORKFLOW_NODE_ORDER,
+    create_history_tutor_workflow,
+    iter_workflow_agents,
 )
 
 # Keep in sync with create_params.root_agent_name in agents-cli-manifest.yaml.
@@ -21,25 +24,12 @@ ROOT_AGENT_NAME = "brasao_ai"
 def create_history_tutor_agent(
     settings: Settings | None = None,
     profile: ModelProfile | None = None,
-) -> Agent:
-    """Instantiate the ADK 2.0 `Agent` with identical prompts and tools across profiles."""
-    resolved_settings = settings or load_settings(profile_override=profile)
-    active_profile = profile or resolved_settings.model_profile
-    model = build_model(resolved_settings, profile=active_profile)
-
-    return Agent(
+) -> Workflow:
+    """Instantiate the ADK 2.0 `Workflow` with identical nodes, prompts, and tools across profiles."""
+    return create_history_tutor_workflow(
+        settings=settings,
+        profile=profile,
         name=ROOT_AGENT_NAME,
-        model=model,
-        description=(
-            "UN SDG 4 educational tutor specialized in the History of Brazil, "
-            "equipped with curated BNCC-aligned corpus, timeline, and quiz tools."
-        ),
-        instruction=HISTORY_TUTOR_INSTRUCTION,
-        tools=[
-            search_historical_corpus,
-            lookup_timeline,
-            build_quiz_blueprint,
-        ],
     )
 
 
@@ -49,3 +39,18 @@ app = App(
     root_agent=root_agent,
     name="app",
 )
+
+__all__ = [
+    "FACT_VERIFIER_NODE_NAME",
+    "HISTORICAL_RESEARCHER_NODE_NAME",
+    "PEDAGOGICAL_ADAPTER_NODE_NAME",
+    "ROOT_AGENT_NAME",
+    "TERMINAL_NODE_NAME",
+    "TOPIC_ROUTER_NODE_NAME",
+    "WORKFLOW_NODE_ORDER",
+    "app",
+    "create_history_tutor_agent",
+    "create_history_tutor_workflow",
+    "iter_workflow_agents",
+    "root_agent",
+]

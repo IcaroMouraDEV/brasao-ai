@@ -39,6 +39,7 @@ from google.adk.a2a.utils.agent_card_builder import AgentCardBuilder
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
+    from google.adk import Workflow
     from google.adk.agents import BaseAgent
     from google.adk.runners import Runner
 
@@ -112,7 +113,7 @@ def _resolve_app_url(app_url: str | None) -> str:
 async def attach_a2a_routes(
     app: FastAPI,
     *,
-    agent: BaseAgent,
+    agent: BaseAgent | Workflow,
     runner: Runner,
     task_store: TaskStore,
     rpc_path: str,
