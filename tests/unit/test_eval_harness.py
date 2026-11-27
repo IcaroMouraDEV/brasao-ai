@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
 
@@ -11,6 +12,8 @@ import pytest
 
 from app.config import Settings
 from app.tools.corpus import normalize_text
+from evals import charts as eval_charts
+from evals import runner as eval_runner
 from evals.judge import (
     build_blind_judge_prompt,
     build_judge_score_from_verdict,
@@ -19,6 +22,7 @@ from evals.judge import (
     sanitize_response_for_blind_judging,
 )
 from evals.rubrics import (
+    ComparisonReport,
     JudgeVerdict,
     estimate_query_cost_usd,
     render_markdown_report,
@@ -532,3 +536,323 @@ async def test_dry_run_disable_tools_ablation_and_case_id_filtering(
             dry_run=True,
             case_ids=["nonexistent_case_id"],
         )
+
+
+def test_parse_args_supports_checkpoint_resume_and_charts_flags(tmp_path: Path) -> None:
+    default_args = _parse_args([])
+    assert default_args.checkpoint is None
+    assert default_args.resume is None
+    assert default_args.charts is False
+    assert default_args.charts_dir is None
+
+    ckpt = tmp_path / "partial.json"
+    charts_out = tmp_path / "svg_out"
+    custom_args = _parse_args(
+        [
+            "--checkpoint",
+            str(ckpt),
+            "--resume",
+            str(ckpt),
+            "--charts",
+            "--charts-dir",
+            str(charts_out),
+        ]
+    )
+    assert custom_args.checkpoint == ckpt
+    assert custom_args.resume == ckpt
+    assert custom_args.charts is True
+    assert custom_args.charts_dir == charts_out
+
+
+@pytest.mark.asyncio
+async def test_incremental_checkpoint_persists_completed_cases_and_resumes_cleanly(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cases = load_benchmark_dataset(DEFAULT_DATASET_PATH)[:2]
+    selected_ids = [case.id for case in cases]
+    checkpoint_file = tmp_path / "live_checkpoint.json"
+    settings = Settings()
+
+    run1_calls: list[tuple[str, str]] = []
+
+    async def failing_run1_invoker(
+        _settings: Settings,
+        profile: str,
+        _prompt: str,
+        case_id: str,
+        **_kwargs: object,
+    ) -> tuple[str, int, int, float]:
+        run1_calls.append((profile, case_id))
+        if profile == "remote" and case_id == selected_ids[1]:
+            raise RuntimeError("503 UNAVAILABLE: upstream spike")
+        if profile == "local" and case_id == selected_ids[1]:
+            raise KeyboardInterrupt("Simulated user interruption")
+        return (
+            f"Resposta grounded para {case_id} com contexto histórico e reflexão crítica?",
+            120,
+            180,
+            450.0 if profile == "remote" else 900.0,
+        )
+
+    monkeypatch.setattr(
+        eval_runner, "_invoke_with_rate_limit_retry", failing_run1_invoker
+    )
+
+    with pytest.raises(KeyboardInterrupt):
+        await run_benchmark(
+            profiles=["remote", "local"],
+            dataset_path=DEFAULT_DATASET_PATH,
+            reports_dir=tmp_path,
+            dry_run=False,
+            settings=settings,
+            remote_request_delay_s=0.0,
+            case_ids=selected_ids,
+            checkpoint_path=checkpoint_file,
+        )
+
+    assert checkpoint_file.exists()
+    partial_report = ComparisonReport.model_validate_json(
+        checkpoint_file.read_text(encoding="utf-8")
+    )
+    assert len(partial_report.results) == 3
+    by_key = {(r.profile, r.case_id): r for r in partial_report.results}
+    assert by_key[("remote", selected_ids[0])].error is None
+    assert "503 UNAVAILABLE" in (by_key[("remote", selected_ids[1])].error or "")
+    assert by_key[("local", selected_ids[0])].error is None
+    assert ("local", selected_ids[1]) not in by_key
+
+    # Resume from the checkpoint: completed non-errored pairs must be skipped,
+    # while the errored remote case and missing local case must be executed.
+    run2_calls: list[tuple[str, str]] = []
+    sleep_calls: list[float] = []
+
+    async def recovering_run2_invoker(
+        _settings: Settings,
+        profile: str,
+        _prompt: str,
+        case_id: str,
+        **_kwargs: object,
+    ) -> tuple[str, int, int, float]:
+        run2_calls.append((profile, case_id))
+        return (
+            f"Resposta recuperada para {case_id} com perspectiva crítica e análise?",
+            110,
+            190,
+            390.0 if profile == "remote" else 840.0,
+        )
+
+    async def fake_sleep(seconds: float) -> None:
+        sleep_calls.append(seconds)
+
+    monkeypatch.setattr(
+        eval_runner, "_invoke_with_rate_limit_retry", recovering_run2_invoker
+    )
+    monkeypatch.setattr(eval_runner.asyncio, "sleep", fake_sleep)
+
+    resumed_report, json_path, md_path = await run_benchmark(
+        profiles=["remote", "local"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path,
+        dry_run=False,
+        settings=settings,
+        remote_request_delay_s=5.0,
+        case_ids=selected_ids,
+        checkpoint_path=checkpoint_file,
+        resume_from=checkpoint_file,
+    )
+
+    assert run2_calls == [
+        ("remote", selected_ids[1]),
+        ("local", selected_ids[1]),
+    ]
+    # Only one live remote call was needed on resume, so no inter-request delay sleep occurred.
+    assert sleep_calls == []
+    assert json_path == checkpoint_file
+    assert md_path.exists()
+    assert len(resumed_report.results) == 4
+    assert all(r.error is None for r in resumed_report.results)
+    assert [(r.profile, r.case_id) for r in resumed_report.results] == [
+        ("remote", selected_ids[0]),
+        ("remote", selected_ids[1]),
+        ("local", selected_ids[0]),
+        ("local", selected_ids[1]),
+    ]
+    assert all(
+        s.error_count == 0 and s.total_cases == 2 for s in resumed_report.summaries
+    )
+
+    with pytest.raises(FileNotFoundError, match="Resume checkpoint not found"):
+        await run_benchmark(
+            profiles=["remote"],
+            dataset_path=DEFAULT_DATASET_PATH,
+            reports_dir=tmp_path,
+            dry_run=True,
+            resume_from=tmp_path / "does_not_exist.json",
+        )
+
+
+@pytest.mark.asyncio
+async def test_resume_reuses_candidate_output_when_adding_judge(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    selected_ids = [load_benchmark_dataset(DEFAULT_DATASET_PATH)[0].id]
+    ckpt_path = tmp_path / "without_judge.json"
+
+    await run_benchmark(
+        profiles=["remote"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path,
+        dry_run=True,
+        case_ids=selected_ids,
+        checkpoint_path=ckpt_path,
+    )
+
+    candidate_called = False
+
+    def fail_if_candidate_runs(
+        *_args: object, **_kwargs: object
+    ) -> tuple[str, int, int, float]:
+        nonlocal candidate_called
+        candidate_called = True
+        raise AssertionError("Cached candidate response should not be re-executed")
+
+    monkeypatch.setattr(
+        eval_runner, "_simulate_dry_run_response", fail_if_candidate_runs
+    )
+
+    judge_calls = 0
+
+    async def mock_judge(_prompt: str, _model: str) -> str:
+        nonlocal judge_calls
+        judge_calls += 1
+        return json.dumps(
+            {
+                "fact_coverage_score_5": 5.0,
+                "hallucination_resistance_score_5": 5.0,
+                "grounding_score_5": 4.5,
+                "clarity_score_5": 4.5,
+                "level_adaptation_score_5": 4.5,
+                "critical_thinking_score_5": 5.0,
+                "accuracy_rationale": "Grounded.",
+                "pedagogy_rationale": "Clear and reflective.",
+                "detected_issues": [],
+            }
+        )
+
+    judged_report, judged_json, _ = await run_benchmark(
+        profiles=["remote"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path / "judged",
+        dry_run=True,
+        use_judge=True,
+        judge_invoker=mock_judge,
+        case_ids=selected_ids,
+        resume_from=ckpt_path,
+    )
+    assert candidate_called is False
+    assert judge_calls == 1
+    assert judged_report.results[0].judge is not None
+    assert judged_report.results[0].judge.status == "ok"
+
+    # A second resume with the already-judged report skips both candidate and judge.
+    await run_benchmark(
+        profiles=["remote"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path / "judged_again",
+        dry_run=True,
+        use_judge=True,
+        judge_invoker=mock_judge,
+        case_ids=selected_ids,
+        resume_from=judged_json,
+    )
+    assert judge_calls == 1
+
+
+@pytest.mark.asyncio
+async def test_offline_svg_chart_generation_from_runner_and_cli(
+    tmp_path: Path,
+) -> None:
+    selected_ids = [
+        case.id for case in load_benchmark_dataset(DEFAULT_DATASET_PATH)[:3]
+    ]
+    charts_dir = tmp_path / "runner_charts"
+
+    report, json_path, _ = await run_benchmark(
+        profiles=["remote", "local"],
+        dataset_path=DEFAULT_DATASET_PATH,
+        reports_dir=tmp_path,
+        dry_run=True,
+        use_judge=True,
+        case_ids=selected_ids,
+        generate_charts=True,
+        charts_dir=charts_dir,
+    )
+
+    expected_svgs = [
+        charts_dir / "accuracy_pedagogy.svg",
+        charts_dir / "latency_vs_accuracy.svg",
+        charts_dir / "cost_and_offline.svg",
+    ]
+    for svg_path in expected_svgs:
+        assert svg_path.exists()
+        raw_svg = svg_path.read_text(encoding="utf-8")
+        root = ET.fromstring(raw_svg)
+        assert root.tag == "{http://www.w3.org/2000/svg}svg"
+        assert root.attrib.get("viewBox")
+
+    acc_svg = (charts_dir / "accuracy_pedagogy.svg").read_text(encoding="utf-8")
+    assert "Judge Accuracy (/5)" in acc_svg
+    assert "remote:" in acc_svg
+    assert "local:" in acc_svg
+
+    lat_svg = (charts_dir / "latency_vs_accuracy.svg").read_text(encoding="utf-8")
+    assert "p95 latency" in lat_svg
+    assert "Mean latency" in lat_svg
+
+    cost_svg = (charts_dir / "cost_and_offline.svg").read_text(encoding="utf-8")
+    assert "$0.00 (Free/Local)" in cost_svg
+    assert "Offline-ready" in cost_svg
+    assert "Cloud only" in cost_svg
+
+    # Standalone CLI (`python -m evals.charts <report.json>`) works offline.
+    cli_out = tmp_path / "cli_charts"
+    cli_result = eval_charts.main([str(json_path), "--output-dir", str(cli_out)])
+    assert set(cli_result.keys()) == {
+        "accuracy_pedagogy",
+        "latency_vs_accuracy",
+        "cost_and_offline",
+    }
+    for path_str in cli_result.values():
+        parsed = ET.fromstring(Path(path_str).read_text(encoding="utf-8"))
+        assert parsed.tag == "{http://www.w3.org/2000/svg}svg"
+
+    # Empty summaries report still renders well-formed SVG placeholders.
+    empty_report = report.model_copy(update={"summaries": [], "results": []})
+    for renderer in (
+        eval_charts.render_accuracy_pedagogy_svg,
+        eval_charts.render_latency_accuracy_svg,
+        eval_charts.render_cost_offline_svg,
+    ):
+        empty_svg = renderer(empty_report)
+        root = ET.fromstring(empty_svg)
+        assert root.tag == "{http://www.w3.org/2000/svg}svg"
+        assert "No profile summaries available" in empty_svg
+
+    # Special XML characters in metadata/model_id are safely escaped.
+    tricky_summary = report.summaries[0].model_copy(
+        update={"model_id": "gemini<3.8>&\"flash'"}
+    )
+    tricky_report = report.model_copy(update={"summaries": [tricky_summary]})
+    for renderer in (
+        eval_charts.render_accuracy_pedagogy_svg,
+        eval_charts.render_latency_accuracy_svg,
+        eval_charts.render_cost_offline_svg,
+    ):
+        tricky_svg = renderer(tricky_report)
+        root = ET.fromstring(tricky_svg)
+        assert root.tag == "{http://www.w3.org/2000/svg}svg"
+
+    with pytest.raises(FileNotFoundError, match="Benchmark report JSON not found"):
+        eval_charts.generate_charts_from_file(tmp_path / "missing_report.json")
