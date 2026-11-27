@@ -34,15 +34,34 @@ from app.agent import (
     root_agent,
 )
 from app.agent import app as adk_app
+from app.app_utils.sanitization import (
+    extract_routing_intent,
+    has_explicit_quiz_request,
+    is_quiz_tool_allowed,
+    sanitize_student_response,
+)
 from app.config import Settings
+from app.prompts import (
+    FACT_VERIFIER_INSTRUCTION,
+    PEDAGOGICAL_ADAPTER_INSTRUCTION,
+    PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION,
+    PROMPT_VERSION,
+    TOPIC_ROUTER_INSTRUCTION,
+)
 from app.workflow import (
     DRAFT_STATE_KEY,
     EVIDENCE_STATE_KEY,
     ROUTING_STATE_KEY,
     VERIFIED_STATE_KEY,
     create_history_tutor_workflow,
+    guard_quiz_blueprint_tool,
+    sanitize_verifier_response,
 )
-from evals.runner import _extract_workflow_output
+from evals.runner import (
+    DEFAULT_DATASET_PATH,
+    _extract_workflow_output,
+    load_benchmark_dataset,
+)
 
 
 def _tool_names(agent: Agent) -> list[str]:
@@ -223,6 +242,8 @@ def test_every_workflow_node_uses_build_model_with_strict_local_remote_parity(
         assert remote_node.instruction == local_node.instruction
         assert _tool_names(remote_node) == _tool_names(local_node)
         assert remote_node.output_key == local_node.output_key
+        assert remote_node.before_tool_callback is local_node.before_tool_callback
+        assert remote_node.after_model_callback is local_node.after_model_callback
         assert (
             remote_node.disallow_transfer_to_parent
             == local_node.disallow_transfer_to_parent
@@ -377,10 +398,17 @@ def test_workflow_disable_tools_removes_all_tools_with_strict_parity() -> None:
         assert remote_node.name == local_node.name
         assert remote_node.instruction == local_node.instruction
         assert remote_node.output_key == local_node.output_key
+        assert remote_node.before_tool_callback is local_node.before_tool_callback
+        assert remote_node.after_model_callback is local_node.after_model_callback
         assert _tool_names(remote_node) == []
         assert _tool_names(local_node) == []
 
     by_name = {node.name: node for node in local_nodes}
+    assert by_name[PEDAGOGICAL_ADAPTER_NODE_NAME].before_tool_callback is None
+    assert (
+        by_name[FACT_VERIFIER_NODE_NAME].after_model_callback
+        is sanitize_verifier_response
+    )
     assert "modo de ablação sem ferramentas" in str(
         by_name[HISTORICAL_RESEARCHER_NODE_NAME].instruction
     )
@@ -393,3 +421,373 @@ def test_workflow_disable_tools_removes_all_tools_with_strict_parity() -> None:
     assert f"{{{EVIDENCE_STATE_KEY}?}}" in str(
         by_name[PEDAGOGICAL_ADAPTER_NODE_NAME].instruction
     )
+
+
+def test_prompt_contracts_enforce_v2_1_quiz_guard_and_anti_leak_rules() -> None:
+    assert PROMPT_VERSION == "2.1.0"
+
+    # TopicRouter must restrict `quiz` to explicit quiz/exercise asks.
+    assert "APENAS quando o estudante pedir EXPLICITAMENTE" in TOPIC_ROUTER_INSTRUCTION
+    assert "NÃO classifique perguntas conceituais" in TOPIC_ROUTER_INSTRUCTION
+
+    # PedagogicalAdapter must guard build_quiz_blueprint strictly to quiz intent
+    # and forbid internal draft/status headers.
+    assert (
+        "Chame `build_quiz_blueprint` SOMENTE quando `routing_plan` classificar `intent: quiz`"
+        in PEDAGOGICAL_ADAPTER_INSTRUCTION
+    )
+    assert (
+        "NUNCA chame `build_quiz_blueprint` quando `intent` for `explanation`, `timeline` ou `out_of_scope`"
+        in PEDAGOGICAL_ADAPTER_INSTRUCTION
+    )
+    assert "Elabore questões em português do Brasil" in PEDAGOGICAL_ADAPTER_INSTRUCTION
+    assert "### Rascunho Didático" in PEDAGOGICAL_ADAPTER_INSTRUCTION
+    assert "**Intenção:**" in PEDAGOGICAL_ADAPTER_INSTRUCTION
+    assert "**Status**: ok" in PEDAGOGICAL_ADAPTER_INSTRUCTION
+
+    # Ablation no-tools prompt must preserve matching anti-leak and quiz-only constraints.
+    assert (
+        "SOMENTE quando `intent` for `quiz`" in PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
+    )
+    assert "### Rascunho Didático" in PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
+    assert "**Intenção:**" in PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
+    assert "**Status**: ok" in PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
+
+    # FactVerifier must explicitly strip leaked internal headers, metadata, and blueprint text.
+    assert "### Rascunho Didático" in FACT_VERIFIER_INSTRUCTION
+    assert "**Intenção:**" in FACT_VERIFIER_INSTRUCTION
+    assert "**Status**: ok" in FACT_VERIFIER_INSTRUCTION
+    assert "Elabore questões em português do Brasil" in FACT_VERIFIER_INSTRUCTION
+    assert "format_guidelines" in FACT_VERIFIER_INSTRUCTION
+
+
+def test_workflow_attaches_shared_callbacks_identically_across_profiles() -> None:
+    settings = Settings(gemini_model="gemini-3.8-flash", ollama_model="gemma3:4b")
+    for profile in ("remote", "local"):
+        workflow = create_history_tutor_workflow(settings=settings, profile=profile)
+        by_name = {node.name: node for node in iter_workflow_agents(workflow)}
+        assert (
+            by_name[PEDAGOGICAL_ADAPTER_NODE_NAME].before_tool_callback
+            is guard_quiz_blueprint_tool
+        )
+        assert (
+            by_name[FACT_VERIFIER_NODE_NAME].after_model_callback
+            is sanitize_verifier_response
+        )
+
+
+def test_sanitize_student_response_strips_draft_headers_status_and_blueprint_leaks() -> (
+    None
+):
+    leaky = (
+        "### Rascunho Didático\n"
+        "**Intenção:** explanation\n"
+        "**Status**: ok\n"
+        "intent: explanation\n"
+        "target_level: fundamental_2\n"
+        "historical_topic: Povos indígenas em 1500\n"
+        "---\n\n"
+        "O território brasileiro não estava vazio em 1500: milhões de pessoas indígenas de "
+        "centenas de povos já viviam aqui com línguas e culturas diversas.\n\n"
+        "### Format Guidelines\n"
+        "- Elabore questões em português do Brasil com enunciados contextualizados.\n"
+        "- Inclua pelo menos uma questão que desafie um mito histórico comum listado em "
+        "misconceptions_to_test.\n"
+        "- Forneça gabarito comentado explicando por que a alternativa correta está certa e "
+        "o erro das demais.\n\n"
+        "Como você acha que a ideia de 'descobrimento pacífico' apaga a história dos povos "
+        "originários?"
+    )
+
+    cleaned = sanitize_student_response(leaky)
+    assert "Rascunho Didático" not in cleaned
+    assert "Intenção:" not in cleaned
+    assert "**Status**: ok" not in cleaned
+    assert "intent: explanation" not in cleaned
+    assert "target_level:" not in cleaned
+    assert "Format Guidelines" not in cleaned
+    assert "Elabore questões em português do Brasil" not in cleaned
+    assert "misconceptions_to_test" not in cleaned
+    assert "Forneça gabarito comentado" not in cleaned
+    assert cleaned.startswith("O território brasileiro não estava vazio em 1500:")
+    assert cleaned.endswith(
+        "Como você acha que a ideia de 'descobrimento pacífico' apaga a história dos povos "
+        "originários?"
+    )
+    # Idempotency check.
+    assert sanitize_student_response(cleaned) == cleaned
+
+
+def test_sanitize_student_response_handles_inline_prefixes_and_preserves_legitimate_text() -> (
+    None
+):
+    inline_leaked = (
+        "Rascunho provisório: Em 13 de maio de 1888, a Lei Áurea formalizou o fim da "
+        "escravidão no Brasil.\n"
+        "**Rascunho Didático:** A mobilização abolicionista foi decisiva.\n"
+        "**Status:** ok\n"
+        "O status jurídico da população escravizada mudou, mas sem políticas de reparação."
+    )
+    cleaned_inline = sanitize_student_response(inline_leaked)
+    assert cleaned_inline == (
+        "Em 13 de maio de 1888, a Lei Áurea formalizou o fim da escravidão no Brasil.\n"
+        "A mobilização abolicionista foi decisiva.\n"
+        "O status jurídico da população escravizada mudou, mas sem políticas de reparação."
+    )
+
+    legitimate_quiz = (
+        "### Quiz: Ciclo do Ouro em Minas Gerais (7º ano)\n\n"
+        "**Questão 1:** Qual imposto cobrava 20% de todo o ouro extraído na colônia?\n"
+        "A) Derrama\n"
+        "B) Quinto\n\n"
+        "**Gabarito comentado:** Alternativa B. O quinto correspondia a 20% do ouro."
+    )
+    assert sanitize_student_response(legitimate_quiz) == legitimate_quiz
+    assert sanitize_student_response("") == ""
+    assert sanitize_student_response("   \n\n  ") == ""
+    assert (
+        sanitize_student_response("### Rascunho Didático\n**Status**: ok\nstatus: ok")
+        == ""
+    )
+
+
+def test_quiz_tool_guard_matches_benchmark_dataset_intents_accurately() -> None:
+    assert extract_routing_intent("intent: explanation\ntarget_level: geral") == (
+        "explanation"
+    )
+    assert extract_routing_intent("- **Intenção:** quiz") == "quiz"
+    assert extract_routing_intent("no routing fields here") is None
+    # Fail-open when router state is absent.
+    assert is_quiz_tool_allowed(None, "Explique a Era Vargas.") is True
+    assert is_quiz_tool_allowed("intent: quiz", "Explique a Era Vargas.") is True
+
+    cases = load_benchmark_dataset(DEFAULT_DATASET_PATH)
+    for case in cases:
+        if case.category == "formative_assessment":
+            assert has_explicit_quiz_request(case.prompt), (
+                f"Expected quiz prompt detection for {case.id}"
+            )
+            assert is_quiz_tool_allowed("intent: explanation", case.prompt) is True
+        else:
+            assert not has_explicit_quiz_request(case.prompt), (
+                f"False-positive quiz detection on non-quiz prompt {case.id}"
+            )
+            assert is_quiz_tool_allowed("intent: explanation", case.prompt) is False
+
+
+class _LeakyAndSpuriousQuizMockLlm(BaseLlm):
+    """Offline mock LLM simulating both a spurious quiz tool call and leaked draft output."""
+
+    model: str = "mock-leaky-llm"
+    route_intent: str = "explanation"
+    adapter_calls: int = 0
+    observed_tool_responses: list[dict[str, Any]] = Field(default_factory=list)
+
+    async def generate_content_async(
+        self,
+        llm_request: LlmRequest,
+        stream: bool = False,
+    ) -> AsyncGenerator[LlmResponse, None]:
+        instruction = ""
+        if llm_request.config and llm_request.config.system_instruction:
+            instruction = str(llm_request.config.system_instruction)
+
+        if "Você é o nó `TopicRouter`" in instruction:
+            text = (
+                f"intent: {self.route_intent}\n"
+                "target_level: fundamental_2\n"
+                "historical_topic: Povos indígenas e chegada dos portugueses em 1500\n"
+                "time_range: 1500\n"
+                "student_goal: Checar o mito do território vazio em 1500."
+            )
+            yield LlmResponse(
+                content=types.Content(
+                    role="model", parts=[types.Part.from_text(text=text)]
+                )
+            )
+            return
+
+        if "Você é o nó `HistoricalResearcher`" in instruction:
+            text = (
+                "status: ok\n"
+                "Título: Povos Indígenas e Chegada dos Portugueses (1500)\n"
+                "Fatos: Milhões de indígenas de diversos povos habitavam o território."
+            )
+            yield LlmResponse(
+                content=types.Content(
+                    role="model", parts=[types.Part.from_text(text=text)]
+                )
+            )
+            return
+
+        if "Você é o nó `PedagogicalAdapter`" in instruction:
+            self.adapter_calls += 1
+            # On the first turn, attempt to call build_quiz_blueprint.
+            if self.adapter_calls == 1:
+                yield LlmResponse(
+                    content=types.Content(
+                        role="model",
+                        parts=[
+                            types.Part(
+                                function_call=types.FunctionCall(
+                                    name="build_quiz_blueprint",
+                                    args={
+                                        "topic": "Povos indígenas",
+                                        "level": "fundamental_2",
+                                    },
+                                )
+                            )
+                        ],
+                    )
+                )
+                return
+
+            # Capture the tool response returned by either the guard or the real tool.
+            for content in llm_request.contents or []:
+                for part in content.parts or []:
+                    if part.function_response and part.function_response.response:
+                        self.observed_tool_responses.append(
+                            dict(part.function_response.response)
+                        )
+
+            yield LlmResponse(
+                content=types.Content(
+                    role="model",
+                    parts=[
+                        types.Part.from_text(
+                            text=(
+                                "### Rascunho Didático\n"
+                                "**Intenção:** explanation\n"
+                                "**Status**: ok\n\n"
+                                "Em 1500 milhões de indígenas já habitavam o Brasil."
+                            )
+                        )
+                    ],
+                )
+            )
+            return
+
+        assert "Você é o nó `FactVerifier`" in instruction
+        yield LlmResponse(
+            content=types.Content(
+                role="model",
+                parts=[
+                    types.Part.from_text(
+                        text=(
+                            "### Rascunho Didático\n"
+                            "**Intenção:** explanation\n"
+                            "**Status**: ok\n\n"
+                            "Em 1500, o Brasil não estava vazio: milhões de indígenas já "
+                            "habitavam o território e resistiram à colonização.\n"
+                            "- Elabore questões em português do Brasil com enunciados contextualizados."
+                        )
+                    )
+                ],
+            )
+        )
+
+
+@pytest.mark.asyncio
+async def test_workflow_blocks_spurious_quiz_tool_and_sanitizes_verifier_output(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mock_llm = _LeakyAndSpuriousQuizMockLlm(route_intent="explanation")
+    monkeypatch.setattr(
+        workflow_module,
+        "build_model",
+        lambda settings, profile=None: mock_llm,
+    )
+
+    workflow = create_history_tutor_agent(
+        settings=Settings(model_profile="local"),
+        profile="local",
+    )
+    runner = InMemoryRunner(agent=workflow, app_name="brasao_ai_guard_test")
+    session = await runner.session_service.create_session(
+        app_name="brasao_ai_guard_test",
+        user_id="student_guard",
+        session_id="session_guard",
+    )
+
+    events = [
+        event
+        async for event in runner.run_async(
+            user_id="student_guard",
+            session_id=session.id,
+            new_message=types.Content(
+                role="user",
+                parts=[
+                    types.Part.from_text(
+                        text="Sou do 7º ano. É verdade que o Brasil estava vazio antes de 1500?"
+                    )
+                ],
+            ),
+        )
+    ]
+
+    assert len(mock_llm.observed_tool_responses) == 1
+    assert mock_llm.observed_tool_responses[0]["status"] == "skipped"
+    assert mock_llm.observed_tool_responses[0]["reason"] == "non_quiz_intent"
+
+    final_text, _, _ = _extract_workflow_output(
+        events, terminal_author=TERMINAL_NODE_NAME
+    )
+    assert "### Rascunho Didático" not in final_text
+    assert "**Intenção:**" not in final_text
+    assert "**Status**: ok" not in final_text
+    assert "Elabore questões em português do Brasil" not in final_text
+    assert "milhões de indígenas já habitavam o território" in final_text
+
+    final_session = await runner.session_service.get_session(
+        app_name="brasao_ai_guard_test",
+        user_id="student_guard",
+        session_id=session.id,
+    )
+    assert final_session is not None
+    verified_state = str(final_session.state[VERIFIED_STATE_KEY])
+    assert "### Rascunho Didático" not in verified_state
+    assert "**Status**: ok" not in verified_state
+    assert "milhões de indígenas já habitavam o território" in verified_state
+
+
+@pytest.mark.asyncio
+async def test_workflow_allows_quiz_blueprint_tool_when_intent_is_quiz(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mock_llm = _LeakyAndSpuriousQuizMockLlm(route_intent="quiz")
+    monkeypatch.setattr(
+        workflow_module,
+        "build_model",
+        lambda settings, profile=None: mock_llm,
+    )
+
+    workflow = create_history_tutor_agent(
+        settings=Settings(model_profile="remote"),
+        profile="remote",
+    )
+    runner = InMemoryRunner(agent=workflow, app_name="brasao_ai_quiz_allow_test")
+    session = await runner.session_service.create_session(
+        app_name="brasao_ai_quiz_allow_test",
+        user_id="student_quiz",
+        session_id="session_quiz",
+    )
+
+    _ = [
+        event
+        async for event in runner.run_async(
+            user_id="student_quiz",
+            session_id=session.id,
+            new_message=types.Content(
+                role="user",
+                parts=[
+                    types.Part.from_text(
+                        text="Monte um quiz com 2 questões sobre os povos indígenas em 1500."
+                    )
+                ],
+            ),
+        )
+    ]
+
+    assert len(mock_llm.observed_tool_responses) == 1
+    assert mock_llm.observed_tool_responses[0]["status"] == "ok"
+    assert "format_guidelines" in mock_llm.observed_tool_responses[0]
