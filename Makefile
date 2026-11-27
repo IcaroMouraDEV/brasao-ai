@@ -1,4 +1,4 @@
-.PHONY: install lint format test check ollama-up ollama-pull ollama-pull-embed rag-index rag-index-lexical playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
+.PHONY: install lint format test check ollama-up ollama-up-gpu ollama-pull ollama-pull-embed rag-index rag-index-lexical playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
 
 OLLAMA_MODEL ?= gemma3:4b
 OLLAMA_EMBED_MODEL ?= nomic-embed-text
@@ -25,6 +25,9 @@ check: lint test
 
 ollama-up:
 	docker compose up -d ollama
+
+ollama-up-gpu:
+	docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d ollama
 
 ollama-pull:
 	docker compose exec ollama ollama pull $(OLLAMA_MODEL)

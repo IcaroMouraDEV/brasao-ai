@@ -33,7 +33,8 @@ make benchmark-dry-run
 ### 3. Start Local Ollama (Optional — via Docker)
 
 ```bash
-make ollama-up
+make ollama-up        # CPU-only portable default (commodity school hardware)
+make ollama-up-gpu    # Optional NVIDIA GPU override (requires nvidia-container-toolkit)
 make ollama-pull OLLAMA_MODEL=gemma3:4b
 ```
 
@@ -70,3 +71,4 @@ agents-cli deploy
 - [docs/architecture.md](docs/architecture.md) — ADK 2.0 architecture, Terraform IaC, and model parity
 - [docs/sdg4-pedagogy.md](docs/sdg4-pedagogy.md) — UN SDG 4 and BNCC pedagogical framework
 - [docs/evaluation-plan.md](docs/evaluation-plan.md) — Local vs. Gemini evaluation methodology
+- [docs/experiments/compact-rag-gpu-optimization.md](docs/experiments/compact-rag-gpu-optimization.md) — Compact-RAG & GPU optimization Before vs. After benchmark report (`#20`)

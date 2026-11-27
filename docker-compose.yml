@@ -7,14 +7,10 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    # Uncomment the block below if running with an NVIDIA GPU (requires nvidia-container-toolkit):
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
+    # For NVIDIA GPU acceleration (requires nvidia-container-toolkit), use the
+    # optional override file instead of editing this portable CPU-only default:
+    #   make ollama-up-gpu
+    #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d ollama
 
 volumes:
   ollama_data:

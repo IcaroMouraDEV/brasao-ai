@@ -1,0 +1,16 @@
+# Optional NVIDIA GPU override for local Ollama inference.
+# Keeps docker-compose.yml CPU-only by default for commodity school hardware (UN SDG 4.a).
+# Requires NVIDIA drivers and nvidia-container-toolkit on the host.
+#
+# Usage:
+#   make ollama-up-gpu
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d ollama
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

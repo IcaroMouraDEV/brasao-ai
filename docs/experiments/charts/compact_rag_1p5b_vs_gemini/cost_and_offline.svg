@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" role="img" aria-label="Operational Cost per 1k Queries &amp; Offline Completion Rate">
+  <title>Operational Cost per 1k Queries &amp; Offline Completion Rate</title>
+  <desc>Two-panel comparison of estimated API cost per 1,000 queries and overall vs. offline completion rates.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #0F172A; }
+    .title { font-size: 20px; font-weight: 700; fill: #0F172A; }
+    .subtitle { font-size: 12px; fill: #475569; }
+    .panel-title { font-size: 15px; font-weight: 700; fill: #0F172A; }
+    .axis-label { font-size: 12px; font-weight: 600; fill: #475569; }
+    .tick-label { font-size: 11px; fill: #475569; }
+    .bar-label { font-size: 11px; font-weight: 700; fill: #0F172A; }
+    .legend-text { font-size: 12px; fill: #0F172A; }
+    .note { font-size: 11px; fill: #475569; }
+  </style>
+  <rect x="0.5" y="0.5" width="959" height="479" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="36" y="42" class="title">Operational Cost per 1k Queries &amp; Offline Completion Rate</text>
+  <text x="36" y="64" class="subtitle">Prompt 2.1.0 · Mode: live · tools/RAG enabled · judge: gemini-3.5-flash-lite</text>
+  <text x="76" y="102" class="panel-title">Estimated Cost / 1k Queries (USD)</text>
+  <text x="532" y="102" class="panel-title">Completion &amp; Offline Viability (%)</text>
+  <rect x="748" y="91" width="10" height="10" rx="2" fill="#2563EB"/>
+  <text x="762" y="100" class="tick-label">Overall</text>
+  <rect x="818" y="91" width="10" height="10" rx="2" fill="#059669"/>
+  <text x="832" y="100" class="tick-label">Offline</text>
+  <line x1="76" y1="376.0" x2="452" y2="376.0" stroke="#64748B" stroke-width="1"/>
+  <text x="66" y="380.0" text-anchor="end" class="tick-label">$0.00</text>
+  <line x1="76" y1="314.0" x2="452" y2="314.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="66" y="318.0" text-anchor="end" class="tick-label">$1.25</text>
+  <line x1="76" y1="252.0" x2="452" y2="252.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="66" y="256.0" text-anchor="end" class="tick-label">$2.50</text>
+  <line x1="76" y1="190.0" x2="452" y2="190.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="66" y="194.0" text-anchor="end" class="tick-label">$3.75</text>
+  <line x1="76" y1="128.0" x2="452" y2="128.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="66" y="132.0" text-anchor="end" class="tick-label">$5.00</text>
+  <rect x="134.0" y="245.1" width="72.0" height="130.9" rx="4" fill="#2563EB"/>
+  <text x="170.0" y="237.1" text-anchor="middle" class="bar-label">$2.64</text>
+  <text x="170.0" y="400.0" text-anchor="middle" class="axis-label">remote: gemini-3.5-…</text>
+  <text x="170.0" y="418.0" text-anchor="middle" class="note">230.6 tok/s</text>
+  <rect x="322.0" y="372.0" width="72.0" height="4" rx="2" fill="#059669"/>
+  <text x="358.0" y="364.0" text-anchor="middle" class="bar-label" style="fill:#059669">$0.00 (Free/Local)</text>
+  <text x="358.0" y="400.0" text-anchor="middle" class="axis-label">local: ollama_chat/…</text>
+  <text x="358.0" y="418.0" text-anchor="middle" class="note">5.9 tok/s</text>
+  <line x1="532" y1="376.0" x2="908" y2="376.0" stroke="#64748B" stroke-width="1"/>
+  <text x="522" y="380.0" text-anchor="end" class="tick-label">0%</text>
+  <line x1="532" y1="314.0" x2="908" y2="314.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="522" y="318.0" text-anchor="end" class="tick-label">25%</text>
+  <line x1="532" y1="252.0" x2="908" y2="252.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="522" y="256.0" text-anchor="end" class="tick-label">50%</text>
+  <line x1="532" y1="190.0" x2="908" y2="190.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="522" y="194.0" text-anchor="end" class="tick-label">75%</text>
+  <line x1="532" y1="128.0" x2="908" y2="128.0" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="522" y="132.0" text-anchor="end" class="tick-label">100%</text>
+  <rect x="576.0" y="128.0" width="46.0" height="248.0" rx="4" fill="#2563EB"/>
+  <text x="599.0" y="124.0" text-anchor="middle" class="bar-label">100%</text>
+  <rect x="630.0" y="372.0" width="46.0" height="4" rx="2" fill="#CBD5E1"/>
+  <text x="653.0" y="366.0" text-anchor="middle" class="tick-label">0%</text>
+  <text x="626.0" y="400.0" text-anchor="middle" class="axis-label">remote: gemini-3.5-…</text>
+  <text x="626.0" y="418.0" text-anchor="middle" class="note">8/8 ok · Cloud only</text>
+  <rect x="764.0" y="128.0" width="46.0" height="248.0" rx="4" fill="#2563EB"/>
+  <text x="787.0" y="124.0" text-anchor="middle" class="bar-label">100%</text>
+  <rect x="818.0" y="128.0" width="46.0" height="248.0" rx="4" fill="#059669"/>
+  <text x="841.0" y="124.0" text-anchor="middle" class="bar-label">100%</text>
+  <text x="814.0" y="400.0" text-anchor="middle" class="axis-label">local: ollama_chat/…</text>
+  <text x="814.0" y="418.0" text-anchor="middle" class="note">8/8 ok · Offline-ready</text>
+  <text x="36" y="462" class="note">UN SDG 4.a lens: local Ollama models provide $0 marginal API cost and full offline viability for low-connectivity schools.</text>
+</svg>
