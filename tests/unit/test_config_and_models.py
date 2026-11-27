@@ -8,6 +8,9 @@ import pytest
 from google.adk import Workflow
 from google.adk.models import Gemini
 from google.adk.models.lite_llm import LiteLlm
+from litellm.llms.ollama.chat.transformation import OllamaChatConfig
+from litellm.utils import get_optional_params
+from pydantic import ValidationError
 
 from app.agent import (
     ROOT_AGENT_NAME,
@@ -15,7 +18,12 @@ from app.agent import (
     create_history_tutor_agent,
     iter_workflow_agents,
 )
-from app.config import Settings, load_settings
+from app.config import (
+    DEFAULT_GEMINI_MODEL,
+    DEFAULT_OLLAMA_NUM_CTX,
+    Settings,
+    load_settings,
+)
 from app.models import build_model, format_ollama_litellm_model
 
 
@@ -83,3 +91,105 @@ def test_adk_agent_factory_maintains_parity_between_local_and_remote() -> None:
 def test_root_agent_name_matches_agents_cli_manifest() -> None:
     manifest_text = Path("agents-cli-manifest.yaml").read_text(encoding="utf-8")
     assert f'root_agent_name: "{ROOT_AGENT_NAME}"' in manifest_text
+
+
+def test_settings_defaults_keep_gemini_model_and_ollama_num_ctx() -> None:
+    settings = Settings()
+    assert DEFAULT_GEMINI_MODEL == "gemini-3.8-flash"
+    assert settings.gemini_model == "gemini-3.8-flash"
+    assert DEFAULT_OLLAMA_NUM_CTX == 8192
+    assert settings.ollama_num_ctx == 8192
+    assert settings.ollama_think is None
+
+
+def test_load_settings_parses_ollama_num_ctx_and_think(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MODEL_PROFILE", "local")
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "16384")
+    monkeypatch.setenv("OLLAMA_THINK", "false")
+    settings = load_settings()
+    assert settings.ollama_num_ctx == 16384
+    assert settings.ollama_think is False
+
+    monkeypatch.setenv("OLLAMA_THINK", "true")
+    assert load_settings().ollama_think is True
+
+    monkeypatch.setenv("OLLAMA_THINK", "")
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "")
+    defaulted = load_settings()
+    assert defaulted.ollama_num_ctx == 8192
+    assert defaulted.ollama_think is None
+
+
+def test_load_settings_rejects_invalid_ollama_num_ctx_and_think(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("MODEL_PROFILE", "local")
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "not_a_number")
+    with pytest.raises(ValueError, match="OLLAMA_NUM_CTX"):
+        load_settings()
+
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "512")
+    with pytest.raises(ValidationError):
+        load_settings()
+
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "8192")
+    monkeypatch.setenv("OLLAMA_THINK", "maybe")
+    with pytest.raises(ValueError, match="OLLAMA_THINK"):
+        load_settings()
+
+
+def test_build_model_wires_ollama_num_ctx_and_optional_think() -> None:
+    default_local = build_model(
+        Settings(model_profile="local", ollama_model="qwen3:8b"),
+        profile="local",
+    )
+    assert isinstance(default_local, LiteLlm)
+    assert default_local.model == "ollama_chat/qwen3:8b"
+    assert default_local._additional_args["num_ctx"] == 8192
+    assert "think" not in default_local._additional_args
+
+    tuned_local = build_model(
+        Settings(
+            model_profile="local",
+            ollama_model="qwen3:8b",
+            ollama_num_ctx=16384,
+            ollama_think=False,
+        ),
+        profile="local",
+    )
+    assert isinstance(tuned_local, LiteLlm)
+    assert tuned_local._additional_args["num_ctx"] == 16384
+    assert tuned_local._additional_args["think"] is False
+
+    # Verify LiteLLM's OllamaChatConfig forwards num_ctx into options and think at top-level.
+    optional_params = get_optional_params(
+        model="qwen3:8b",
+        custom_llm_provider="ollama_chat",
+        temperature=tuned_local._additional_args["temperature"],
+        max_tokens=tuned_local._additional_args["max_tokens"],
+        num_ctx=tuned_local._additional_args["num_ctx"],
+        think=tuned_local._additional_args["think"],
+    )
+    ollama_request = OllamaChatConfig().transform_request(
+        model="qwen3:8b",
+        messages=[{"role": "user", "content": "Explique a Lei Áurea."}],
+        optional_params=dict(optional_params),
+        litellm_params={},
+        headers={},
+    )
+    assert ollama_request["options"]["num_ctx"] == 16384
+    assert ollama_request["think"] is False
+
+    # Remote profile remains native Gemini regardless of Ollama-specific tuning flags.
+    remote = build_model(
+        Settings(
+            model_profile="remote",
+            ollama_num_ctx=16384,
+            ollama_think=False,
+        ),
+        profile="remote",
+    )
+    assert isinstance(remote, Gemini)
+    assert remote.model == "gemini-3.8-flash"

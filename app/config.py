@@ -14,7 +14,36 @@ DEFAULT_GEMINI_MODEL = "gemini-3.8-flash"
 DEFAULT_OLLAMA_MODEL = "gemma3:4b"
 DEFAULT_OLLAMA_API_BASE = "http://localhost:11434"
 DEFAULT_OLLAMA_EMBED_MODEL = "nomic-embed-text"
+DEFAULT_OLLAMA_NUM_CTX = 8192
 DEFAULT_RAG_INDEX_PATH = "app/data/rag_index.sqlite3"
+
+
+def _parse_optional_bool(raw: str | None, *, env_name: str) -> bool | None:
+    """Parse an optional boolean environment variable (`None` preserves model default)."""
+    if raw is None:
+        return None
+    normalized = raw.strip().lower()
+    if normalized in {"", "none", "auto", "default"}:
+        return None
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(
+        f"Unsupported {env_name} value '{raw}'. Expected 'true', 'false', or empty."
+    )
+
+
+def _parse_ollama_num_ctx(raw: str | None) -> int:
+    """Parse `OLLAMA_NUM_CTX` with fallback to `DEFAULT_OLLAMA_NUM_CTX` when unset/empty."""
+    if raw is None or not raw.strip():
+        return DEFAULT_OLLAMA_NUM_CTX
+    try:
+        return int(raw.strip())
+    except ValueError as exc:
+        raise ValueError(
+            f"Unsupported OLLAMA_NUM_CTX value '{raw}'. Expected a positive integer."
+        ) from exc
 
 
 class Settings(BaseModel):
@@ -39,6 +68,19 @@ class Settings(BaseModel):
     ollama_embed_model: str = Field(
         default=DEFAULT_OLLAMA_EMBED_MODEL,
         description="Local Ollama embedding model shared by hybrid RAG across both profiles.",
+    )
+    ollama_num_ctx: int = Field(
+        default=DEFAULT_OLLAMA_NUM_CTX,
+        ge=1024,
+        description=(
+            "Context window size (`num_ctx`) passed to Ollama via LiteLLM for the local profile."
+        ),
+    )
+    ollama_think: bool | None = Field(
+        default=None,
+        description=(
+            "Optional Ollama reasoning toggle (`think`). `None` preserves the model default."
+        ),
     )
     rag_index_path: str = Field(
         default=DEFAULT_RAG_INDEX_PATH,
@@ -88,6 +130,10 @@ def load_settings(profile_override: ModelProfile | None = None) -> Settings:
         ollama_embed_model=os.getenv(
             "OLLAMA_EMBED_MODEL", DEFAULT_OLLAMA_EMBED_MODEL
         ).strip(),
+        ollama_num_ctx=_parse_ollama_num_ctx(os.getenv("OLLAMA_NUM_CTX")),
+        ollama_think=_parse_optional_bool(
+            os.getenv("OLLAMA_THINK"), env_name="OLLAMA_THINK"
+        ),
         rag_index_path=os.getenv("RAG_INDEX_PATH", DEFAULT_RAG_INDEX_PATH).strip(),
         temperature=float(os.getenv("MODEL_TEMPERATURE", "0.2")),
         eval_judge_model=os.getenv("EVAL_JUDGE_MODEL", DEFAULT_GEMINI_MODEL).strip(),
