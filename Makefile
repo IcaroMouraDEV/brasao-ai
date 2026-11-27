@@ -1,4 +1,4 @@
-.PHONY: install lint format test check ollama-up ollama-up-gpu ollama-pull ollama-pull-embed rag-index rag-index-lexical playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
+.PHONY: install lint format test check web-ui ollama-up ollama-up-gpu ollama-pull ollama-pull-embed rag-index rag-index-lexical playground-remote playground-local eval-remote eval-local benchmark-dry-run benchmark
 
 OLLAMA_MODEL ?= gemma3:4b
 OLLAMA_EMBED_MODEL ?= nomic-embed-text
@@ -22,6 +22,9 @@ test-all:
 	uv run pytest tests/unit tests/integration
 
 check: lint test
+
+web-ui:
+	uv run uvicorn app.fast_api_app:app --reload --port 8000
 
 ollama-up:
 	docker compose up -d ollama
