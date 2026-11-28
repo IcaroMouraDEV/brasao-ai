@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 
 import pytest
@@ -11,7 +12,7 @@ from app.tools import (
     lookup_timeline,
     search_historical_corpus,
 )
-from app.tools.corpus import load_corpus
+from app.tools.corpus import MAX_TOOL_PAYLOAD_BYTES, load_corpus
 from app.tools.rag import clear_rag_index_cache
 
 
@@ -246,3 +247,59 @@ def test_build_quiz_blueprint_handles_reference_chunk_without_key_facts(
     ]
     assert result["critical_perspectives"] == []
     assert result["misconceptions_to_test"] == []
+
+
+@pytest.mark.parametrize(
+    "query",
+    [
+        "Abolição da Escravidão 1888 Lei Áurea",
+        "Era Vargas 1930 1945 CLT Estado Novo",
+        "Ditadura Militar AI-5 1968 redemocratização",
+        "Constituição de 1988 Art. 231 indígenas Plano Real",
+        "Inconfidência Mineira 1789 Conjuração Baiana 1798",
+        "Ciclo do Café Imigração Branqueamento",
+    ],
+)
+def test_search_historical_corpus_payload_stays_compact_and_preserves_citations(
+    query: str,
+) -> None:
+    result = search_historical_corpus(query, max_results=3)
+    assert result["status"] == "ok"
+    assert result["count"] == len(result["entries"])
+
+    utf8_bytes = len(json.dumps(result, ensure_ascii=False).encode("utf-8"))
+    ascii_bytes = len(json.dumps(result, ensure_ascii=True).encode("utf-8"))
+    assert utf8_bytes <= MAX_TOOL_PAYLOAD_BYTES
+    assert ascii_bytes <= MAX_TOOL_PAYLOAD_BYTES
+
+    for entry in result["entries"]:
+        assert "matched_chunks" not in entry
+        assert entry["source_id"]
+        assert entry["document"]
+        assert isinstance(entry["bncc_codes"], list)
+        assert len(entry["citations"]) >= 1
+        for citation in entry["citations"]:
+            assert citation["source_id"]
+            assert citation["document"]
+            assert isinstance(citation["bncc_codes"], list)
+
+    seen_chunk_sources: set[str] = set()
+    for chunk in result["chunks"]:
+        assert chunk["source_id"] not in seen_chunk_sources
+        seen_chunk_sources.add(chunk["source_id"])
+        assert chunk["document"]
+        assert isinstance(chunk["bncc_codes"], list)
+        assert chunk["excerpt"].strip()
+
+
+def test_search_historical_corpus_enforces_budget_even_at_max_results_five() -> None:
+    result = search_historical_corpus(
+        "Constituição 1988 democracia Brasil República Império",
+        max_results=5,
+    )
+    assert result["status"] == "ok"
+    serialized = json.dumps(result, ensure_ascii=False).encode("utf-8")
+    assert len(serialized) <= MAX_TOOL_PAYLOAD_BYTES
+    assert result["count"] == len(result["entries"])
+    assert len(result["entries"]) >= 1
+    assert result["entries"][0]["key_facts"]

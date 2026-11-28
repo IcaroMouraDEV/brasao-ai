@@ -258,6 +258,26 @@ class RagChunk:
         }
 
 
+def truncate_excerpt(text: str, max_chars: int) -> str:
+    """Shorten text cleanly at a sentence or word boundary within `max_chars`."""
+    cleaned = re.sub(r"\s+", " ", text).strip()
+    if max_chars <= 0 or len(cleaned) <= max_chars:
+        return cleaned
+    if max_chars <= 3:
+        return cleaned[:max_chars]
+
+    cutoff = max_chars - 3
+    window = cleaned[:cutoff]
+    sentence_matches = list(re.finditer(r"[.!?](?:\s|$)", window))
+    if sentence_matches and sentence_matches[-1].start() >= cutoff // 2:
+        return window[: sentence_matches[-1].start() + 1].strip()
+
+    space_idx = window.rfind(" ")
+    if space_idx >= cutoff // 2:
+        window = window[:space_idx]
+    return window.rstrip(" ,;:-") + "..."
+
+
 @dataclass(frozen=True)
 class ScoredChunk:
     """A retrieved chunk with BM25, dense cosine, and Reciprocal Rank Fusion scores."""
@@ -269,7 +289,7 @@ class ScoredChunk:
     matched_tokens: int
 
     def to_payload(self) -> dict[str, Any]:
-        """Serialize the scored chunk with citations for tool outputs."""
+        """Serialize the full scored chunk with citations."""
         return {
             "chunk_id": self.chunk.chunk_id,
             "source_id": self.chunk.source_id,
@@ -282,6 +302,18 @@ class ScoredChunk:
             "text": self.chunk.text,
             "rrf_score": round(self.rrf_score, 6),
             "bm25_score": round(self.bm25_score, 4),
+            "dense_score": (
+                round(self.dense_score, 4) if self.dense_score is not None else None
+            ),
+        }
+
+    def to_compact_payload(self, *, max_excerpt_chars: int = 240) -> dict[str, Any]:
+        """Serialize a compact, citation-complete chunk payload for tool outputs."""
+        return {
+            "source_id": self.chunk.source_id,
+            "document": self.chunk.document,
+            "bncc_codes": list(self.chunk.bncc_codes),
+            "excerpt": truncate_excerpt(self.chunk.text, max_excerpt_chars),
             "dense_score": (
                 round(self.dense_score, 4) if self.dense_score is not None else None
             ),

@@ -2,18 +2,25 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
 
-from app.tools.corpus import _search_with_index, search_historical_corpus
+from app.tools.corpus import (
+    MAX_TOOL_PAYLOAD_BYTES,
+    _enforce_payload_budget,
+    _search_with_index,
+    search_historical_corpus,
+)
 from app.tools.rag import (
     CORPUS_PATH,
     SOURCES_DIR,
     EmbeddingError,
     HybridRagIndex,
     RagChunk,
+    ScoredChunk,
     build_and_save_index,
     build_chunks_from_sources,
     chunk_text,
@@ -23,6 +30,7 @@ from app.tools.rag import (
     load_rag_index,
     reciprocal_rank_fusion,
     tokenize_for_bm25,
+    truncate_excerpt,
 )
 from scripts.build_rag_index import main as build_rag_index_main
 
@@ -454,3 +462,156 @@ def test_fictional_query_returns_not_found_in_hybrid_mode(tmp_path: Path) -> Non
     assert result["status"] == "not_found"
     assert result["entries"] == []
     assert result["chunks"] == []
+
+
+def test_truncate_excerpt_and_compact_chunk_payload_preserve_citations() -> None:
+    long_text = (
+        "A Constituição de 1988 restabeleceu direitos civis e políticos no Brasil. "
+        "O Artigo 231 reconhece aos povos indígenas sua organização social, costumes, "
+        "línguas, crenças e tradições, e os direitos originários sobre as terras que "
+        "tradicionalmente ocupam."
+    )
+    short = truncate_excerpt(long_text, 100)
+    assert len(short) <= 100
+    assert short.startswith("A Constituição de 1988")
+
+    chunk = RagChunk(
+        chunk_id="cf88:art231_indigenas:0",
+        source_id="cf88:art231_indigenas",
+        document="Constituição Federal de 1988 — Art. 231",
+        source_type="constitution",
+        topic_id="nova_republica_constituicao_1988_plano_real",
+        title="Direitos Originários Indígenas",
+        period="Nova República",
+        bncc_codes=("EF09HI26", "EM13CHS601"),
+        text=long_text,
+        tokens=tuple(tokenize_for_bm25(long_text)),
+        title_tokens=tuple(tokenize_for_bm25("Direitos Originários Indígenas")),
+    )
+    scored = ScoredChunk(
+        chunk=chunk,
+        rrf_score=0.032,
+        bm25_score=9.4,
+        dense_score=0.88,
+        matched_tokens=4,
+    )
+    compact = scored.to_compact_payload(max_excerpt_chars=120)
+    assert set(compact.keys()) == {
+        "source_id",
+        "document",
+        "bncc_codes",
+        "excerpt",
+        "dense_score",
+    }
+    assert compact["source_id"] == "cf88:art231_indigenas"
+    assert compact["document"] == "Constituição Federal de 1988 — Art. 231"
+    assert compact["bncc_codes"] == ["EF09HI26", "EM13CHS601"]
+    assert len(compact["excerpt"]) <= 120
+    assert compact["dense_score"] == 0.88
+
+
+def test_compact_rag_payload_deduplicates_sources_with_local_remote_parity(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    index_path = tmp_path / "compact_parity.sqlite3"
+    embedder = _ConceptVectorEmbedder()
+    build_and_save_index(
+        corpus_path=CORPUS_PATH,
+        sources_dir=SOURCES_DIR,
+        output_path=index_path,
+        embedder=embedder,
+        include_embeddings=True,
+    )
+    loaded = load_rag_index(index_path)
+
+    monkeypatch.setenv("MODEL_PROFILE", "local")
+    local_payload = _search_with_index(
+        "Constituição de 1988 Art. 231 povos indígenas cidadania",
+        max_results=3,
+        index=loaded,
+        embedder=embedder,
+        enable_dense=True,
+    )
+    monkeypatch.setenv("MODEL_PROFILE", "remote")
+    remote_payload = _search_with_index(
+        "Constituição de 1988 Art. 231 povos indígenas cidadania",
+        max_results=3,
+        index=loaded,
+        embedder=embedder,
+        enable_dense=True,
+    )
+
+    assert local_payload == remote_payload
+    assert local_payload["status"] == "ok"
+    assert local_payload["retrieval_mode"] == "hybrid"
+
+    payload_bytes = len(json.dumps(local_payload, ensure_ascii=False).encode("utf-8"))
+    assert payload_bytes <= MAX_TOOL_PAYLOAD_BYTES
+
+    chunk_source_ids = [chunk["source_id"] for chunk in local_payload["chunks"]]
+    assert len(chunk_source_ids) == len(set(chunk_source_ids))
+    for entry in local_payload["entries"]:
+        assert "matched_chunks" not in entry
+        citation_bases = [
+            citation["source_id"].split("#", 1)[0] for citation in entry["citations"]
+        ]
+        assert len(citation_bases) == len(set(citation_bases))
+
+
+def test_enforce_payload_budget_trims_oversized_secondary_entries() -> None:
+    oversized_payload = {
+        "status": "ok",
+        "query": "história do brasil",
+        "retrieval_mode": "bm25_lexical",
+        "count": 3,
+        "entries": [
+            {
+                "id": "primary_topic",
+                "title": "Tema Principal",
+                "summary": "Resumo principal preservado.",
+                "key_facts": ["Fato 1 preservado."],
+                "source_id": "corpus:primary_topic",
+                "document": "Corpus Curado BNCC — Tema Principal",
+                "citations": [
+                    {
+                        "source_id": "corpus:primary_topic",
+                        "document": "Corpus Curado BNCC — Tema Principal",
+                        "bncc_codes": ["EF08HI19"],
+                    }
+                ],
+            },
+            {
+                "id": "secondary_one",
+                "title": "Tema Secundário 1",
+                "summary": "A" * 4000,
+                "key_facts": ["B" * 2000],
+                "primary_actors": ["Ator 1", "Ator 2"],
+                "critical_perspectives": ["C" * 2000],
+                "common_misconceptions": ["D" * 2000],
+                "recommended_sources": ["Fonte 1"],
+            },
+            {
+                "id": "secondary_two",
+                "title": "Tema Secundário 2",
+                "summary": "E" * 4000,
+                "key_facts": ["F" * 2000],
+            },
+        ],
+        "chunks": [
+            {
+                "source_id": "corpus:primary_topic",
+                "document": "Corpus Curado BNCC — Tema Principal",
+                "bncc_codes": ["EF08HI19"],
+                "excerpt": "G" * 500,
+                "dense_score": None,
+            }
+        ],
+    }
+
+    bounded = _enforce_payload_budget(oversized_payload, max_bytes=2048)
+    assert len(json.dumps(bounded, ensure_ascii=False).encode("utf-8")) <= 2048
+    assert bounded["count"] == len(bounded["entries"])
+    assert bounded["entries"][0]["id"] == "primary_topic"
+    assert bounded["entries"][0]["summary"] == "Resumo principal preservado."
+    assert len(bounded["chunks"][0]["excerpt"]) <= 120
