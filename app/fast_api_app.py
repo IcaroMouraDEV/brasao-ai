@@ -27,6 +27,7 @@ from app.app_utils.a2a import attach_a2a_routes
 from app.app_utils.reasoning_engine_adapter import (
     attach_reasoning_engine_routes,
 )
+from app.web_api import attach_web_ui_routes
 
 load_dotenv()
 allow_origins = (
@@ -79,6 +80,9 @@ app.description = (
 # Proxy routes so the Google Cloud console playground (reasoning_engine SDK) can
 # talk to this agent alongside the native adk_api routes.
 attach_reasoning_engine_routes(app)
+
+# Local zero-CDN web UI and interactive tutoring / side-by-side comparison endpoints.
+attach_web_ui_routes(app)
 
 
 # Main execution
