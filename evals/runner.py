@@ -14,6 +14,7 @@ from typing import Any
 from app.app_utils.sanitization import sanitize_student_response
 from app.config import ModelProfile, Settings, load_settings
 from app.prompts import PROMPT_VERSION
+from evals.charts import render_all_charts
 from evals.judge import JudgeInvoker, grade_case_with_judge, is_rate_limit_error
 from evals.rubrics import (
     BenchmarkCase,
@@ -237,6 +238,99 @@ def _select_benchmark_cases(
     return [by_id[cid] for cid in case_ids]
 
 
+def _is_reusable_result(
+    result: CaseEvaluationResult,
+    *,
+    enable_tools: bool,
+) -> bool:
+    """Return True when a checkpointed case completed cleanly and matches tool mode."""
+    return (
+        result.error is None
+        and bool(result.response_text.strip())
+        and result.tools_enabled == enable_tools
+    )
+
+
+def _load_resume_checkpoint(
+    resume_path: Path,
+    *,
+    enable_tools: bool,
+) -> dict[tuple[ModelProfile, str], CaseEvaluationResult]:
+    """Load reusable completed (profile, case_id) results from a prior JSON report."""
+    if not resume_path.exists():
+        raise FileNotFoundError(f"Resume checkpoint not found: {resume_path}")
+    prior_report = ComparisonReport.model_validate_json(
+        resume_path.read_text(encoding="utf-8")
+    )
+    reusable: dict[tuple[ModelProfile, str], CaseEvaluationResult] = {}
+    for item in prior_report.results:
+        if _is_reusable_result(item, enable_tools=enable_tools):
+            reusable[(item.profile, item.case_id)] = item
+    return reusable
+
+
+def _write_json_atomic(path: Path, payload: str) -> None:
+    """Atomically write JSON text so interruptions never corrupt a checkpoint file."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        tmp_path.write_text(payload, encoding="utf-8")
+        os.replace(tmp_path, path)
+    except BaseException:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _build_comparison_report(
+    *,
+    profiles: list[ModelProfile],
+    cases: list[BenchmarkCase],
+    results_by_key: dict[tuple[ModelProfile, str], CaseEvaluationResult],
+    settings: Settings,
+    dataset_path: Path,
+    dry_run: bool,
+    enable_tools: bool,
+    use_judge: bool,
+    judge_model: str | None,
+    include_empty_profiles: bool,
+    generated_at: datetime | None = None,
+) -> ComparisonReport:
+    """Assemble an ordered `ComparisonReport` snapshot from the current result map."""
+    ordered_results: list[CaseEvaluationResult] = []
+    summaries = []
+    for profile in profiles:
+        model_id = settings.resolved_model_label(profile)
+        offline_capable = settings.is_offline_capable(profile)
+        profile_results = [
+            results_by_key[(profile, case.id)]
+            for case in cases
+            if (profile, case.id) in results_by_key
+        ]
+        ordered_results.extend(profile_results)
+        if profile_results or include_empty_profiles:
+            summaries.append(
+                aggregate_profile_summary(
+                    profile,
+                    model_id,
+                    offline_capable,
+                    profile_results,
+                    tools_enabled=enable_tools,
+                )
+            )
+    timestamp = generated_at or datetime.now(UTC)
+    return ComparisonReport(
+        generated_at=timestamp.isoformat(),
+        prompt_version=PROMPT_VERSION,
+        dataset_path=str(dataset_path),
+        dry_run=dry_run,
+        tools_enabled=enable_tools,
+        use_judge=use_judge,
+        judge_model=judge_model,
+        summaries=summaries,
+        results=ordered_results,
+    )
+
+
 async def run_benchmark(
     profiles: list[ModelProfile],
     dataset_path: Path = DEFAULT_DATASET_PATH,
@@ -250,8 +344,12 @@ async def run_benchmark(
     judge_invoker: JudgeInvoker | None = None,
     disable_tools: bool = False,
     case_ids: list[str] | None = None,
+    checkpoint_path: Path | None = None,
+    resume_from: Path | None = None,
+    generate_charts: bool = False,
+    charts_dir: Path | None = None,
 ) -> tuple[ComparisonReport, Path, Path]:
-    """Run the comparative benchmark and write JSON and Markdown report artifacts."""
+    """Run the comparative benchmark with incremental checkpointing and report export."""
     resolved_settings = settings or load_settings()
     enable_tools = not disable_tools
     resolved_judge_model = (
@@ -265,22 +363,127 @@ async def run_benchmark(
         else float(os.getenv("REMOTE_REQUEST_DELAY_S", "0.0"))
     )
     cases = _select_benchmark_cases(load_benchmark_dataset(dataset_path), case_ids)
-    all_results: list[CaseEvaluationResult] = []
-    summaries = []
+    cached_results = (
+        _load_resume_checkpoint(resume_from, enable_tools=enable_tools)
+        if resume_from is not None
+        else {}
+    )
+
+    started_at = datetime.now(UTC)
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    stamp = started_at.strftime("%Y%m%dT%H%M%SZ")
+    suffix = "" if enable_tools else "_notools"
+    json_path = (
+        checkpoint_path
+        if checkpoint_path is not None
+        else reports_dir / f"comparison_{stamp}{suffix}.json"
+    )
+    md_path = (
+        checkpoint_path.with_suffix(".md")
+        if checkpoint_path is not None
+        else reports_dir / f"comparison_{stamp}{suffix}.md"
+    )
+
+    results_by_key: dict[tuple[ModelProfile, str], CaseEvaluationResult] = {}
+    for profile in profiles:
+        for case in cases:
+            key = (profile, case.id)
+            if key in cached_results:
+                results_by_key[key] = cached_results[key]
+
+    def _flush_checkpoint() -> None:
+        partial_report = _build_comparison_report(
+            profiles=profiles,
+            cases=cases,
+            results_by_key=results_by_key,
+            settings=resolved_settings,
+            dataset_path=dataset_path,
+            dry_run=dry_run,
+            enable_tools=enable_tools,
+            use_judge=use_judge,
+            judge_model=resolved_judge_model,
+            include_empty_profiles=False,
+        )
+        _write_json_atomic(json_path, partial_report.model_dump_json(indent=2))
+
+    if results_by_key and (
+        resume_from is None or json_path.resolve() != resume_from.resolve()
+    ):
+        _flush_checkpoint()
 
     redacted_identifiers = (
         resolved_settings.gemini_model,
         resolved_settings.ollama_model,
         f"ollama_chat/{resolved_settings.ollama_model}",
     )
+    live_remote_requests_made = 0
 
     for profile in profiles:
         model_id = resolved_settings.resolved_model_label(profile)
         offline_capable = resolved_settings.is_offline_capable(profile)
-        profile_results: list[CaseEvaluationResult] = []
+        tools_tag = "rag" if enable_tools else "no-tools"
 
         for idx, case in enumerate(cases):
-            if not dry_run and profile == "remote" and delay_s > 0 and idx > 0:
+            key = (profile, case.id)
+            cached = cached_results.get(key)
+            if cached is not None:
+                judge_already_ok = (
+                    cached.judge is not None and cached.judge.status == "ok"
+                )
+                if not use_judge or judge_already_ok:
+                    results_by_key[key] = cached
+                    if not dry_run:
+                        print(
+                            f"[{profile}:{model_id}:{tools_tag}] {idx + 1}/{len(cases)} {case.id} "
+                            "SKIPPED (resumed from checkpoint)",
+                            flush=True,
+                        )
+                    continue
+
+                if resolved_judge_model is not None:
+                    if (
+                        not dry_run
+                        and judge_invoker is None
+                        and delay_s > 0
+                        and not resolved_judge_model.startswith(
+                            ("ollama_chat/", "ollama/")
+                        )
+                    ):
+                        await asyncio.sleep(delay_s)
+                    regraded_judge = await grade_case_with_judge(
+                        case=case,
+                        response_text=cached.response_text,
+                        accuracy=cached.accuracy,
+                        pedagogy=cached.pedagogy,
+                        judge_model=resolved_judge_model,
+                        extra_identifiers=(*redacted_identifiers, model_id),
+                        candidate_error=None,
+                        dry_run=dry_run,
+                        judge_invoker=judge_invoker,
+                        max_rate_limit_retries=max_rate_limit_retries,
+                    )
+                    updated_result = cached.model_copy(
+                        update={
+                            "judge": regraded_judge,
+                            "judge_notes": regraded_judge.rationale,
+                        }
+                    )
+                    results_by_key[key] = updated_result
+                    _flush_checkpoint()
+                    if not dry_run:
+                        print(
+                            f"[{profile}:{model_id}:{tools_tag}] {idx + 1}/{len(cases)} {case.id} "
+                            f"RESUMED+JUDGED judge={regraded_judge.overall_score_5:.2f}({regraded_judge.status})",
+                            flush=True,
+                        )
+                    continue
+
+            if (
+                not dry_run
+                and profile == "remote"
+                and delay_s > 0
+                and live_remote_requests_made > 0
+            ):
                 await asyncio.sleep(delay_s)
 
             error_msg: str | None = None
@@ -294,6 +497,8 @@ async def run_benchmark(
                         )
                     )
                 else:
+                    if profile == "remote":
+                        live_remote_requests_made += 1
                     (
                         response_text,
                         in_tok,
@@ -362,8 +567,8 @@ async def run_benchmark(
                 judge_notes=judge_notes,
                 error=error_msg,
             )
-            profile_results.append(result)
-            all_results.append(result)
+            results_by_key[key] = result
+            _flush_checkpoint()
             if not dry_run:
                 judge_str = (
                     f" judge={judge_score.overall_score_5:.2f}({judge_score.status})"
@@ -371,7 +576,6 @@ async def run_benchmark(
                     else ""
                 )
                 err_str = f" ERROR={error_msg}" if error_msg else ""
-                tools_tag = "rag" if enable_tools else "no-tools"
                 print(
                     f"[{profile}:{model_id}:{tools_tag}] {idx + 1}/{len(cases)} {case.id} "
                     f"acc={accuracy.accuracy_score_5:.2f} ped={pedagogy.pedagogy_avg_5:.2f}"
@@ -379,37 +583,28 @@ async def run_benchmark(
                     flush=True,
                 )
 
-        summaries.append(
-            aggregate_profile_summary(
-                profile,
-                model_id,
-                offline_capable,
-                profile_results,
-                tools_enabled=enable_tools,
-            )
-        )
-
-    now = datetime.now(UTC)
-    report = ComparisonReport(
-        generated_at=now.isoformat(),
-        prompt_version=PROMPT_VERSION,
-        dataset_path=str(dataset_path),
+    report = _build_comparison_report(
+        profiles=profiles,
+        cases=cases,
+        results_by_key=results_by_key,
+        settings=resolved_settings,
+        dataset_path=dataset_path,
         dry_run=dry_run,
-        tools_enabled=enable_tools,
+        enable_tools=enable_tools,
         use_judge=use_judge,
         judge_model=resolved_judge_model,
-        summaries=summaries,
-        results=all_results,
+        include_empty_profiles=True,
     )
 
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    stamp = now.strftime("%Y%m%dT%H%M%SZ")
-    suffix = "" if enable_tools else "_notools"
-    json_path = reports_dir / f"comparison_{stamp}{suffix}.json"
-    md_path = reports_dir / f"comparison_{stamp}{suffix}.md"
-
-    json_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+    _write_json_atomic(json_path, report.model_dump_json(indent=2))
+    md_path.parent.mkdir(parents=True, exist_ok=True)
     md_path.write_text(render_markdown_report(report), encoding="utf-8")
+
+    if generate_charts:
+        resolved_charts_dir = charts_dir or (
+            json_path.parent / f"{json_path.stem}_charts"
+        )
+        render_all_charts(report, resolved_charts_dir)
 
     return report, json_path, md_path
 
@@ -476,6 +671,35 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Model identifier used for LLM-as-a-judge grading (defaults to Settings.eval_judge_model).",
     )
+    parser.add_argument(
+        "--checkpoint",
+        type=Path,
+        default=None,
+        help=(
+            "Explicit JSON file path for incremental per-case checkpoint writes "
+            "(defaults to the run's output comparison_*.json report)."
+        ),
+    )
+    parser.add_argument(
+        "--resume",
+        type=Path,
+        default=None,
+        help=(
+            "Path to a prior or partial benchmark JSON report to resume from; "
+            "skips completed non-errored (profile, case_id) pairs and retries missing/errored ones."
+        ),
+    )
+    parser.add_argument(
+        "--charts",
+        action="store_true",
+        help="Render offline pure-Python SVG comparison charts alongside JSON and Markdown reports.",
+    )
+    parser.add_argument(
+        "--charts-dir",
+        type=Path,
+        default=None,
+        help="Optional output directory for SVG charts when --charts is enabled.",
+    )
     return parser.parse_args(argv)
 
 
@@ -494,12 +718,23 @@ def main(argv: list[str] | None = None) -> dict[str, Any]:
             judge_model=args.judge_model,
             disable_tools=args.disable_tools,
             case_ids=args.case_ids,
+            checkpoint_path=args.checkpoint,
+            resume_from=args.resume,
+            generate_charts=args.charts,
+            charts_dir=args.charts_dir,
         )
     )
     print(f"Benchmark completed ({len(report.results)} evaluations).")
     print(f"JSON report: {json_path}")
     print(f"Markdown report: {md_path}")
-    return {"json_path": str(json_path), "md_path": str(md_path)}
+    output: dict[str, Any] = {"json_path": str(json_path), "md_path": str(md_path)}
+    if args.charts:
+        resolved_charts_dir = args.charts_dir or (
+            json_path.parent / f"{json_path.stem}_charts"
+        )
+        print(f"SVG charts: {resolved_charts_dir}")
+        output["charts_dir"] = str(resolved_charts_dir)
+    return output
 
 
 if __name__ == "__main__":
