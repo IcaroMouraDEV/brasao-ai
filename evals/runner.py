@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from app.app_utils.sanitization import sanitize_student_response
 from app.config import ModelProfile, Settings, load_settings
 from app.prompts import PROMPT_VERSION
 from evals.judge import JudgeInvoker, grade_case_with_judge, is_rate_limit_error
@@ -84,7 +85,11 @@ def _extract_workflow_output(
     else:
         selected_chunks = []
 
-    return "\n".join(selected_chunks).strip(), input_tokens, output_tokens
+    return (
+        sanitize_student_response("\n".join(selected_chunks)),
+        input_tokens,
+        output_tokens,
+    )
 
 
 async def _invoke_live_adk_agent(

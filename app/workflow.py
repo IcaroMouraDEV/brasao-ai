@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
-from google.adk import Agent, Workflow
-from google.adk.workflow import START
+from typing import Any
 
+from google.adk import Agent, Workflow
+from google.adk.agents.context import Context
+from google.adk.models.llm_response import LlmResponse
+from google.adk.tools.base_tool import BaseTool
+from google.adk.workflow import START
+from google.genai import types
+
+from app.app_utils.sanitization import (
+    is_quiz_tool_allowed,
+    sanitize_student_response,
+)
 from app.config import ModelProfile, Settings, load_settings
 from app.models import build_model
 from app.prompts import (
@@ -38,6 +48,83 @@ ROUTING_STATE_KEY = "routing_plan"
 EVIDENCE_STATE_KEY = "historical_evidence"
 DRAFT_STATE_KEY = "pedagogical_draft"
 VERIFIED_STATE_KEY = "verified_response"
+
+
+def _extract_user_text(user_content: types.Content | None) -> str:
+    """Join plain-text parts from an ADK user `Content` payload."""
+    if user_content is None or not user_content.parts:
+        return ""
+    return "\n".join(part.text for part in user_content.parts if part.text)
+
+
+def guard_quiz_blueprint_tool(
+    tool: BaseTool,
+    args: dict[str, Any],
+    tool_context: Context,
+) -> dict[str, Any] | None:
+    """Prevent unprompted `build_quiz_blueprint` calls on non-quiz student turns.
+
+    Applied identically across `local` and `remote` profiles as a `before_tool_callback`
+    on `PedagogicalAdapter`.
+    """
+    _ = args
+    if tool.name != "build_quiz_blueprint":
+        return None
+
+    raw_routing = tool_context.state.get(ROUTING_STATE_KEY)
+    routing_plan = str(raw_routing) if raw_routing is not None else None
+    user_text = _extract_user_text(tool_context.user_content)
+
+    if is_quiz_tool_allowed(routing_plan, user_text):
+        return None
+
+    return {
+        "status": "skipped",
+        "reason": "non_quiz_intent",
+        "message": (
+            "Quiz blueprint skipped because the student requested an explanation, "
+            "timeline, or myth check rather than a quiz or exercises. Write the "
+            "student-facing pt-BR pedagogical response directly without quiz boilerplate."
+        ),
+    }
+
+
+def sanitize_verifier_response(
+    callback_context: Context,
+    llm_response: LlmResponse,
+) -> LlmResponse | None:
+    """Strip leaked internal workflow artifacts from `FactVerifier` text output.
+
+    Applied identically across `local` and `remote` profiles as an `after_model_callback`
+    on `FactVerifier` so both emitted events and `verified_response` session state stay clean.
+    """
+    _ = callback_context
+    if (
+        llm_response.partial
+        or llm_response.content is None
+        or not llm_response.content.parts
+    ):
+        return None
+
+    changed = False
+    updated_parts: list[types.Part] = []
+    for part in llm_response.content.parts:
+        if part.text is not None and not bool(getattr(part, "thought", False)):
+            cleaned = sanitize_student_response(part.text)
+            if cleaned != part.text:
+                changed = True
+                updated_parts.append(part.model_copy(update={"text": cleaned}))
+                continue
+        updated_parts.append(part)
+
+    if not changed:
+        return None
+
+    updated_content = types.Content(
+        role=llm_response.content.role,
+        parts=updated_parts,
+    )
+    return llm_response.model_copy(update={"content": updated_content})
 
 
 def create_history_tutor_workflow(
@@ -115,6 +202,7 @@ def create_history_tutor_workflow(
             else PEDAGOGICAL_ADAPTER_NO_TOOLS_INSTRUCTION
         ),
         tools=[build_quiz_blueprint] if enable_tools else [],
+        before_tool_callback=guard_quiz_blueprint_tool if enable_tools else None,
         output_key=DRAFT_STATE_KEY,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
@@ -128,6 +216,7 @@ def create_history_tutor_workflow(
             "prevent fabricated dates, myths, or anachronisms before replying."
         ),
         instruction=FACT_VERIFIER_INSTRUCTION,
+        after_model_callback=sanitize_verifier_response,
         output_key=VERIFIED_STATE_KEY,
         disallow_transfer_to_parent=True,
         disallow_transfer_to_peers=True,
